@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import React, { useMemo } from "react";
 import {
   ConnectionProvider,
@@ -7,13 +7,15 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { UnsafeBurnerWalletAdapter } from "@solana/wallet-adapter-wallets";
-import {
-  WalletModalProvider,
-  WalletDisconnectButton,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
+
+import "./App.css";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Home from "./pages/Home";
+import AuthMiddleware from "./components/custom/auth/AuthMiddleware";
+import Navbar from "./components/custom/Navbar";
 
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -32,12 +34,29 @@ function App() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <WalletMultiButton />
-          <WalletDisconnectButton />
-          {/* Your app's components go here, nested within the context providers. */}
-          <>
-            <p>Hello</p>
-          </>
+          <Router>
+            <Navbar />
+            <div className="">
+              {/* Main content area with padding-top to accommodate the Navbar height */}
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<Home />} />
+                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+
+                {/* Private Route with Guard for Dashboard */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <AuthMiddleware>
+                      <Dashboard />
+                    </AuthMiddleware>
+                  }
+                />
+              </Routes>
+            </div>
+          </Router>
+          {/* <WalletMultiButton /> */}
+          {/* <WalletDisconnectButton /> */}
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
