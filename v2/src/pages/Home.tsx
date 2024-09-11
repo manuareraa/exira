@@ -1,9 +1,7 @@
-import React from "react";
-
 import heroImage from "../assets/img/hero.png";
 import HeroCards from "../components/custom/HeroCards";
 
-function Home(props) {
+function Home() {
   return (
     <div className="flex flex-col">
       {/* top hero container */}

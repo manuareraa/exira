@@ -1,13 +1,10 @@
-import React from "react";
 import {
-  WalletModalProvider,
   WalletMultiButton,
   WalletDisconnectButton,
-  WalletConnectButton,
 } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
-function Navbar(props) {
+function Navbar() {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
 

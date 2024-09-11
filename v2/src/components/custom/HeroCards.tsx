@@ -1,11 +1,10 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowTrendUp,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 
-function HeroCards(props) {
+function HeroCards() {
   return (
     <div className="flex flex-row gap-x-16">
       {/* first card */}

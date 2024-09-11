@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
