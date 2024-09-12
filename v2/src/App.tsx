@@ -15,6 +15,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
 import AuthMiddleware from "./components/custom/auth/AuthMiddleware";
 import Navbar from "./components/custom/Navbar";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -40,6 +41,7 @@ function App() {
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
+                <Route path="/about-us" element={<AboutUs />} />
                 {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
                 {/* Private Route with Guard for Dashboard */}
