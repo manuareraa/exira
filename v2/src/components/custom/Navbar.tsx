@@ -4,12 +4,26 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRight,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 
 function Navbar() {
   const { connection } = useConnection();
   const { publicKey } = useWallet();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleGoToApp = () => {
+    if (connection && publicKey) {
+      navigate("/dashboard");
+    } else {
+      toast.error("Please connect your wallet");
+    }
+  };
 
   return (
     <div className="flex flex-row items-center justify-between w-full p-4 px-10 space-x-4 py-7">
@@ -55,17 +69,28 @@ function Navbar() {
             How it works?
           </p>
         </div>
-        <div className="flex flex-row gap-x-4">
+        <div className="flex flex-row items-center gap-x-4">
           <WalletMultiButton
             style={{
               backgroundColor: "black",
               padding: "1rem",
-              height: "40px",
-              marginTop: "5px",
+              height: "45px",
               fontSize: "15px",
               borderRadius: "10px",
+              width: "150px",
             }}
           />
+          {location.pathname.includes("/dashboard") ? null : (
+            <button
+              className="px-6 py-2 font-semibold text-white bg-purple-600 border-2 border-purple-600 rounded-lg"
+              onClick={handleGoToApp}
+            >
+              <div className="flex flex-row items-center gap-x-4">
+                <p>Exira App</p>
+                <FontAwesomeIcon icon={faChevronRight} />
+              </div>
+            </button>
+          )}
           {/* {connection && publicKey ? (
             <WalletDisconnectButton
               style={{

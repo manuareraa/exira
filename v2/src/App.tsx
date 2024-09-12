@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { useMemo } from "react";
 import {
   ConnectionProvider,
@@ -9,6 +14,7 @@ import { UnsafeBurnerWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import { Toaster } from "react-hot-toast";
 
 import "./App.css";
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -20,6 +26,7 @@ import AboutUs from "./pages/AboutUs";
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
+  const location = useLocation();
 
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -34,28 +41,30 @@ function App() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <Router>
-            <Navbar />
-            <div className="">
-              {/* Main content area with padding-top to accommodate the Navbar height */}
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/about-us" element={<AboutUs />} />
-                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          <Toaster />
+          {
+            // Navbar component
+            location.pathname !== "/dashboard" && <Navbar />
+          }
+          <div className="">
+            {/* Main content area with padding-top to accommodate the Navbar height */}
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
-                {/* Private Route with Guard for Dashboard */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <AuthMiddleware>
-                      <Dashboard />
-                    </AuthMiddleware>
-                  }
-                />
-              </Routes>
-            </div>
-          </Router>
+              {/* Private Route with Guard for Dashboard */}
+              <Route
+                path="/dashboard"
+                element={
+                  <AuthMiddleware>
+                    <Dashboard />
+                  </AuthMiddleware>
+                }
+              />
+            </Routes>
+          </div>
           {/* <WalletMultiButton /> */}
           {/* <WalletDisconnectButton /> */}
         </WalletModalProvider>
