@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -13,11 +13,21 @@
       rel="stylesheet"
     />
 
-    <title>Vite + React + TS</title>
-    <script type="module" crossorigin src="/assets/index-DP6UAwK4.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-B8sgObZB.css">
+    <!-- mapbox styles -->
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+
+    <title>Exira</title>
+    <script type="module" crossorigin src="/assets/index-DTrfRAaJ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-nXoMz0mg.css">
   </head>
   <body>
+    <script>
+      // Global node polyfill.
+      window.global = window;
+    </script>
     <div id="root"></div>
   </body>
 </html>

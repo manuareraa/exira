@@ -78,11 +78,12 @@ function Navbar() {
               fontSize: "15px",
               borderRadius: "10px",
               width: "150px",
+              justifyContent: "center",
             }}
           />
           {location.pathname.includes("/dashboard") ? null : (
             <button
-              className="px-6 py-2 font-semibold text-white bg-purple-600 border-2 border-purple-600 rounded-lg"
+              className="px-6 py-[9px] font-semibold text-white bg-purple-600 border-2 border-purple-600 rounded-lg"
               onClick={handleGoToApp}
             >
               <div className="flex flex-row items-center gap-x-4">

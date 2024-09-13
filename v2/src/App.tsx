@@ -22,6 +22,13 @@ import Home from "./pages/Home";
 import AuthMiddleware from "./components/custom/auth/AuthMiddleware";
 import Navbar from "./components/custom/Navbar";
 import AboutUs from "./pages/AboutUs";
+import AllProperties from "./components/custom/dashboard/pages/AllProperties";
+import Launchpad from "./components/custom/dashboard/pages/Launchpad";
+import Trade from "./components/custom/dashboard/pages/Trade";
+import Portfolio from "./components/custom/dashboard/pages/Portfolio";
+import History from "./components/custom/dashboard/pages/History";
+import PropertyView from "./pages/PropertyView";
+import Dummy from "./pages/Dummy";
 
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -44,7 +51,7 @@ function App() {
           <Toaster />
           {
             // Navbar component
-            location.pathname !== "/dashboard" && <Navbar />
+            location.pathname.includes("/dashboard") ? null : <Navbar />
           }
           <div className="">
             {/* Main content area with padding-top to accommodate the Navbar height */}
@@ -59,10 +66,55 @@ function App() {
                 path="/dashboard"
                 element={
                   <AuthMiddleware>
-                    <Dashboard />
+                    <Dashboard>
+                      <AllProperties />
+                    </Dashboard>
                   </AuthMiddleware>
                 }
               />
+              <Route
+                path="/dashboard/launchpad"
+                element={
+                  <AuthMiddleware>
+                    <Dashboard>
+                      <Launchpad />
+                    </Dashboard>
+                  </AuthMiddleware>
+                }
+              />
+              <Route
+                path="/dashboard/trade"
+                element={
+                  <AuthMiddleware>
+                    <Dashboard>
+                      <Trade />
+                    </Dashboard>
+                  </AuthMiddleware>
+                }
+              />
+              <Route
+                path="/dashboard/portfolio"
+                element={
+                  <AuthMiddleware>
+                    <Dashboard>
+                      <Portfolio />
+                    </Dashboard>
+                  </AuthMiddleware>
+                }
+              />
+              <Route
+                path="/dashboard/history"
+                element={
+                  <AuthMiddleware>
+                    <Dashboard>
+                      <History />
+                    </Dashboard>
+                  </AuthMiddleware>
+                }
+              />
+
+              <Route path="/property/view/:id" element={<PropertyView />} />
+              <Route path="/dummy" element={<Dummy />} />
             </Routes>
           </div>
           {/* <WalletMultiButton /> */}

@@ -13,9 +13,19 @@
       rel="stylesheet"
     />
 
-    <title>Vite + React + TS</title>
+    <!-- mapbox styles -->
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+
+    <title>Exira</title>
   </head>
   <body>
+    <script>
+      // Global node polyfill.
+      window.global = window;
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
