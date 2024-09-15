@@ -32,11 +32,20 @@ import Dummy from "./pages/Dummy";
 
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  const network = WalletAdapterNetwork.Devnet;
+  const network = WalletAdapterNetwork.Mainnet;
   const location = useLocation();
 
   // You can also provide a custom RPC endpoint.
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = useMemo(
+    () =>
+      "https://ultra-palpable-orb.solana-mainnet.quiknode.pro/cf7a9deeca1bfe468aacb99226beaa660f6355cb",
+    []
+  );
+
+  // const endpoint = clusterApiUrl("mainnet-beta")
+
+  console.log("endpoint", endpoint);
 
   const wallets = useMemo(
     () => [new UnsafeBurnerWalletAdapter()],

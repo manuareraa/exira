@@ -172,10 +172,15 @@ function Dummy(props) {
     console.log("Assets by Owner: ", assetsByOwner);
   };
 
-  const showWalletObject = () => {
+  const showWalletObject = async () => {
     console.log("Wallet Object: ", wallet);
     console.log("Public Key: ", wallet.publicKey?.toString());
     console.log("UMI Public Key: ", umi.identity.publicKey.toString());
+    console.log("Connection: ", connection)
+    const accountInfo = await connection.getAccountInfo(wallet.publicKey);
+    console.log("Account Info: ", accountInfo);
+    let bal = accountInfo?.lamports * Math.pow(10, -9);
+    console.log("Balance: ", bal);
   };
 
   return (
