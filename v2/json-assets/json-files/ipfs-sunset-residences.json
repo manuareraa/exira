@@ -1,0 +1,16 @@
+{
+  "name": "Sunset Residences",
+  "description": "Sunset Residences is a luxurious residential complex nestled in the heart of coastal California. With breathtaking ocean views and state-of-the-art amenities, this property offers the perfect blend of comfort and sophistication. The complex features spacious apartments, a rooftop infinity pool, a fully-equipped fitness center, and landscaped gardens. Its prime location provides easy access to beaches, shopping districts, and fine dining experiences.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmdRDTfvtE8ZVzRpaMx9rSgit8odwiPnyMB42mWqdA4pkn",
+  "external_url": "https://exira.io/property/view/f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "attributes": {
+    "sharePerNFT": 0.0114286,
+    "initialPropertyValue": 875000,
+    "propertyLocation": "34.052235, -118.243683",
+    "propertyType": "residential",
+    "incorporationDate": "2024-05-18",
+    "initialSharePrice": 100,
+    "uuid": "8674f86f-e978-44e6-943e-1c080502790e",
+    "dividendPerNFT": 3.5
+  }
+}

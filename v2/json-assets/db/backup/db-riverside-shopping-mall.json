@@ -1,0 +1,68 @@
+{
+  "created_at": "2024-09-18T13:30:00Z",
+  "Name": "Riverside Shopping Mall",
+  "Location": "Portland, Oregon, USA",
+  "Area": 35390,
+  "Status": "trading",
+  "IRR": 13.2,
+  "ARR": 10.8,
+  "Highlights": [
+    "Modern entertainment complex featuring a state-of-the-art cinema, a bowling alley, and a virtual reality gaming zone, making it a popular destination for families and young adults in the region.",
+    "Extensive food court with a diverse range of dining options, from fast food to gourmet restaurants, providing visitors with a variety of culinary experiences and attracting a steady flow of customers throughout the day.",
+    "Eco-friendly design incorporating green roofs, rainwater harvesting systems, and energy-efficient lighting. These sustainable features reduce operational costs and attract environmentally conscious tenants and visitors.",
+    "Community event spaces designed to host local markets, cultural festivals, and live performances. These versatile spaces foster a sense of community and draw regular foot traffic to the mall."
+  ],
+  "Gallery": [
+    "https://example.com/riverside-mall/entertainment-complex.jpg",
+    "https://example.com/riverside-mall/food-court.jpg",
+    "https://example.com/riverside-mall/green-roofs.jpg",
+    "https://example.com/riverside-mall/community-space.jpg"
+  ],
+  "BaseValue": 950000,
+  "BonusValue": 40000,
+  "RentType": {
+    "period": "monthly",
+    "amount": 125000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Portland's Economic Growth",
+      "description": "Portland is experiencing significant economic growth, with a rising population and increasing disposable income levels, which could boost retail sales and demand for commercial spaces like Riverside Shopping Mall."
+    },
+    {
+      "factor": "Tourism Boost",
+      "description": "Oregon's growing tourism industry, fueled by its natural attractions and cultural events, is driving more visitors to Portland, potentially increasing foot traffic to Riverside Shopping Mall."
+    },
+    {
+      "factor": "Retail Revitalization Initiatives",
+      "description": "The local government is implementing retail revitalization initiatives to support businesses and attract shoppers to key commercial districts, which could benefit Riverside Shopping Mall."
+    },
+    {
+      "factor": "Public Transportation Expansion",
+      "description": "Plans for expanding Portland's public transportation network, including new light rail lines, could improve accessibility to Riverside Shopping Mall and attract more visitors."
+    },
+    {
+      "factor": "E-commerce Integration",
+      "description": "The mall's integration of e-commerce solutions for its tenants, such as click-and-collect services and online promotions, enhances its appeal to modern retailers and customers."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "e3f7a5c1-9b8d-4f2e-8d4f-123xyz456lmn",
+      "name": "Urban Retail Group",
+      "proposed_price": 970000,
+      "description": "Urban Retail Group aims to introduce high-end retail stores and enhance the mall's entertainment facilities to attract a more diverse clientele.",
+      "date_of_proposal": "2024-11-15"
+    },
+    {
+      "uuid": "b7c9e2a6-4f8b-4d2f-9b3c-789abc123def",
+      "name": "Community Spaces Inc.",
+      "proposed_price": 980000,
+      "description": "Community Spaces Inc. proposes to transform the mall into a community hub with local artisan markets, co-working spaces, and family-friendly attractions.",
+      "date_of_proposal": "2024-12-01"
+    }
+  ],
+  "NFTImage": "https://example.com/riverside-mall/nft.jpg",
+  "JSONFile": "https://example.com/riverside-mall/data.json",
+"UUID":"4c4f1d24-f2e9-4b2b-9b4f-3d3f4b2c4f2d"
+}

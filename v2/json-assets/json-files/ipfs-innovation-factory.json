@@ -1,0 +1,16 @@
+{
+  "name": "Innovation Factory",
+  "description": "Innovation Factory is a cutting-edge industrial property designed to foster creativity and technological advancement. This state-of-the-art facility combines manufacturing spaces with research and development labs, creating an ecosystem for innovation. The property features flexible production areas, 3D printing workshops, and collaborative spaces for prototyping. With its focus on sustainability, the Innovation Factory incorporates energy-efficient systems and uses recycled materials in its construction, setting a new standard for eco-friendly industrial properties.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmQrW7wCfSV5NuUwfKbwiin1JJw8WdxR3UiVkctDdfvmN5",
+  "external_url": "https://exira.io/property/view/6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+  "attributes": {
+    "sharePerNFT": 0.01,
+    "initialPropertyValue": 1000000,
+    "propertyLocation": "42.360082, -71.058880",
+    "propertyType": "industrial",
+    "incorporationDate": "2024-06-30",
+    "initialSharePrice": 100,
+    "uuid": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "dividendPerNFT": 4.5
+  }
+}

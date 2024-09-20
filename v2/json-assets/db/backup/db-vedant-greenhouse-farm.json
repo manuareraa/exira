@@ -1,0 +1,68 @@
+{
+  "created_at": "2024-09-18T15:45:00Z",
+  "Name": "Vedant Greenhouse Farm",
+  "Location": "Sacramento, California, USA",
+  "Area": 25000,
+  "Status": "launchpad",
+  "IRR": 12,
+  "ARR": 9.8,
+  "Highlights": [
+    "High-tech greenhouse facilities equipped with automated climate control, irrigation, and nutrient delivery systems, optimizing crop growth and yield while reducing water and energy consumption.",
+    "Organic and sustainable farming practices, focusing on the cultivation of high-value crops such as microgreens, herbs, and specialty vegetables, catering to local markets and premium restaurant chains.",
+    "On-site processing and packaging facility to ensure the freshness and quality of produce, adding value to the products and enabling direct supply to local supermarkets and farmers' markets.",
+    "Educational farm tours and workshops for schools, colleges, and community members, promoting awareness of sustainable agriculture and offering an additional revenue stream for the farm."
+  ],
+  "Gallery": [
+    "https://example.com/vedant-farm/greenhouse.jpg",
+    "https://example.com/vedant-farm/crops.jpg",
+    "https://example.com/vedant-farm/processing-unit.jpg",
+    "https://example.com/vedant-farm/education-tour.jpg"
+  ],
+  "BaseValue": 730000,
+  "BonusValue": 40000,
+  "RentType": {
+    "period": "yearly",
+    "amount": 60000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Increasing Demand for Organic Produce",
+      "description": "The growing consumer demand for organic and locally sourced produce is driving the value of farms focusing on sustainable and organic cultivation."
+    },
+    {
+      "factor": "Government Support for Urban Agriculture",
+      "description": "California's support for urban and sustainable agriculture through grants and subsidies can enhance the profitability and investment appeal of the Vedant Greenhouse Farm."
+    },
+    {
+      "factor": "Climate-Controlled Farming Advantage",
+      "description": "The farm's climate-controlled greenhouses enable year-round cultivation, providing a competitive advantage over traditional farming and ensuring a stable revenue stream."
+    },
+    {
+      "factor": "Local Farm-to-Table Movement",
+      "description": "Sacramento's thriving farm-to-table movement and local food culture increase the demand for fresh, high-quality produce, benefiting the farm's market position and value."
+    },
+    {
+      "factor": "Educational and Agro-Tourism Potential",
+      "description": "The growing interest in sustainable agriculture and agro-tourism presents opportunities for additional income through educational tours and community engagement programs."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "d9e8f7a6-987b-456c-dcba-123abc456def",
+      "name": "Green Fresh Foods",
+      "proposed_price": 750000,
+      "description": "Green Fresh Foods proposes to acquire Vedant Greenhouse Farm to expand their supply of organic produce for their network of farm-to-table restaurants.",
+      "date_of_proposal": "2024-10-20"
+    },
+    {
+      "uuid": "b6c8d9e0-654a-789f-lmno-789xyz987uvw",
+      "name": "Urban Farm Initiative",
+      "proposed_price": 760000,
+      "description": "Urban Farm Initiative aims to use the farm for research and development in sustainable farming techniques and community-supported agriculture programs.",
+      "date_of_proposal": "2024-11-01"
+    }
+  ],
+  "NFTImage": "https://example.com/vedant-farm/nft.jpg",
+  "JSONFile": "https://example.com/vedant-farm/data.json",
+"UUID":"b2e2c3da-4c1e-428e-88a4-e8b976f0c57e"
+}

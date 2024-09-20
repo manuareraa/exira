@@ -1,0 +1,68 @@
+{
+  "created_at": "2024-09-18T15:45:00Z",
+  "Name": "Skyline Business Center",
+  "Location": "Singapore",
+  "Area": 35250,
+  "Status": "trading",
+  "IRR": 13.7,
+  "ARR": 11.2,
+  "Highlights": [
+    "LEED Gold certified building featuring advanced energy management systems, water conservation technologies, and sustainable materials throughout. This commitment to sustainability not only reduces operational costs but also attracts environmentally conscious corporate tenants.",
+    "Cutting-edge smart building technology that optimizes energy usage, enhances security, and provides a seamless experience for tenants. Features include AI-powered climate control, touchless access systems, and a mobile app for booking amenities and controlling office environments.",
+    "Spectacular rooftop conference center with 360-degree views of the Singapore skyline, equipped with state-of-the-art audiovisual technology and flexible seating arrangements. This unique space is ideal for high-profile meetings, product launches, and corporate events.",
+    "Dedicated wellness floor featuring a fully-equipped fitness center, yoga studio, meditation rooms, and a juice bar. This focus on employee well-being is highly attractive to progressive companies prioritizing work-life balance and employee health."
+  ],
+  "Gallery": [
+    "https://example.com/skyline-business-center/exterior.jpg",
+    "https://example.com/skyline-business-center/lobby.jpg",
+    "https://example.com/skyline-business-center/office-space.jpg",
+    "https://example.com/skyline-business-center/rooftop.jpg"
+  ],
+  "BaseValue": 1100000,
+  "BonusValue": 60000,
+  "RentType": {
+    "period": "monthly",
+    "amount": 95000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Singapore's Growing Financial Technology Hub",
+      "description": "Singapore is rapidly emerging as a leading fintech hub in Asia, attracting more financial and technology companies, which could increase demand for premium office spaces like Skyline Business Center."
+    },
+    {
+      "factor": "Expansion of Changi Airport",
+      "description": "The ongoing expansion of Singapore's Changi Airport, including the development of Terminal 5, could enhance the city-state's position as a global business hub and increase demand for high-end office spaces."
+    },
+    {
+      "factor": "Smart Nation Initiative",
+      "description": "Singapore's Smart Nation initiative, which aims to leverage technology to enhance urban living, could benefit smart buildings like Skyline Business Center and increase their appeal to tech-savvy tenants."
+    },
+    {
+      "factor": "Green Building Incentives",
+      "description": "The Singapore government has introduced new incentives for green buildings, which could provide additional benefits to Skyline Business Center due to its LEED Gold certification."
+    },
+    {
+      "factor": "Regional Headquarters Trend",
+      "description": "More multinational companies are choosing Singapore as their regional headquarters for Asia-Pacific operations, potentially increasing demand for premium office spaces in prime locations."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "a1b2c3d4-5678-1234-abcd-7890xyz123uv",
+      "name": "Global Corporate Solutions",
+      "proposed_price": 1120000,
+      "description": "Global Corporate Solutions proposes to establish a flagship office and innovation center at the Skyline Business Center to support their Asia-Pacific operations.",
+      "date_of_proposal": "2024-11-18"
+    },
+    {
+      "uuid": "d3e4f5g6-789a-456b-efgh-123abc789xyz",
+      "name": "Fintech Innovators Ltd.",
+      "proposed_price": 1135000,
+      "description": "Fintech Innovators Ltd. aims to create a fintech research and development hub at the Skyline Business Center to leverage Singapore's growing fintech ecosystem.",
+      "date_of_proposal": "2024-12-05"
+    }
+  ],
+  "NFTImage": "https://example.com/skyline-business-center/nft.jpg",
+  "JSONFile": "https://example.com/skyline-business-center/data.json",
+"UUID":"550e8400-e29b-41d4-a716-446655440000"
+}

@@ -1,0 +1,68 @@
+{
+  "created_at": "2024-09-18T11:30:00Z",
+  "Name": "Sunrise Farming Land",
+  "Location": "Boulder, Colorado, USA",
+  "Area": 30000,
+  "Status": "launchpad",
+  "IRR": 10.5,
+  "ARR": 8.7,
+  "Highlights": [
+    "Sustainable farming practices focusing on organic crop production, minimizing the use of synthetic pesticides and fertilizers, ensuring high-quality and eco-friendly produce.",
+    "Advanced irrigation system utilizing drip irrigation and rainwater harvesting to maximize water efficiency and support sustainable agriculture in the semi-arid region of Boulder.",
+    "On-site solar power installation providing renewable energy to power the farm operations, reducing carbon footprint and operational costs while promoting green energy use.",
+    "Farm-to-table program that directly supplies fresh, organic produce to local restaurants and farmers' markets, fostering community engagement and supporting the local food economy."
+  ],
+  "Gallery": [
+    "https://example.com/sunrise-farming/fields.jpg",
+    "https://example.com/sunrise-farming/solar-power.jpg",
+    "https://example.com/sunrise-farming/irrigation.jpg",
+    "https://example.com/sunrise-farming/produce.jpg"
+  ],
+  "BaseValue": 630000,
+  "BonusValue": 25000,
+  "RentType": {
+    "period": "yearly",
+    "amount": 55000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Increasing Demand for Organic Produce",
+      "description": "The growing consumer demand for organic and locally sourced produce is driving the market value of farms focusing on sustainable and organic farming practices."
+    },
+    {
+      "factor": "Government Subsidies for Sustainable Agriculture",
+      "description": "The US Department of Agriculture offers subsidies and incentives for sustainable farming practices, potentially increasing the profitability of farms like Sunrise Farming Land."
+    },
+    {
+      "factor": "Climate Resilience in Agriculture",
+      "description": "Climate change impacts have led to increased investment in climate-resilient agricultural practices, making farms with advanced irrigation and renewable energy more valuable."
+    },
+    {
+      "factor": "Local Food Movement in Colorado",
+      "description": "The local food movement in Colorado is gaining momentum, with increasing support for farms that produce food sustainably and contribute to the local food system."
+    },
+    {
+      "factor": "Technological Advancements in Agriculture",
+      "description": "Advancements in agricultural technology, such as smart irrigation systems and renewable energy integration, enhance the operational efficiency and market value of modern farms."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "a1e2f3g4-5678-1234-hijk-7890xyz123uv",
+      "name": "Green Harvest Co.",
+      "proposed_price": 650000,
+      "description": "Green Harvest Co. proposes to acquire Sunrise Farming Land to expand their organic farming operations and implement advanced agricultural technologies.",
+      "date_of_proposal": "2024-11-10"
+    },
+    {
+      "uuid": "c3d4e5f6-789a-456b-klmn-123abc789xyz",
+      "name": "Farm Fresh Organics",
+      "proposed_price": 670000,
+      "description": "Farm Fresh Organics aims to use the land to grow organic vegetables and fruits, supplying fresh produce directly to their network of stores.",
+      "date_of_proposal": "2024-11-25"
+    }
+  ],
+  "NFTImage": "https://example.com/sunrise-farming/nft.jpg",
+  "JSONFile": "https://example.com/sunrise-farming/data.json",
+"UUID":"d1a3d58f-6b7f-4ae8-b4a6-c8b97a56e72c"
+}

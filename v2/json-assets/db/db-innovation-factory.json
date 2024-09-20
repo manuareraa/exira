@@ -1,0 +1,64 @@
+{
+  "created_at": "2024-09-18T14:15:00Z",
+  "Name": "Innovation Factory",
+  "Location": "Austin, Texas, USA",
+  "Area": 21237,
+  "Status": "launchpad",
+  "IRR": 15.5,
+  "ARR": 12.3,
+  "Highlights": [
+    "Cutting-edge technology infrastructure, including high-speed fiber optic internet and advanced power backup systems, making it ideal for tech companies, startups, and research and development facilities.",
+    "Flexible, open-concept office spaces that can be easily configured to accommodate various business needs, from coworking spaces to large corporate offices.",
+    "Green building design with energy-efficient lighting, HVAC systems, and rooftop solar panels, minimizing environmental impact while reducing operational costs.",
+    "On-site amenities such as a fitness center, cafeteria, and rooftop terrace, providing employees with a balanced work environment and promoting productivity and well-being."
+  ],
+  "Gallery": [
+    "https://example.com/innovation-factory/exterior.jpg",
+    "https://example.com/innovation-factory/interior.jpg",
+    "https://example.com/innovation-factory/green-building.jpg",
+    "https://example.com/innovation-factory/amenities.jpg"
+  ],
+  "BaseValue": 1000000,
+  "BonusValue": 50000,
+  "RentType": {
+    "period": "yearly",
+    "amount": 135000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Tech Hub Development",
+      "description": "Austin is rapidly developing as a major tech hub, attracting numerous startups and tech giants, which drives up demand for modern office spaces like Innovation Factory."
+    },
+    {
+      "factor": "Tax Incentives for Tech Companies",
+      "description": "The state of Texas offers various tax incentives for tech companies, encouraging them to establish and expand their operations in Austin, thereby increasing the value of commercial properties in the area."
+    },
+    {
+      "factor": "Proximity to Major Universities",
+      "description": "Close proximity to major universities such as the University of Texas at Austin provides a steady stream of skilled talent, making this property highly attractive to businesses seeking to tap into a young, educated workforce."
+    },
+    {
+      "factor": "Austin's Growing Population",
+      "description": "Austin's growing population and vibrant culture make it an ideal location for businesses, thus enhancing the appeal and value of commercial real estate properties like Innovation Factory."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "c9b5a3f1-4b8d-4e98-bc5f-678xyz123mno",
+      "name": "Tech Startups Inc.",
+      "proposed_price": 1025000,
+      "description": "Tech Startups Inc. proposes to convert the Innovation Factory into a dedicated incubator space for emerging tech companies in Austin.",
+      "date_of_proposal": "2024-10-25"
+    },
+    {
+      "uuid": "f1e6d3b7-9c5f-4f8a-8e6d-456def789pqr",
+      "name": "Corporate Spaces Ltd.",
+      "proposed_price": 1050000,
+      "description": "Corporate Spaces Ltd. plans to utilize the Innovation Factory as a state-of-the-art corporate office and coworking space for businesses in the tech sector.",
+      "date_of_proposal": "2024-11-10"
+    }
+  ],
+  "NFTImage": "https://example.com/innovation-factory/nft.jpg",
+  "JSONFile": "https://example.com/innovation-factory/data.json",
+"UUID":"6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+}

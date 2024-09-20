@@ -1,0 +1,75 @@
+{
+  "created_at": "2024-09-18T16:30:00Z",
+  "Name": "EcoLogistics Hub",
+  "Location": "Rotterdam, Netherlands",
+  "Area": 45324,
+  "Status": "launchpad",
+  "IRR": 12.8,
+  "ARR": 10.5,
+  "Highlights": [
+    "State-of-the-art automated warehouse system featuring AI-driven robots and conveyor belts, significantly improving efficiency and reducing operational costs. This cutting-edge technology allows for 24/7 operations with minimal human intervention.",
+    "Sustainable design incorporating solar panels, wind turbines, and a rainwater harvesting system, making the facility nearly energy-independent. The eco-friendly features not only reduce operational costs but also appeal to environmentally conscious clients.",
+    "Advanced cold storage facilities with precise temperature and humidity control, catering to the growing demand for pharmaceutical and fresh produce logistics. These specialized storage areas use energy-efficient cooling systems to minimize environmental impact.",
+    "Electric vehicle charging stations and a fleet of electric delivery vehicles, supporting last-mile delivery services with zero emissions. This green transportation solution aligns with urban environmental goals and positions the hub for future logistics trends."
+  ],
+  "Gallery": [
+    "https://example.com/ecologistics-hub/aerial.jpg",
+    "https://example.com/ecologistics-hub/warehouse.jpg",
+    "https://example.com/ecologistics-hub/cold-storage.jpg",
+    "https://example.com/ecologistics-hub/ev-fleet.jpg"
+  ],
+  "BaseValue": 850000,
+  "BonusValue": 45000,
+  "RentType": {
+    "period": "monthly",
+    "amount": 7500
+  },
+  "ValueParameters": [
+    {
+      "factor": "Expansion of Port of Rotterdam",
+      "description": "The Port of Rotterdam is undergoing a major expansion, which could increase the volume of goods passing through the area and boost demand for advanced logistics facilities."
+    },
+    {
+      "factor": "European Green Deal Initiatives",
+      "description": "The European Union's Green Deal policies are promoting sustainable logistics solutions, potentially providing additional incentives and opportunities for eco-friendly facilities like the EcoLogistics Hub."
+    },
+    {
+      "factor": "Growth in E-commerce",
+      "description": "The continued rapid growth of e-commerce in Europe is driving demand for efficient, technologically advanced logistics centers, especially those capable of handling last-mile delivery in urban areas."
+    },
+    {
+      "factor": "Pharmaceutical Industry Expansion",
+      "description": "Rotterdam is seeing increased investment from pharmaceutical companies, potentially increasing demand for specialized logistics services, particularly cold chain solutions."
+    },
+    {
+      "factor": "Autonomous Vehicle Integration",
+      "description": "The Netherlands is at the forefront of autonomous vehicle testing and integration, which could revolutionize logistics operations and benefit advanced facilities like the EcoLogistics Hub."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "d4e7a0a4-2b93-4f88-ae2b-123abc456def",
+      "name": "Global Trade Co.",
+      "proposed_price": 860000,
+      "description": "Global Trade Co. proposes to acquire the EcoLogistics Hub to enhance their European distribution network.",
+      "date_of_proposal": "2024-10-15"
+    },
+    {
+      "uuid": "b6f8e1d9-cb57-4821-8d1c-789xyz987uvw",
+      "name": "Logistics Solutions Inc.",
+      "proposed_price": 875000,
+      "description": "Logistics Solutions Inc. aims to utilize the facility to streamline their cold chain logistics for pharmaceutical products.",
+      "date_of_proposal": "2024-10-20"
+    },
+    {
+      "uuid": "a2d3e4f1-789c-4b2e-9b2e-456ghi123klm",
+      "name": "Green Transport Ltd.",
+      "proposed_price": 880000,
+      "description": "Green Transport Ltd. is interested in using the hub as a strategic base for their zero-emission fleet expansion in the EU.",
+      "date_of_proposal": "2024-11-01"
+    }
+  ],
+  "NFTImage": "https://example.com/ecologistics-hub/nft.jpg",
+  "JSONFile": "https://example.com/ecologistics-hub/data.json",
+"UUID":"c3d0b4a7-7b6e-4a8f-9e9d-4f4f4f4f4f4f"
+}

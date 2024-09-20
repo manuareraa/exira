@@ -1,0 +1,53 @@
+{
+  "created_at": "2024-09-18T12:00:00Z",
+  "Name": "GreenLeaf Industrial Park",
+  "Location": "Aurora, Colorado, USA",
+  "Area": 22766,
+  "Status": "launchpad",
+  "IRR": 11.8,
+  "ARR": 9.2,
+  "Highlights": [
+    "Advanced solar panel system covering over 80% of the roof space, generating a significant portion of the park's energy needs. This renewable energy source dramatically reduces operational costs and carbon emissions, setting a new standard for industrial sustainability.",
+    "State-of-the-art rainwater harvesting system that collects, filters, and repurposes rainwater for landscaping and non-potable uses. This innovative water management approach significantly reduces the park's water consumption and supports local water conservation efforts.",
+    "Electric vehicle charging station network strategically placed throughout the park, supporting both employee and fleet vehicles. This amenity encourages the adoption of electric vehicles and demonstrates the park's commitment to reducing transportation-related emissions.",
+    "On-site waste management and recycling center that sorts, processes, and prepares materials for recycling or proper disposal. This facility minimizes waste sent to landfills and creates opportunities for tenants to participate in circular economy initiatives."
+  ],
+  "Gallery": [
+    "https://example.com/greenleaf-park/aerial.jpg",
+    "https://example.com/greenleaf-park/warehouse.jpg",
+    "https://example.com/greenleaf-park/solar.jpg",
+    "https://example.com/greenleaf-park/ev-station.jpg"
+  ],
+  "BaseValue": 770000,
+  "BonusValue": 30000,
+  "RentType": {
+    "period": "monthly",
+    "amount": 46000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Expansion of Denver International Airport",
+      "description": "The nearby Denver International Airport is undergoing a major expansion, which could increase demand for industrial and logistics spaces in the Aurora area."
+    },
+    {
+      "factor": "New Clean Energy Incentives",
+      "description": "The state of Colorado has introduced new incentives for clean energy adoption in industrial settings, which could benefit GreenLeaf Industrial Park due to its sustainable features."
+    },
+    {
+      "factor": "E-commerce Fulfillment Center",
+      "description": "A major e-commerce company is considering building a large fulfillment center in the area, potentially increasing demand for nearby industrial spaces and logistics services."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "e5f7d9c3-4571-4b5b-9b5c-123def456ghi",
+      "name": "Eco Industry Group",
+      "proposed_price": 780000,
+      "description": "Eco Industry Group proposes to expand the park's green initiatives and attract more eco-friendly businesses to the complex.",
+      "date_of_proposal": "2024-11-05"
+    }
+  ],
+  "NFTImage": "https://example.com/greenleaf-park/nft.jpg",
+  "JSONFile": "https://example.com/greenleaf-park/data.json",
+"UUID":"9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+}

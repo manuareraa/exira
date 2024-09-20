@@ -1,0 +1,16 @@
+{
+  "name": "Mountain View Apartments",
+  "description": "Mountain View Apartments is a picturesque residential complex nestled in the Rocky Mountains. This property offers a perfect retreat for nature lovers and outdoor enthusiasts. The apartments feature panoramic mountain views, spacious balconies, and cozy fireplaces. Residents can enjoy amenities such as hiking trails, a ski lodge, and a heated outdoor pool. The complex's rustic yet modern design seamlessly blends with its natural surroundings, providing a unique living experience in harmony with nature.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmPVsth859jXyBKfHXVosmJzwRxoqXrzUvA5qQpAMcenrD",
+  "external_url": "https://exira.io/property/view/1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed",
+  "attributes": {
+    "sharePerNFT": 0.0142857,
+    "initialPropertyValue": 700000,
+    "propertyLocation": "39.739235, -104.990250",
+    "propertyType": "residential",
+    "incorporationDate": "2024-07-22",
+    "initialSharePrice": 100,
+    "uuid": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed",
+    "dividendPerNFT": 3.2
+  }
+}

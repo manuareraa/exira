@@ -1,0 +1,746 @@
+import React, { useState } from "react";
+
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import {
+  mplCore,
+  createCollection,
+  fetchCollectionV1,
+  fetchCollection,
+  ruleSet,
+  create,
+  transfer,
+  transferV1,
+  fetchAssetsByOwner,
+} from "@metaplex-foundation/mpl-core";
+import {
+  createProgrammableNft,
+  mplTokenMetadata,
+  createNft,
+  printSupply,
+  printV1,
+  fetchMasterEditionFromSeeds,
+  fetchAllDigitalAssetByOwner,
+  fetchAllDigitalAssetByCreator,
+  fetchAllDigitalAsset,
+  fetchAllEdition,
+  fetchAllMasterEdition,
+  unlockV1,
+  delegateStandardV1,
+  TokenStandard,
+  delegateLockedTransferV1,
+  findMetadataPda,
+  fetchAllDigitalAssetWithTokenByMint,
+  fetchDigitalAsset,
+  updateV1,
+  fetchMetadataFromSeeds,
+} from "@metaplex-foundation/mpl-token-metadata";
+import { transferTokens } from "@metaplex-foundation/mpl-toolbox";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+import {
+  generateSigner,
+  transactionBuilder,
+  percentAmount,
+  createGenericFile,
+  publicKey,
+} from "@metaplex-foundation/umi";
+import { base58 } from "@metaplex-foundation/umi/serializers";
+import toast from "react-hot-toast";
+import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
+
+function Dummy(props) {
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionUri, setCollectionUri] = useState("");
+  const [collectionAddress, setCollectionAddress] = useState("");
+  const [assetName, setAssetName] = useState("");
+  const [assetUri, setAssetUri] = useState("");
+  const [assetCollectionAddress, setAssetCollectionAddress] = useState("");
+  const [assetAuthorityPublicKey, setAssetAuthorityPublicKey] = useState("");
+  const [assetAuthoritySecret, setAssetAuthoritySecret] = useState("");
+  const [toSendAssetAddress, setToSendAssetAddress] = useState("");
+  const [receiverAddress, setReceiverAddress] = useState("");
+  const [toSendCollectionAddress, setToSendCollectionAddress] = useState("");
+  const [toSendMultipleAssets, setToSendMultipleAssets] = useState([]);
+  const [fetchAssetsByOwnerAddr, setFetchAssetsByOwnerAddr] = useState("");
+  const [delegateData, setDelegateData] = useState({
+    assetAddr: "",
+    delegate: "",
+  });
+  const [fetchDigitalAssetMint, setFetchDigitalAssetMint] = useState("");
+  const [masterEditionMint, setMasterEditionMint] = useState("");
+  const [printEditionMint, setPrintEditionMint] = useState("");
+
+  const wallet = useWallet();
+  const { connection } = useConnection();
+  const umi = createUmi(connection)
+    .use(walletAdapterIdentity(wallet))
+    // this is for minting programmable NFTs
+    .use(mplTokenMetadata())
+    // this is for minting core NFTs
+    // .use(mplCore());
+    .use(
+      irysUploader({
+        // mainnet address: "https://node1.irys.xyz"
+        // devnet address: "https://devnet.irys.xyz"
+        address: "https://devnet.irys.xyz",
+      })
+    );
+
+  const performUpdateMetadata = async () => {
+    console.log("Updating metadata...");
+    const mint = "EMFtdRSnPVZeLT2ebMBWjBLLiG5xmYFHdMomha1pVDMm";
+    const initialMetadata = await fetchMetadataFromSeeds(umi, { mint });
+    console.log("Initial Metadata: ", initialMetadata);
+    const updateAuthority = umi.identity;
+    console.log("Update Authority: ", updateAuthority);
+    const response = await updateV1(umi, {
+      mint,
+      authorizationRules: "eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9",
+      data: {
+        ...initialMetadata,
+        name: "Updated Asset",
+        uri: "https://arweave.net/updated343",
+      },
+      primarySaleHappened: true,
+      isMutable: true,
+    }).sendAndConfirm(umi);
+    console.log("Update Metadata Response: ", response);
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    if (!file) return;
+
+    try {
+      // Convert file to a format Umi can handle
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        const arrayBuffer = reader.result; // File as ArrayBuffer
+
+        // Create the umi-compatible file with content type
+        const umiImageFile = createGenericFile(
+          new Uint8Array(arrayBuffer),
+          file.name,
+          {
+            tags: [{ name: "Content-Type", value: file.type }],
+          }
+        );
+
+        // Upload the image to Arweave via Umi
+        const uploadedUris = await umi.uploader.upload([umiImageFile]);
+        // setImageUri(uploadedUris[0]); // Store the URI in state
+
+        console.log("Image uploaded successfully:", uploadedUris);
+      };
+
+      reader.readAsArrayBuffer(file); // Read the file as ArrayBuffer
+    } catch (err) {
+      console.error("Error uploading file:", err);
+    }
+  };
+
+  const handleJsonUpload = async (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    if (!file) return;
+
+    try {
+      // Convert file to a format Umi can handle
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        const arrayBuffer = reader.result; // File as ArrayBuffer
+
+        // Create the umi-compatible file with content type
+        const umiJsonFile = createGenericFile(
+          new Uint8Array(arrayBuffer),
+          file.name,
+          {
+            tags: [{ name: "Content-Type", value: "application/json" }],
+          }
+        );
+
+        // Upload the image to Arweave via Umi
+        const uploadedUris = await umi.uploader.upload([umiJsonFile]);
+        // setImageUri(uploadedUris[0]); // Store the URI in state
+
+        console.log("JSON uploaded successfully:", uploadedUris);
+      };
+
+      reader.readAsArrayBuffer(file); // Read the file as ArrayBuffer
+    } catch (err) {
+      console.error("Error uploading file:", err);
+    }
+  };
+
+  const createCoreCollection = async () => {
+    try {
+      console.log("Creating test collection...");
+      const collectionUpdateAuthority = generateSigner(umi);
+      console.log("Collection Update Authority: ", collectionUpdateAuthority);
+      const collectionAddress = generateSigner(umi);
+      console.log("Collection Address: ", collectionAddress);
+      console.log("Collection Name: ", collectionName);
+      console.log("Collection URI: ", collectionUri);
+      const response = await createCollection(umi, {
+        name: collectionName,
+        uri: collectionUri,
+        collection: collectionAddress,
+        //   updateAuthority: collectionUpdateAuthority.publicKey, // optional, defaults to payer
+        plugins: [
+          {
+            type: "MasterEdition",
+            maxSupply: 100,
+            name: collectionName,
+            uri: collectionUri,
+          },
+          {
+            type: "Royalties",
+            basisPoints: 500,
+            creators: [{ address: umi.identity.publicKey, percentage: 100 }],
+            ruleSet: ruleSet("None"),
+          },
+        ],
+      }).sendAndConfirm(umi);
+      console.log("Create Collection Response: ", response);
+      console.log(
+        "Decoded Signature: ",
+        base58.deserialize(response.signature)[0]
+      );
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  const createPNFTCollection = async () => {
+    try {
+      console.log("Creating test collection...");
+      const collectionUpdateAuthority = generateSigner(umi);
+      console.log("Collection Update Authority: ", collectionUpdateAuthority);
+      const collectionAddress = generateSigner(umi);
+      console.log("Collection Address: ", collectionAddress);
+      console.log("Collection Name: ", collectionName);
+      console.log("Collection URI: ", collectionUri);
+      const response = await createNft(umi, {
+        mint: collectionAddress,
+        name: collectionName,
+        uri: collectionUri,
+        sellerFeeBasisPoints: percentAmount(5), // 5.5%
+        isCollection: true,
+        // printSupply: printSupply("Limited", [1000]),
+      }).sendAndConfirm(umi);
+      console.log("Create Collection Response: ", response);
+      console.log(
+        "Decoded Signature: ",
+        base58.deserialize(response.signature)[0]
+      );
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  const getCollection = async () => {
+    console.log("Getting collection...");
+    const collection = await fetchCollectionV1(umi, collectionAddress);
+    console.log("Collection: ", collection);
+  };
+
+  const createCoreNft = async () => {
+    console.log("Creating asset...");
+    const assetAddress = generateSigner(umi);
+    console.log("Asset Address: ", assetAddress);
+    console.log("Asset Collection Address: ", assetCollectionAddress);
+    console.log("Asset Authority Public Key: ", assetAuthorityPublicKey);
+    const collFetch = await fetchCollection(umi, assetCollectionAddress);
+    console.log("Collection Fetch: ", collFetch);
+
+    // ================================================
+    // Metaplex Core NFTs
+    // ================================================
+
+    // // uncomment this incase you want some other wallet to have authority
+    // convert assetAuthoritySecret to Uint8Array(64)
+    // const secret = new Uint8Array(
+    //   Object.values(JSON.parse(assetAuthoritySecret))
+    // );
+    // console.log("Secret: ", secret);
+
+    // this is to mint metaplex core NFTs
+    const response = await create(umi, {
+      name: assetName,
+      uri: assetUri,
+      asset: assetAddress,
+      collection: collFetch,
+      // uncomment this incase you want some other wallet to have authority
+      // but by default, the wallet used to create the collection will have authority
+      //   authority: assetAuthorityPublicKey,
+      //   authority: {
+      //     publicKey: assetAuthorityPublicKey,
+      //     secret: secret,
+      //   },
+    }).sendAndConfirm(umi);
+    console.log("Create Asset Response: ", response);
+    console.log(
+      "Decoded Signature: ",
+      base58.deserialize(response.signature)[0]
+    );
+  };
+
+  const getMetadataForPNFTCollection = async (collectionAddress) => {
+    console.log("Getting metadata for collection...");
+    const metadata = findMetadataPda(umi, {
+      mint: collectionAddress,
+    });
+    console.log("Metadata: ", metadata);
+  };
+
+  const createPNFTMasterEdition = async () => {
+    console.log("Creating asset...");
+    // const assetAddress = generateSigner(umi);
+    // console.log("Asset Address: ", assetAddress);
+    console.log("Asset Collection Address: ", assetCollectionAddress);
+    console.log("Asset Authority Public Key: ", assetAuthorityPublicKey);
+    // const collFetch = await fetchCollection(umi, assetCollectionAddress);
+    // console.log("Collection Fetch: ", collFetch);
+
+    // ================================================
+    // Metaplex Programmable NFTs
+    // ================================================
+
+    const nftSigner = generateSigner(umi);
+    console.log("NFT Signer: ", nftSigner);
+
+    const response = await createProgrammableNft(umi, {
+      mint: nftSigner,
+      sellerFeeBasisPoints: percentAmount(5),
+      name: assetName,
+      uri: assetUri,
+      ruleSet: "eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9",
+      isMutable: true,
+      symbol: "ENFT1",
+      printSupply: printSupply("Limited", [5]),
+      isCollection: true,
+    }).sendAndConfirm(umi);
+    console.log("Create Asset Response: ", response);
+    console.log(
+      "Decoded Signature: ",
+      base58.deserialize(response.signature)[0]
+    );
+  };
+
+  const sendMultipleAssets = async () => {
+    console.log("Sending asset...");
+    console.log("Asset Address: ", toSendMultipleAssets);
+    console.log("Recipient Address: ", receiverAddress);
+    const collection = await fetchCollectionV1(umi, toSendCollectionAddress);
+    console.log("Collection: ", collection);
+
+    let builder = transactionBuilder();
+
+    console.log("Builder Setup: ", builder);
+
+    // for (const address in toSendMultipleAssets) {
+    //   const transferBuilder = transfer(umi, {
+    //     asset: address,
+    //     newOwner: receiverAddress,
+    //     collection: collection,
+    //   });
+    //   builder = builder.add(transferBuilder);
+    // }
+
+    for (const address of toSendMultipleAssets) {
+      const transferBuilder = transferV1(umi, {
+        asset: address,
+        newOwner: receiverAddress,
+        collection: collection,
+      });
+      builder = builder.add(transferBuilder);
+    }
+
+    console.log("Builder with multiple assets: ", builder);
+
+    // Optionally check transaction size
+    // const isSmallEnough = builder.fitsInOneTransaction(umi);
+    // if (!isSmallEnough) {
+    //   console.error("Transaction too large.");
+    //   toast.error("Transaction too large.");
+    //   return;
+    // }
+
+    // console.log("Builder Ready: ", builder, isSmallEnough);
+
+    const response = await builder.sendAndConfirm(umi);
+
+    // const response = await transfer(umi, {
+    //   asset: toSendAssetAddress,
+    //   newOwner: receiverAddress,
+    //   collection: collection,
+    // }).sendAndConfirm(umi);
+    console.log("Send Asset Response: ", response);
+  };
+
+  const fetchCoreAssets = async () => {
+    console.log("Fetching assets...");
+    console.log("Owner Address: ", fetchAssetsByOwnerAddr);
+    const assetsByOwner = await fetchAssetsByOwner(
+      umi,
+      fetchAssetsByOwnerAddr,
+      {
+        skipDerivePlugins: false,
+      }
+    );
+    console.log("Assets by Owner: ", assetsByOwner);
+  };
+
+  const fetchPNFTAssets = async () => {
+    console.log("Fetching assets...");
+    console.log("Owner Address: ", fetchAssetsByOwnerAddr);
+    const assetsByOwner = await fetchAllDigitalAssetByOwner(
+      umi,
+      fetchAssetsByOwnerAddr
+    );
+    console.log("Assets by Owner: ", assetsByOwner);
+  };
+
+  const showWalletObject = async () => {
+    console.log("Wallet Object: ", wallet);
+    console.log("Public Key: ", wallet.publicKey?.toString());
+    console.log("UMI Public Key: ", umi.identity.publicKey.toString());
+    console.log("Connection: ", connection);
+    const accountInfo = await connection.getAccountInfo(wallet.publicKey);
+    console.log("Account Info: ", accountInfo);
+    let bal = accountInfo?.lamports * Math.pow(10, -9);
+    console.log("Balance: ", bal);
+  };
+
+  const printPNFTEdition = async () => {
+    console.log("Printing PNFT edition...");
+    // (Optional) Fetch the master edition account to mint the next edition number.
+    const masterEdition = await fetchMasterEditionFromSeeds(umi, {
+      mint: printEditionMint,
+    });
+
+    const editionMint = generateSigner(umi);
+
+    console.log("Master Edition: ", masterEdition);
+    console.log("Edition Mint: ", editionMint);
+
+    const response = await printV1(umi, {
+      masterTokenAccountOwner: umi.identity.publicKey,
+      masterEditionMint: printEditionMint,
+      editionMint,
+      editionTokenAccountOwner: umi.identity.publicKey,
+      editionNumber: masterEdition.supply + 1n,
+      tokenStandard: TokenStandard.ProgrammableNonFungible,
+    }).sendAndConfirm(umi);
+
+    console.log("Print PNFT Edition Response: ", response);
+  };
+
+  const fetchMasterEditionData = async () => {
+    console.log("Fetching master edition data...");
+
+    const masterEdition = await fetchMasterEditionFromSeeds(umi, {
+      mint: masterEditionMint,
+    });
+
+    console.log("Master Edition: ", masterEdition);
+  };
+
+  const unlockPNFT = async () => {
+    console.log("Unlocking PNFT...");
+    const response = await unlockV1(umi, {
+      mint,
+      // authority,
+      tokenStandard: TokenStandard.NonFungible,
+    }).sendAndConfirm(umi);
+    console.log("Unlock PNFT Response: ", response);
+  };
+
+  const approveDelegate = async (assetAddr, delegate) => {
+    console.log("Approving Delegate...");
+    console.log("Asset Address: ", assetAddr);
+    console.log("Delegate Address: ", delegate);
+    console.log("UMI Public Key: ", umi.identity.publicKey);
+    const response = await delegateLockedTransferV1(umi, {
+      mint: assetAddr,
+      // tokenOwner: "DiaUrAaTkuftHRkEJePworE2uT9ZhcFi1WqkAx53UxHv",
+      // tokenOwner: umi.identity.publicKey,
+      // authority: umi.identity,
+      delegate: delegate,
+      tokenStandard: TokenStandard.ProgrammableNonFungible,
+    }).sendAndConfirm(umi);
+    console.log("Approve Delegate Response: ", response);
+  };
+
+  const fetchDigitalAssetData = async (mintAddress) => {
+    console.log("Fetching digital asset...");
+    console.log("Mint Address: ", mintAddress);
+    const assetA = await fetchAllDigitalAssetWithTokenByMint(umi, mintAddress);
+    const assetB = await fetchDigitalAsset(umi, mintAddress);
+    // const assetC = await fetchAllDigitalAsset(umi, mintAddress);
+    console.log("Digital AssetA: ", assetA);
+    console.log("Digital AssetB: ", assetB);
+    // console.log("Digital AssetC: ", assetC);
+  };
+
+  return (
+    <div className="flex flex-col items-start justify-start my-20 text-2xl px-28 gap-y-4">
+      This is dummy page
+      <button className="btn" onClick={showWalletObject}>
+        Show Wallet Object
+      </button>
+      {/* create collection */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={createCoreCollection}>
+          Create Core NFT Coll.
+        </button>
+        <button className="btn btn-primary" onClick={createPNFTCollection}>
+          Create PNFT Coll.
+        </button>
+        <input
+          type="text"
+          placeholder="Master Collection Name"
+          className="input input-bordered"
+          value={collectionName}
+          onChange={(e) => setCollectionName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Master Collection URI"
+          className="input input-bordered"
+          value={collectionUri}
+          onChange={(e) => setCollectionUri(e.target.value)}
+        />
+      </div>
+      {/* get collection */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={getCollection}>
+          Get ME Coll. Details
+        </button>
+        <input
+          type="text"
+          placeholder="collectionAddress.publicKey"
+          className="input input-bordered"
+          value={collectionAddress}
+          onChange={(e) => setCollectionAddress(e.target.value)}
+        />
+      </div>
+      {/* get collection metadata for PNFT colelction */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button
+          className="btn btn-primary"
+          onClick={() => getMetadataForPNFTCollection(collectionAddress)}
+        >
+          Get Metadata for PNFT Coll.
+        </button>
+        <input
+          type="text"
+          placeholder="collectionAddress.publicKey"
+          className="input input-bordered"
+          value={collectionAddress}
+          onChange={(e) => setCollectionAddress(e.target.value)}
+        />
+      </div>
+      {/* create asset in a collection */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={createCoreNft}>
+          Create Core NFT
+        </button>
+        <button className="btn btn-primary" onClick={createPNFTMasterEdition}>
+          Create PNFT
+        </button>
+        <div className="grid grid-cols-3 gap-x-3 gap-y-3">
+          <input
+            type="text"
+            placeholder="M.Coll Address"
+            className="input input-bordered"
+            value={assetCollectionAddress}
+            onChange={(e) => setAssetCollectionAddress(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Asset Name"
+            className="input input-bordered"
+            value={assetName}
+            onChange={(e) => setAssetName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Asset URI"
+            className="input input-bordered"
+            value={assetUri}
+            onChange={(e) => setAssetUri(e.target.value)}
+          />
+          {/* get authority public key and secret */}
+          {/* <input
+            type="text"
+            placeholder="authority.publicKey"
+            className="input input-bordered"
+            value={assetAuthorityPublicKey}
+            onChange={(e) => setAssetAuthorityPublicKey(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="authority.secret"
+            className="input input-bordered"
+            value={assetAuthoritySecret}
+            onChange={(e) => setAssetAuthoritySecret(e.target.value)}
+          /> */}
+        </div>
+      </div>
+      {/* send asset to someone */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={sendMultipleAssets}>
+          Send Asset(NFT)
+        </button>
+        {/* <input
+          type="text"
+          placeholder="Asset Address"
+          className="input input-bordered"
+          value={toSendAssetAddress}
+          onChange={(e) => setToSendAssetAddress(e.target.value)}
+        /> */}
+        <input
+          type="text"
+          placeholder="M.Coll Address"
+          className="input input-bordered"
+          value={toSendCollectionAddress}
+          onChange={(e) => setToSendCollectionAddress(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Receiver Address"
+          className="input input-bordered"
+          value={receiverAddress}
+          onChange={(e) => setReceiverAddress(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Multiple Assets"
+          className="input input-bordered"
+          value={toSendMultipleAssets}
+          onChange={(e) => {
+            // delimit the input by comma, remove white spaces and convert to array
+            const assets = e.target.value.split(",");
+            setToSendMultipleAssets(assets);
+          }}
+        />
+      </div>
+      {/* fetch assets by owner */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={fetchPNFTAssets}>
+          Fetch Assets(Balance)
+        </button>
+        <input
+          type="text"
+          placeholder="Owner Address"
+          className="input input-bordered"
+          value={fetchAssetsByOwnerAddr}
+          onChange={(e) => setFetchAssetsByOwnerAddr(e.target.value)}
+        />
+      </div>
+      {/* fetch digital asset token with mint */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button
+          className="btn btn-primary"
+          onClick={() => fetchDigitalAssetData(fetchDigitalAssetMint)}
+        >
+          Fetch Digital Asset
+        </button>
+        <input
+          type="text"
+          placeholder="Provide Mint Address "
+          className="input input-bordered"
+          value={fetchDigitalAssetMint}
+          onChange={(e) => setFetchDigitalAssetMint(e.target.value)}
+        />
+      </div>
+      {/* approve delegate */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button
+          className="btn btn-primary"
+          onClick={() =>
+            approveDelegate(delegateData.assetAddr, delegateData.delegate)
+          }
+        >
+          Approve Delegate
+        </button>
+        <input
+          type="text"
+          placeholder="Asset Address"
+          className="input input-bordered"
+          value={delegateData.assetAddr}
+          onChange={(e) =>
+            setDelegateData({ ...delegateData, assetAddr: e.target.value })
+          }
+        />
+        <input
+          type="text"
+          placeholder="Delegate Address"
+          className="input input-bordered"
+          value={delegateData.delegate}
+          onChange={(e) =>
+            setDelegateData({ ...delegateData, delegate: e.target.value })
+          }
+        />
+      </div>
+      {/* get master edition data */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={fetchMasterEditionData}>
+          Fetch Master Edition Data
+        </button>
+        <input
+          type="text"
+          placeholder="Master Edition Addr."
+          className="input input-bordered"
+          value={masterEditionMint}
+          onChange={(e) => setMasterEditionMint(e.target.value)}
+        />
+      </div>
+      {/* print edition */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={printPNFTEdition}>
+          Print PNFT Edition
+        </button>
+        <input
+          type="text"
+          placeholder="Master Edition Mint Addr."
+          className="input input-bordered"
+          value={printEditionMint}
+          onChange={(e) => setPrintEditionMint(e.target.value)}
+        />
+      </div>
+      {/* upload image file and print the URL */}
+      <div className="flex flex-row items-center gap-x-4">
+        <p className="text-lg">Upload Image File</p>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="file-input"
+          placeholder="Upload Image"
+        />
+      </div>
+      {/* upload JSON file and print the URL */}
+      <div className="flex flex-row items-center gap-x-4">
+        <p className="text-lg">Upload JSON File</p>
+        <input
+          type="file"
+          accept="application/json"
+          onChange={handleJsonUpload}
+          className="file-input"
+          placeholder="Upload JSON"
+        />
+      </div>
+      {/* update token metadata */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={performUpdateMetadata}>
+          Update Metadata
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default Dummy;

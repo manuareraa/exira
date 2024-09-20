@@ -1,0 +1,68 @@
+{
+  "created_at": "2024-09-18T10:30:00Z",
+  "Name": "Sunset Residences",
+  "Location": "Santa Monica, California, USA",
+  "Area": 15000,
+  "Status": "launchpad",
+  "IRR": 12.5,
+  "ARR": 9.8,
+  "Highlights": [
+    "Luxury beachfront apartments offering stunning views of the Pacific Ocean, with private balconies and floor-to-ceiling windows designed to maximize natural light and scenic vistas.",
+    "State-of-the-art fitness center and wellness spa exclusively for residents, featuring modern exercise equipment, yoga studios, sauna, and a rooftop infinity pool overlooking the ocean.",
+    "Smart home integration in every unit, allowing residents to control lighting, climate, security, and entertainment systems through voice commands or mobile apps for a seamless living experience.",
+    "Eco-friendly design with energy-efficient appliances, solar panels, and a water recycling system, making Sunset Residences a sustainable choice for environmentally conscious residents."
+  ],
+  "Gallery": [
+    "https://example.com/sunset-residences/exterior.jpg",
+    "https://example.com/sunset-residences/interior.jpg",
+    "https://example.com/sunset-residences/pool.jpg",
+    "https://example.com/sunset-residences/gym.jpg"
+  ],
+  "BaseValue": 875000,
+  "BonusValue": 25000,
+  "RentType": {
+    "period": "monthly",
+    "amount": 7500
+  },
+  "ValueParameters": [
+    {
+      "factor": "Prime Beachfront Location",
+      "description": "The prime beachfront location in Santa Monica makes Sunset Residences highly desirable, attracting affluent buyers seeking luxury living with ocean views."
+    },
+    {
+      "factor": "High Demand for Smart Homes",
+      "description": "The increasing demand for smart home technology in luxury apartments is boosting the market value of properties like Sunset Residences that offer integrated smart home features."
+    },
+    {
+      "factor": "Sustainable Living Trend",
+      "description": "The growing trend toward sustainable living and eco-friendly housing is increasing the value of properties with green design elements and energy-efficient features."
+    },
+    {
+      "factor": "Expansion of Santa Monica Pier Attractions",
+      "description": "The planned expansion of attractions and amenities at Santa Monica Pier is expected to enhance the appeal of the surrounding residential properties, including Sunset Residences."
+    },
+    {
+      "factor": "Strong Rental Market in Santa Monica",
+      "description": "Santa Monica's strong rental market, driven by high demand for luxury beachfront properties, contributes to the property's rental income potential and overall investment value."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "d4f5g6h7-789a-123b-ijkl-456def123ghi",
+      "name": "Oceanview Living Inc.",
+      "proposed_price": 900000,
+      "description": "Oceanview Living Inc. proposes to acquire Sunset Residences to expand their portfolio of luxury beachfront properties and offer premium short-term rentals.",
+      "date_of_proposal": "2024-11-05"
+    },
+    {
+      "uuid": "e7f8g9h0-456c-789d-mnop-789lmn456opq",
+      "name": "Seaside Retreats LLC",
+      "proposed_price": 920000,
+      "description": "Seaside Retreats LLC aims to transform Sunset Residences into an exclusive beachfront resort offering luxury amenities and concierge services.",
+      "date_of_proposal": "2024-11-18"
+    }
+  ],
+  "NFTImage": "https://example.com/sunset-residences/nft.jpg",
+  "JSONFile": "https://example.com/sunset-residences/data.json",
+"UUID":"f47ac10b-58cc-4372-a567-0e02b2c3d479"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Sunrise Farming Land",
+  "description": "Sunrise Farming Land is an expansive agricultural property situated in the heart of a fertile region. This land has been cultivated for generations and offers a perfect environment for growing a variety of crops. It features a small irrigation pond, advanced drip irrigation systems, and a storage facility for harvested produce. Its strategic location provides easy access to local markets, making it an attractive option for sustainable farming initiatives.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmTczUwgMzeKivnstTvkzh93dD5TjHAyFfwzj1JD2iGWVx",
+  "external_url": "https://exira.io/property/view/d1a3d58f-6b7f-4ae8-b4a6-c8b97a56e72c",
+  "attributes": {
+    "sharePerNFT": 0.015873,
+    "initialPropertyValue": 630000,
+    "propertyLocation": "39.739236, -104.990251",
+    "propertyType": "farmingLand",
+    "incorporationDate": "2024-07-20",
+    "initialSharePrice": 100,
+    "uuid": "d1a3d58f-6b7f-4ae8-b4a6-c8b97a56e72c",
+    "dividendPerNFT": 3.0
+  }
+}

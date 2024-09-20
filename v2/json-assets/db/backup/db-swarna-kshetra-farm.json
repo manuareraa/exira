@@ -1,0 +1,68 @@
+{
+  "created_at": "2024-09-18T10:30:00Z",
+  "Name": "Swarna Kshetra Farm",
+  "Location": "Mysuru, Karnataka, India",
+  "Area": 35000,
+  "Status": "launchpad",
+  "IRR": 10.2,
+  "ARR": 8.4,
+  "Highlights": [
+    "Organic farming practices focusing on the cultivation of medicinal and aromatic plants, leveraging the rich soil and favorable climate of Mysuru to produce high-quality, chemical-free crops.",
+    "Advanced irrigation system utilizing drip irrigation and rainwater harvesting to maximize water efficiency and ensure a sustainable supply for the farm's diverse crop portfolio.",
+    "On-site processing unit equipped with modern machinery for cleaning, drying, and packaging crops, adding value to the farm's produce and enabling direct supply to herbal medicine manufacturers and retailers.",
+    "Renewable energy solutions, including solar panels and a biogas plant, provide a sustainable power source for the farm's operations, reducing reliance on conventional energy and lowering carbon footprint."
+  ],
+  "Gallery": [
+    "https://example.com/swarna-kshetra/farm-overview.jpg",
+    "https://example.com/swarna-kshetra/organic-crops.jpg",
+    "https://example.com/swarna-kshetra/irrigation-system.jpg",
+    "https://example.com/swarna-kshetra/processing-unit.jpg"
+  ],
+  "BaseValue": 470000,
+  "BonusValue": 20000,
+  "RentType": {
+    "period": "yearly",
+    "amount": 40000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Increasing Demand for Organic Products",
+      "description": "The growing demand for organic medicinal and aromatic plants in India and abroad is driving the market value of farms focusing on organic cultivation."
+    },
+    {
+      "factor": "Government Support for Sustainable Agriculture",
+      "description": "The Indian government offers subsidies and incentives for sustainable agricultural practices, potentially increasing the profitability of organic farms like Swarna Kshetra."
+    },
+    {
+      "factor": "Climate-Resilient Farming",
+      "description": "The farm's adoption of climate-resilient agricultural practices, including rainwater harvesting and drip irrigation, enhances its value by ensuring crop production even in changing climate conditions."
+    },
+    {
+      "factor": "Herbal Medicine Market Growth",
+      "description": "The rapid growth of the herbal medicine market, both domestically and internationally, is increasing demand for high-quality organic raw materials, boosting the farm's investment potential."
+    },
+    {
+      "factor": "Local Tourism and Agro-Tourism",
+      "description": "Mysuru's growing reputation as a tourist destination and the rising interest in agro-tourism provide additional revenue streams through farm tours and organic product sales."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "e9f8g7h6-123a-456b-ijkl-789xyz654wvu",
+      "name": "Ayurvedic Herb Co.",
+      "proposed_price": 500000,
+      "description": "Ayurvedic Herb Co. proposes to acquire Swarna Kshetra Farm to expand their organic herb cultivation for Ayurvedic medicine production.",
+      "date_of_proposal": "2024-10-20"
+    },
+    {
+      "uuid": "b7c8d9e0-345b-678c-mnop-123def789ghi",
+      "name": "Green Gold Organics",
+      "proposed_price": 520000,
+      "description": "Green Gold Organics aims to use the farm to cultivate high-value organic spices and aromatic plants for export markets.",
+      "date_of_proposal": "2024-11-10"
+    }
+  ],
+  "NFTImage": "https://example.com/swarna-kshetra/nft.jpg",
+  "JSONFile": "https://example.com/swarna-kshetra/data.json",
+"UUID":"f2a3c8d2-9f7a-4d84-8bcd-38ab3e3b5e91"
+}

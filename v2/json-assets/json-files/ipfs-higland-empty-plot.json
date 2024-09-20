@@ -1,0 +1,16 @@
+{
+  "name": "Highland Empty Plot",
+  "description": "Highland Empty Plot is a prime piece of land located in the outskirts of a developing city. The plot offers a blank canvas for investors to build commercial or residential developments. Its proximity to major highways and upcoming commercial hubs makes it an attractive investment option. With ample space for future construction and development, this plot holds immense potential for various types of projects.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmbfMXxHY2biAZY4mCUo72VUKkYw5wZdUrxP3SQvSjBRw5",
+  "external_url": "https://exira.io/property/view/c4f3d9bf-7f5d-4eb8-9baf-4a497d2e5682",
+  "attributes": {
+    "sharePerNFT": 0.0192308,
+    "initialPropertyValue": 520000,
+    "propertyLocation": "40.748817, -73.985428",
+    "propertyType": "emptyPlot",
+    "incorporationDate": "2024-05-12",
+    "initialSharePrice": 100,
+    "uuid": "c4f3d9bf-7f5d-4eb8-9baf-4a497d2e5682",
+    "dividendPerNFT": 2.5
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "TechHub Offices",
+  "description": "TechHub Offices is a cutting-edge commercial property designed to cater to the needs of modern businesses. Located in the bustling tech corridor of Silicon Valley, this property offers flexible office spaces, co-working areas, and state-of-the-art conference rooms. The building features high-speed internet, 24/7 security, and a green roof terrace. Its innovative design promotes collaboration and creativity, making it an ideal choice for startups and established tech companies alike.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmdPtJgxTAXJGeoce3G1cfHEAqF3gi9X3RJxFFZqsWBEeN",
+  "external_url": "https://exira.io/property/view/3f333df6-90a4-4fda-8dd3-9485d27cee36",
+  "attributes": {
+    "sharePerNFT": 0.0102041,
+    "initialPropertyValue": 980000,
+    "propertyLocation": "37.387474, -122.057543",
+    "propertyType": "commercial",
+    "incorporationDate": "2024-08-03",
+    "initialSharePrice": 100,
+    "uuid": "3f333df6-90a4-4fda-8dd3-9485d27cee36",
+    "dividendPerNFT": 4.2
+  }
+}

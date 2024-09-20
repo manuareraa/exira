@@ -1,0 +1,16 @@
+{
+  "name": "Riverside Shopping Mall",
+  "description": "Riverside Shopping Mall is a premier commercial property located along a scenic riverfront. This modern shopping destination offers a diverse mix of retail stores, restaurants, and entertainment options. The mall features a unique architectural design with large windows overlooking the river, creating a pleasant shopping atmosphere. With ample parking, a food court, and a multiplex cinema, Riverside Shopping Mall provides a complete shopping and leisure experience for visitors of all ages.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmTSW1iaMAbEfvDN84DhbVTELp2Ub4uECrdCxyK9MNPhd2",
+  "external_url": "https://exira.io/property/view/4c4f1d24-f2e9-4b2b-9b4f-3d3f4b2c4f2d",
+  "attributes": {
+    "sharePerNFT": 0.0105263,
+    "initialPropertyValue": 950000,
+    "propertyLocation": "29.951065, -90.071533",
+    "propertyType": "commercial",
+    "incorporationDate": "2024-09-10",
+    "initialSharePrice": 100,
+    "uuid": "4c4f1d24-f2e9-4d8a-9df3-d9e3a7e29e33",
+    "dividendPerNFT": 4.8
+  }
+}

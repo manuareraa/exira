@@ -1,0 +1,65 @@
+{
+  "created_at": "2024-09-18T14:45:00Z",
+  "Name": "Suryavanshi Plot",
+  "Location": "Ahmedabad, Gujarat, India",
+  "Area": 48000,
+  "Status": "launchpad",
+  "IRR": 11.9,
+  "ARR": 9.6,
+  "Highlights": [
+    "Prime commercial plot located near the industrial corridor of Ahmedabad, offering excellent connectivity to major highways and the city's business hubs, making it ideal for commercial and industrial development.",
+    "Strategically situated in a rapidly developing area with growing demand for commercial spaces, attracting investors and businesses looking to establish a presence in Ahmedabad's expanding economy.",
+    "The plot is suitable for a wide range of developments, including warehouses, logistics centers, manufacturing units, and office complexes, providing flexibility for future projects.",
+    "Availability of essential infrastructure such as water, electricity, and transportation, ensuring that the plot is ready for immediate development with minimal setup time and cost."
+  ],
+  "Gallery": [
+    "https://example.com/suryavanshi-plot/aerial-view.jpg",
+    "https://example.com/suryavanshi-plot/road-access.jpg",
+    "https://example.com/suryavanshi-plot/infrastructure.jpg",
+    "https://example.com/suryavanshi-plot/surroundings.jpg"
+  ],
+  "BaseValue": 750000,
+  "BonusValue": 40000,
+  "RentType": null,
+  "ValueParameters": [
+    {
+      "factor": "Ahmedabad's Industrial Growth",
+      "description": "Ahmedabad is experiencing significant industrial growth, attracting businesses and increasing demand for commercial plots in strategic locations like Suryavanshi Plot."
+    },
+    {
+      "factor": "Proximity to Industrial Corridors",
+      "description": "The plot's proximity to key industrial corridors and logistic hubs makes it highly attractive for commercial and industrial development, potentially boosting its market value."
+    },
+    {
+      "factor": "Government Incentives for Industrial Development",
+      "description": "The Gujarat government offers incentives and subsidies for industrial development, which could benefit investors developing commercial properties on plots like Suryavanshi."
+    },
+    {
+      "factor": "Infrastructure Development in Ahmedabad",
+      "description": "Ongoing infrastructure development in Ahmedabad, including new roads, public transport, and utility upgrades, is expected to enhance the accessibility and value of the plot."
+    },
+    {
+      "factor": "Growing Real Estate Market in Gujarat",
+      "description": "Gujarat's real estate market is growing, driven by economic development and urbanization, increasing the investment potential of commercial plots in key areas."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "h1i2j3k4-5678-789d-qrst-123def456uvw",
+      "name": "Gujarat Logistics Pvt Ltd",
+      "proposed_price": 770000,
+      "description": "Gujarat Logistics Pvt Ltd proposes to develop a state-of-the-art logistics center on Suryavanshi Plot to cater to the region's growing logistics and warehousing needs.",
+      "date_of_proposal": "2024-11-20"
+    },
+    {
+      "uuid": "k3l4m5n6-789e-123c-uvwx-456ghi789xyz",
+      "name": "Industrial Hub Corporation",
+      "proposed_price": 800000,
+      "description": "Industrial Hub Corporation aims to establish a multi-purpose industrial complex on the plot, including manufacturing units, warehouses, and office spaces.",
+      "date_of_proposal": "2024-11-30"
+    }
+  ],
+  "NFTImage": "https://example.com/suryavanshi-plot/nft.jpg",
+  "JSONFile": "https://example.com/suryavanshi-plot/data.json",
+"UUID":"b3f4c5a2-7d9e-4a6f-95a1-3f6b2e9d4c71"
+}

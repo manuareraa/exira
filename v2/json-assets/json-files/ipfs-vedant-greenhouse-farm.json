@@ -1,0 +1,16 @@
+{
+  "name": "Vedant Greenhouse Farm",
+  "description": "Vedant Greenhouse Farm is a modern farming estate equipped with advanced greenhouse technology. This farm is designed to maximize crop yield by creating controlled environments for various high-value crops. The greenhouses are equipped with climate control systems, automated irrigation, and hydroponic systems. Its location provides easy access to urban markets, ensuring fresh produce reaches consumers quickly.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmfBgzychqSh1ogUpjmDg6rShyhSE3pyJMVJatvcLMCtF1",
+  "external_url": "https://exira.io/property/view/b2e2c3da-4c1e-428e-88a4-e8b976f0c57e",
+  "attributes": {
+    "sharePerNFT": 0.0136986,
+    "initialPropertyValue": 730000,
+    "propertyLocation": "34.052235, -118.243683",
+    "propertyType": "farmingLand",
+    "incorporationDate": "2024-08-25",
+    "initialSharePrice": 100,
+    "uuid": "b2e2c3da-4c1e-428e-88a4-e8b976f0c57e",
+    "dividendPerNFT": 3.2
+  }
+}

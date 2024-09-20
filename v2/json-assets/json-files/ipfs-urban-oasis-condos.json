@@ -1,0 +1,16 @@
+{
+  "name": "Urban Oasis Condos",
+  "description": "Urban Oasis Condos is a modern residential property that offers a tranquil living experience in the midst of a bustling city. This innovative condominium complex features vertical gardens, soundproof windows, and energy-efficient appliances in each unit. Residents can enjoy amenities such as a rooftop zen garden, a yoga studio, and a co-working space. The property's unique design prioritizes both sustainability and wellness, creating a peaceful retreat for urban dwellers seeking balance in their fast-paced lives.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmfWavFHJtRGN186rNjvhBJ6maJy4WvKfAMzqaKLssmenS",
+  "external_url": "https://exira.io/property/view/550e8400-e29b-41d4-a716-446655440001",
+  "attributes": {
+    "sharePerNFT": 0.0108696,
+    "initialPropertyValue": 920000,
+    "propertyLocation": "51.507351, -0.127758",
+    "propertyType": "residential",
+    "incorporationDate": "2024-05-07",
+    "initialSharePrice": 100,
+    "uuid": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    "dividendPerNFT": 3.3
+  }
+}

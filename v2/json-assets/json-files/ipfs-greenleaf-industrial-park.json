@@ -1,0 +1,16 @@
+{
+  "name": "GreenLeaf Industrial Park",
+  "description": "GreenLeaf Industrial Park is a sustainable industrial complex that combines functionality with eco-friendly design. Situated on the outskirts of a major metropolitan area, this property features energy-efficient warehouses, manufacturing facilities, and distribution centers. The park is equipped with solar panels, rainwater harvesting systems, and electric vehicle charging stations. Its strategic location offers excellent transportation links, making it an attractive option for companies looking to minimize their environmental impact while maximizing operational efficiency.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmX3yMNVhTWy2JuQLY3roKVqnLoUuVcrjfAPQaiACc5oMb",
+  "external_url": "https://exira.io/property/view/9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+  "attributes": {
+    "sharePerNFT": 0.012987,
+    "initialPropertyValue": 770000,
+    "propertyLocation": "41.881832, -87.623177",
+    "propertyType": "industrial",
+    "incorporationDate": "2024-11-15",
+    "initialSharePrice": 100,
+    "uuid": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+    "dividendPerNFT": 2.8
+  }
+}

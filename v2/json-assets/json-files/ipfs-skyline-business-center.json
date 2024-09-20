@@ -1,0 +1,16 @@
+{
+  "name": "Skyline Business Center",
+  "description": "Skyline Business Center is a prestigious commercial property located in the heart of a major financial district. This sleek, high-rise office building offers premium office spaces with panoramic city views. The property features state-of-the-art facilities including smart building technology, a business lounge, and a rooftop conference center. With its LEED Gold certification, Skyline Business Center demonstrates a commitment to sustainability and energy efficiency, making it an attractive choice for environmentally conscious corporations.",
+  "image": "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmefSbBdX3kPsXLURcXJqCaTCLPdw8P5Ey6GuGap7uSMQE",
+  "external_url": "https://exira.io/property/view/550e8400-e29b-41d4-a716-446655440000",
+  "attributes": {
+    "sharePerNFT": 0.0090909,
+    "initialPropertyValue": 1100000,
+    "propertyLocation": "40.712776, -74.005974",
+    "propertyType": "commercial",
+    "incorporationDate": "2024-04-12",
+    "initialSharePrice": 100,
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "dividendPerNFT": 4.7
+  }
+}

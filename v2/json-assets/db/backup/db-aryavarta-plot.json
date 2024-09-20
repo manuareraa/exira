@@ -1,0 +1,57 @@
+{
+  "created_at": "2024-09-18T09:15:00Z",
+  "Name": "Aryavarta Plot",
+  "Location": "Pune, Maharashtra, India",
+  "Area": 40000,
+  "Status": "launchpad",
+  "IRR": 11.1,
+  "ARR": 9,
+  "Highlights": [
+    "Prime location plot situated in the rapidly developing area of Pune, offering excellent potential for residential or commercial development. The plot is surrounded by green spaces, making it ideal for eco-friendly construction.",
+    "Proximity to key infrastructure such as highways, schools, hospitals, and shopping centers, enhancing its attractiveness for potential buyers looking for a well-connected location.",
+    "Zoned for mixed-use development, offering flexibility to developers to build residential apartments, commercial complexes, or a mix of both.",
+    "Availability of basic amenities like water, electricity, and sewage systems, reducing the initial development costs and speeding up the construction process."
+  ],
+  "Gallery": [
+    "https://example.com/aryavarta-plot/location.jpg",
+    "https://example.com/aryavarta-plot/aerial-view.jpg",
+    "https://example.com/aryavarta-plot/surroundings.jpg",
+    "https://example.com/aryavarta-plot/infrastructure.jpg"
+  ],
+  "BaseValue": 630000,
+  "BonusValue": 30000,
+  "RentType": null,
+  "ValueParameters": [
+    {
+      "factor": "Rapid Urbanization of Pune",
+      "description": "Pune is experiencing rapid urbanization and infrastructural growth, driving up demand for prime plots of land for residential and commercial development."
+    },
+    {
+      "factor": "Government Infrastructure Projects",
+      "description": "Several government infrastructure projects in the vicinity are expected to improve accessibility and increase the value of properties in this area."
+    },
+    {
+      "factor": "Proximity to IT Hubs",
+      "description": "Close proximity to major IT hubs in Pune, attracting IT professionals looking for convenient living spaces and boosting the real estate value."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "a9b3d45c-2d1f-487a-b1e6-908d123f9ab4",
+      "name": "Green Homes Realty",
+      "proposed_price": 640000,
+      "description": "Green Homes Realty proposes to develop an eco-friendly residential complex on Aryavarta Plot, targeting the growing demand for sustainable living spaces in Pune.",
+      "date_of_proposal": "2024-11-10"
+    },
+    {
+      "uuid": "b7e2a456-19b4-43b8-8a3c-123abc789xyz",
+      "name": "Urban Developers",
+      "proposed_price": 650000,
+      "description": "Urban Developers plans to construct a mixed-use complex, combining retail and residential spaces, to cater to the increasing population in the area.",
+      "date_of_proposal": "2024-11-20"
+    }
+  ],
+  "NFTImage": "https://example.com/aryavarta-plot/nft.jpg",
+  "JSONFile": "https://example.com/aryavarta-plot/data.json",
+"UUID":"d7e1a4f9-6b8f-4c2e-8a7d-49c8f7c2b172"
+}

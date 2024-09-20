@@ -1,0 +1,68 @@
+{
+  "created_at": "2024-09-18T12:45:00Z",
+  "Name": "Mountain View Apartments",
+  "Location": "Aspen, Colorado, USA",
+  "Area": 18549,
+  "Status": "trading",
+  "IRR": 10.5,
+  "ARR": 8.7,
+  "Highlights": [
+    "Panoramic mountain views from every apartment, offering residents breathtaking vistas of the Rocky Mountains. Floor-to-ceiling windows and spacious balconies bring the natural beauty indoors, creating a seamless connection with the surrounding landscape.",
+    "Private ski lodge exclusively for residents, featuring equipment storage, a cozy fireplace lounge, and direct access to nearby ski slopes. This amenity provides unparalleled convenience for ski enthusiasts and adds significant value to the property.",
+    "Extensive network of hiking trails directly accessible from the property, catering to all skill levels. These well-maintained trails offer residents the opportunity to explore the natural beauty of the area and engage in outdoor activities year-round.",
+    "Heated outdoor pool and hot tub area designed to be enjoyed in all seasons. The pool area is equipped with comfortable seating, fire pits, and stunning mountain views, providing a perfect space for relaxation and social gatherings."
+  ],
+  "Gallery": [
+    "https://example.com/mountain-view/exterior.jpg",
+    "https://example.com/mountain-view/apartment.jpg",
+    "https://example.com/mountain-view/ski-lodge.jpg",
+    "https://example.com/mountain-view/pool.jpg"
+  ],
+  "BaseValue": 700000,
+  "BonusValue": 50000,
+  "RentType": {
+    "period": "monthly",
+    "amount": 45000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Expansion of Aspen Snowmass Ski Resort",
+      "description": "The nearby Aspen Snowmass Ski Resort has announced plans for a major expansion, including new ski runs and lifts, which could increase tourism and demand for luxury accommodations in the area."
+    },
+    {
+      "factor": "New Cultural Arts Center",
+      "description": "The city of Aspen is developing a state-of-the-art cultural arts center, enhancing the area's appeal to year-round residents and potentially increasing property values."
+    },
+    {
+      "factor": "Improved Airport Access",
+      "description": "A project to expand and modernize the Aspen/Pitkin County Airport has been approved, which could make the area more accessible and attractive to high-net-worth individuals."
+    },
+    {
+      "factor": "Luxury Retail Development",
+      "description": "A new luxury retail complex is being constructed in downtown Aspen, potentially attracting more affluent visitors and residents to the area."
+    },
+    {
+      "factor": "Sustainable Mountain Tourism Initiative",
+      "description": "The Colorado Tourism Office has launched a sustainable mountain tourism initiative, which could increase the appeal of eco-friendly mountain properties like Mountain View Apartments."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "d5f8e2c1-4b8d-4c8a-8d6f-789xyz456jkl",
+      "name": "Luxury Living Group",
+      "proposed_price": 720000,
+      "description": "Luxury Living Group proposes to transform Mountain View Apartments into a high-end residential community offering exclusive amenities for its residents.",
+      "date_of_proposal": "2024-11-05"
+    },
+    {
+      "uuid": "a2e9f3b8-9c5f-4b7a-9d8e-123ghi789stu",
+      "name": "Ski Resort Condos Inc.",
+      "proposed_price": 730000,
+      "description": "Ski Resort Condos Inc. aims to enhance the ski amenities and offer luxury apartments for seasonal residents and ski enthusiasts.",
+      "date_of_proposal": "2024-11-20"
+    }
+  ],
+  "NFTImage": "https://example.com/mountain-view/nft.jpg",
+  "JSONFile": "https://example.com/mountain-view/data.json",
+"UUID":"1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+}

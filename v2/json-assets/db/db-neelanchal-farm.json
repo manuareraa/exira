@@ -1,0 +1,64 @@
+{
+  "created_at": "2024-09-18T13:00:00Z",
+  "Name": "Neelanchal Farm",
+  "Location": "Coorg, Karnataka, India",
+  "Area": 42000,
+  "Status": "launchpad",
+  "IRR": 10.8,
+  "ARR": 8.7,
+  "Highlights": [
+    "Expansive coffee plantation featuring organically grown coffee beans, providing a unique opportunity for agro-tourism and sustainable farming practices.",
+    "Lush green landscapes with natural streams and waterfalls, offering a serene and picturesque environment that makes it a prime location for eco-friendly resorts and farm stays.",
+    "On-site processing unit for coffee beans, enabling farm-to-cup experiences for visitors and ensuring quality control throughout the production process.",
+    "Solar-powered irrigation system ensuring sustainable water management for the farm, reducing dependency on traditional power sources and enhancing environmental sustainability."
+  ],
+  "Gallery": [
+    "https://example.com/neelanchal-farm/coffee-plantation.jpg",
+    "https://example.com/neelanchal-farm/waterfalls.jpg",
+    "https://example.com/neelanchal-farm/processing-unit.jpg",
+    "https://example.com/neelanchal-farm/solar-irrigation.jpg"
+  ],
+  "BaseValue": 580000,
+  "BonusValue": 25000,
+  "RentType": {
+    "period": "monthly",
+    "amount": 20000
+  },
+  "ValueParameters": [
+    {
+      "factor": "Boom in Coffee Tourism",
+      "description": "The rise in coffee tourism in Coorg makes this farm an ideal investment, offering unique experiences for tourists seeking to engage in coffee cultivation and processing activities."
+    },
+    {
+      "factor": "Government Support for Organic Farming",
+      "description": "The Karnataka government provides subsidies and incentives for organic farming practices, enhancing the profitability and sustainability of properties like Neelanchal Farm."
+    },
+    {
+      "factor": "Growth in Eco-tourism",
+      "description": "Coorg's popularity as an eco-tourism destination is on the rise, increasing the demand for nature-friendly accommodations and farm experiences."
+    },
+    {
+      "factor": "Solar Energy Incentives",
+      "description": "India's push towards renewable energy offers incentives for solar-powered agricultural operations, which aligns with Neelanchal Farm's sustainable practices."
+    }
+  ],
+  "Proposals": [
+    {
+      "uuid": "f2b5e3a1-8d5c-4b9a-9c3e-456mno789pqr",
+      "name": "Green Agro Ventures",
+      "proposed_price": 600000,
+      "description": "Green Agro Ventures aims to expand the coffee plantation and introduce farm stay experiences for eco-tourism enthusiasts.",
+      "date_of_proposal": "2024-10-25"
+    },
+    {
+      "uuid": "e8f9c2b3-9c4e-4f8a-8b6d-789xyz123abc",
+      "name": "Eco Resorts Pvt Ltd.",
+      "proposed_price": 620000,
+      "description": "Eco Resorts Pvt Ltd. proposes to develop eco-friendly cottages and promote sustainable tourism on the farm.",
+      "date_of_proposal": "2024-11-10"
+    }
+  ],
+  "NFTImage": "https://example.com/neelanchal-farm/nft.jpg",
+  "JSONFile": "https://example.com/neelanchal-farm/data.json",
+"UUID":"a2e4b3c5-8f6d-4e98-96ab-2d7e3f5b5c81"
+}
