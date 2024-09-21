@@ -18,6 +18,7 @@ export default defineConfig({
   plugins: [react(), nodePolyfills()],
   server: {
     port: 3100,
+    host: true,
   },
   resolve: {
     alias: {
