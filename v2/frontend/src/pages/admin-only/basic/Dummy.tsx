@@ -33,6 +33,7 @@ import {
   fetchDigitalAsset,
   updateV1,
   fetchMetadataFromSeeds,
+  collectionDetails,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { transferTokens } from "@metaplex-foundation/mpl-toolbox";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -226,8 +227,11 @@ function Dummy(props) {
         name: collectionName,
         uri: collectionUri,
         sellerFeeBasisPoints: percentAmount(5), // 5.5%
-        isCollection: true,
-        // printSupply: printSupply("Limited", [1000]),
+        // isCollection: true,
+        printSupply: printSupply("Limited", [5]),
+        token: {
+          
+        }
       }).sendAndConfirm(umi);
       console.log("Create Collection Response: ", response);
       console.log(
@@ -242,6 +246,7 @@ function Dummy(props) {
   const getCollection = async () => {
     console.log("Getting collection...");
     const collection = await fetchCollectionV1(umi, collectionAddress);
+    // const collDetails = await collectionDetails( collectionAddress);
     console.log("Collection: ", collection);
   };
 
@@ -300,8 +305,14 @@ function Dummy(props) {
     // console.log("Asset Address: ", assetAddress);
     console.log("Asset Collection Address: ", assetCollectionAddress);
     console.log("Asset Authority Public Key: ", assetAuthorityPublicKey);
-    // const collFetch = await fetchCollection(umi, assetCollectionAddress);
-    // console.log("Collection Fetch: ", collFetch);
+    // const collMetadata = await fetchMetadataFromSeeds(umi, {
+    //   mint: "BPmEGEvWpr8BfEAnJjYep6CN6of6aTfD4Dq1HLGEFJGE",
+    // });
+    const collDetails = collectionDetails(
+      "V2",
+      "BPmEGEvWpr8BfEAnJjYep6CN6of6aTfD4Dq1HLGEFJGE"
+    );
+    console.log("Collection Fetch: ", collDetails);
 
     // ================================================
     // Metaplex Programmable NFTs
@@ -313,13 +324,14 @@ function Dummy(props) {
     const response = await createProgrammableNft(umi, {
       mint: nftSigner,
       sellerFeeBasisPoints: percentAmount(5),
-      name: assetName,
-      uri: assetUri,
+      name: "EXtME13",
+      uri: "#",
       ruleSet: "eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9",
       isMutable: true,
-      symbol: "ENFT1",
+      symbol: "EXtc13",
       printSupply: printSupply("Limited", [5]),
-      isCollection: true,
+      // isCollection: true,
+      collection: collDetails,
     }).sendAndConfirm(umi);
     console.log("Create Asset Response: ", response);
     console.log(

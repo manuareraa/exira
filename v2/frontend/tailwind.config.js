@@ -1,5 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 const { nextui, colors } = require("@nextui-org/react");
+// const {
+//   flattenColorPalette,
+// } = require("tailwindcss/lib/util/flattenColorPalette");
+
+const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
 
 export default {
   content: [
@@ -14,9 +19,13 @@ export default {
       },
       colors: {
         // alpha: "#8EBEF6",
-        alpha: "#F7FEFF",
-        beta: "#CFE5FB",
-        gamma: "#8EBEF6",
+        // alpha: "#F7FEFF",
+        // beta: "#CFE5FB",
+        // gamma: "#8EBEF6",
+        alpha: "#000000",
+        beta: "#ffffff",
+        gamma: "#DEE4E5",
+        charlie: "#F7FEFF",
       },
       keyframes: {
         "reveal-up": {
@@ -35,5 +44,21 @@ export default {
     },
   },
   darkMode: "class",
-  plugins: [require("daisyui"), require("tailwindcss-animate"), nextui()],
+  plugins: [
+    require("daisyui"),
+    require("tailwindcss-animate"),
+    nextui(),
+    addVariablesForColors,
+  ],
 };
+
+function addVariablesForColors({ addBase, theme }) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   WalletMultiButton,
   WalletDisconnectButton,
@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
+import { DiscoverWalletProviders } from "./DiscoverWalletProviders";
 
 function Navbar() {
   // State for managing mobile menu visibility
@@ -35,6 +36,10 @@ function Navbar() {
     navigate(path);
     setMenuOpen(false); // Close menu on selection
   };
+
+  useEffect(() => {
+    // init();
+  }, []);
 
   return (
     <nav className="relative flex flex-wrap items-center justify-between w-full p-4 md:px-10 py-7">
@@ -105,7 +110,7 @@ function Navbar() {
 
         {/* Wallet and App buttons */}
         <div className="flex flex-col items-center gap-4 mt-4 md:flex-row md:mt-0">
-          <WalletMultiButton
+          {/* <WalletMultiButton
             // className="flex justify-center w-full px-4 py-2 text-sm text-white bg-black rounded-lg md:w-40"
             style={{
               backgroundColor: "black",
@@ -115,7 +120,16 @@ function Navbar() {
               fontSize: "15px",
               borderRadius: "10px",
             }}
-          />
+          /> */}
+          {/* <button
+            className="flex items-center justify-center w-full h-10 px-6 py-2 text-black border-2 rounded-lg bg-gamma border-gamma md:w-auto"
+            onClick={handleGoToApp}
+          >
+            <div className="flex items-center gap-2">
+              <p>Connect Wallet</p>
+            </div>
+          </button> */}
+          <DiscoverWalletProviders />
 
           {/* Conditionally render "Exira App" button */}
           {!location.pathname.includes("/dashboard") && (
@@ -123,9 +137,9 @@ function Navbar() {
               className="flex items-center justify-center w-full h-10 px-6 py-2 text-black border-2 rounded-lg bg-gamma border-gamma md:w-auto"
               onClick={handleGoToApp}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex flex-row items-center justify-center gap-2">
                 <p>Exira App</p>
-                <FontAwesomeIcon icon={faChevronRight} />
+                <FontAwesomeIcon icon={faChevronRight} size="2xs" />
               </div>
             </button>
           )}
