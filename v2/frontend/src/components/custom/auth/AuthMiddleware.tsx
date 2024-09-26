@@ -3,7 +3,7 @@
 import React, { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-
+import { useAccount } from "wagmi";
 /**
  * Props for AuthMiddleware component.
  * @property {ReactNode} children - The child components to be rendered if the user is authenticated.
@@ -20,10 +20,15 @@ interface AuthMiddlewareProps {
  * @returns {JSX.Element} - The children components if authenticated, otherwise a redirect to the home page.
  */
 const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({ children }) => {
-  const { connection } = useConnection();
-  const { publicKey } = useWallet();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+  // const { connection } = useConnection();
+  // const { publicKey } = useWallet();
 
-  if (connection && publicKey) {
+  // if (connection && publicKey) {
+  //   return <>{children}</>;
+  // }
+
+  if (isConnected === true) {
     return <>{children}</>;
   }
 

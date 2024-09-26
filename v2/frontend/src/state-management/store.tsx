@@ -59,6 +59,7 @@ interface UserStore {
 
 // Create a User store using immer
 export const useUserStore = create<UserStore>(
+  
   immer((set) => ({
     isAuthenticated: false,
 

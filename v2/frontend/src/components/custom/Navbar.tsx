@@ -8,9 +8,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
-import { DiscoverWalletProviders } from "./DiscoverWalletProviders";
+
+import { useAppKit, useAppKitState, useWalletInfo } from "@reown/appkit/react";
+import { useDisconnect, useAccount } from "wagmi";
 
 function Navbar() {
+  const { open, close } = useAppKit();
+  const { disconnect } = useDisconnect();
+  const { walletInfo } = useWalletInfo();
+  const { selectedNetworkId } = useAppKitState();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+
   // State for managing mobile menu visibility
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -125,20 +133,36 @@ function Navbar() {
               borderRadius: "10px",
             }}
           /> */}
-          {/* <button
+          <button
             className="flex items-center justify-center w-full h-10 px-6 py-2 text-black border-2 rounded-lg bg-gamma border-gamma md:w-auto"
-            onClick={handleGoToApp}
+            onClick={() => {
+              open();
+            }}
           >
             <div className="flex items-center gap-2">
-              <p>Connect Wallet</p>
+              <p>
+                {isConnected ? (
+                  <>
+                    <p>
+                      {address.slice(0, 6)}...{address.slice(-4)}
+                    </p>
+                  </>
+                ) : isConnecting ? (
+                  "Connecting..."
+                ) : isDisconnected ? (
+                  "Connect Wallet"
+                ) : (
+                  "Connect Wallet"
+                )}
+              </p>
             </div>
-          </button> */}
-          <DiscoverWalletProviders />
+          </button>
+          {/* <DiscoverWalletProviders /> */}
 
           {/* Conditionally render "Exira App" button */}
-          {!location.pathname.includes("/dashboard") && (
+          {!location.pathname.includes("/dashboard") && isConnected === true ? (
             <button
-              className="flex items-center justify-center w-full h-10 px-6 py-2 text-black border-2 rounded-lg bg-gamma border-gamma md:w-auto"
+              className="flex items-center justify-center w-full h-10 px-6 py-2 border-2 rounded-lg text-beta bg-alpha border-alpha md:w-auto"
               onClick={handleGoToApp}
             >
               <div className="flex flex-row items-center justify-center gap-2">
@@ -146,7 +170,7 @@ function Navbar() {
                 <FontAwesomeIcon icon={faChevronRight} size="2xs" />
               </div>
             </button>
-          )}
+          ) : null}
 
           {/* Uncomment below to enable WalletDisconnectButton if needed */}
           {/* 

@@ -5,12 +5,16 @@ import { StrictMode } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { NextUIProvider } from "@nextui-org/react";
 
+import { AppKitProvider } from "./ReOwnConfig.tsx";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <NextUIProvider>
-      <Router>
-        <App />
-      </Router>
+      <AppKitProvider>
+        <Router>
+          <App />
+        </Router>
+      </AppKitProvider>
     </NextUIProvider>
   </StrictMode>
 );

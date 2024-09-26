@@ -4,7 +4,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -35,10 +35,15 @@ import Dummy from "./pages/admin-only/basic/Dummy";
 import CandyMachine from "./pages/admin-only/candy-machine/CandyMachine";
 import HowItWorks from "./pages/HowItWorks";
 
+import { useAccount } from "wagmi";
+import { useNavigate } from "react-router-dom";
+
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
   const location = useLocation();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
+  const navigate = useNavigate();
 
   // You can also provide a custom RPC endpoint.
   // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -60,6 +65,15 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [network]
   );
+
+  useEffect(() => {
+    if (isConnected === true) {
+      console.log("Connected to wallet", address);
+    } else {
+      console.log("Disconnected from wallet");
+      navigate("/");
+    }
+  }, [isConnected]);
 
   return (
     <ConnectionProvider endpoint={endpoint}>

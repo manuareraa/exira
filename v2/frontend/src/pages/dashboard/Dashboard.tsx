@@ -13,9 +13,17 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useAppKit, useAppKitState, useWalletInfo } from "@reown/appkit/react";
+import { useDisconnect, useAccount } from "wagmi";
+
 const Dashboard: React.FC = ({ children }) => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<string>("All Properties");
+  const { open, close } = useAppKit();
+  const { disconnect } = useDisconnect();
+  const { walletInfo } = useWalletInfo();
+  const { selectedNetworkId } = useAppKitState();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
 
   const menuItems = [
     { name: "All Properties", icon: faHouse, path: "/dashboard" },
@@ -117,7 +125,7 @@ const Dashboard: React.FC = ({ children }) => {
               : "All Properties"}
           </h2>
           <div className="flex items-center space-x-4">
-            <WalletMultiButton
+            {/* <WalletMultiButton
               style={{
                 backgroundColor: "black",
                 padding: "1rem",
@@ -127,7 +135,31 @@ const Dashboard: React.FC = ({ children }) => {
                 width: "150px",
                 justifyContent: "center",
               }}
-            />
+            /> */}
+            <button
+              className="flex items-center justify-center w-full h-10 px-6 py-2 text-black border-2 rounded-lg bg-gamma border-gamma md:w-auto"
+              onClick={() => {
+                open();
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <p>
+                  {isConnected ? (
+                    <>
+                      <p>
+                        {address.slice(0, 6)}...{address.slice(-4)}
+                      </p>
+                    </>
+                  ) : isConnecting ? (
+                    "Connecting..."
+                  ) : isDisconnected ? (
+                    "Connect Wallet"
+                  ) : (
+                    "Connect Wallet"
+                  )}
+                </p>
+              </div>
+            </button>
           </div>
         </header>
 
