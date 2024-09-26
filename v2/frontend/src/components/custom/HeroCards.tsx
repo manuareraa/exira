@@ -31,12 +31,13 @@ function HeroCards() {
   ];
 
   return (
-    <div className="flex flex-col max-w-full md:flex-row md:gap-x-3 gap-y-8">
+    <div className="flex flex-row flex-wrap justify-center gap-x-4 gap-y-8 md:gap-x-8 md:gap-y-28 ">
+      {/* // <div className="flex flex-row flex-wrap justify-center gap-8"> */}
       {cardData.map((card, index) => (
         <PinContainer title={card.city} href="#">
           <div
             key={index}
-            className="flex flex-col items-start w-full p-10 text-left rounded-2xl bg-gamma gap-y-6 md:w-[18rem] crypto-shadow"
+            className="flex flex-col items-start p-10 text-left rounded-2xl bg-gamma gap-y-6 w-[18rem] crypto-shadow"
           >
             {/* Shares Available */}
             <div className="flex flex-col items-start">

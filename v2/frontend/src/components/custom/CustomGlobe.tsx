@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 
 import dotTexture from "../../assets/img/dot-texture.jpg";
@@ -8,6 +8,37 @@ import plainBlack from "../../assets/img/plain-black.jpg";
 
 function CustomGlobe(props) {
   const globeEl = useRef();
+
+  const containerRef = useRef();
+
+  // State to hold the width and height
+  const [dimensions, setDimensions] = useState({
+    width: 700, // default width
+    height: 700, // default height
+  });
+
+  useEffect(() => {
+    const observerTarget = containerRef.current;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setDimensions({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
+      }
+    });
+
+    if (observerTarget) {
+      resizeObserver.observe(observerTarget);
+    }
+
+    return () => {
+      if (observerTarget) {
+        resizeObserver.unobserve(observerTarget);
+      }
+    };
+  }, []);
 
   const countryData = [
     { name: "Mumbai, India", lat: 19.076, lng: 72.8777, icon: "indiaIcon" }, // India
@@ -79,8 +110,8 @@ function CustomGlobe(props) {
     // Add box shadow
     el.style.boxShadow = "0px 4px 23.1px rgba(0, 0, 0, 0.25)";
 
-    el.style.width = "80px";
-    el.style.height = "80px";
+    el.style.width = "4rem";
+    el.style.height = "4rem";
 
     let rawSvg;
     switch (country.icon) {
@@ -150,16 +181,30 @@ function CustomGlobe(props) {
   }, []);
 
   return (
-    <Globe
-      ref={globeEl}
-      // available options - dotTexture, blueTexture, dotTextureTwo, plainBlack
-      globeImageUrl={dotTextureTwo} // Replace with your texture URL
-      width={700}
-      height={700}
-      backgroundColor="#F7FEFF"
-      htmlElementsData={countryData} // Pass the country data
-      htmlElement={createCountryElement}
-    />
+    // <Globe
+    //   ref={globeEl}
+    //   // available options - dotTexture, blueTexture, dotTextureTwo, plainBlack
+    //   globeImageUrl={dotTextureTwo} // Replace with your texture URL
+    //   width={700}
+    //   height={700}
+    //   backgroundColor="#F7FEFF"
+    //   htmlElementsData={countryData} // Pass the country data
+    //   htmlElement={createCountryElement}
+    // />
+    <div
+      ref={containerRef}
+      className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]"
+    >
+      <Globe
+        ref={globeEl}
+        globeImageUrl={dotTextureTwo}
+        backgroundColor="#F7FEFF"
+        htmlElementsData={countryData}
+        htmlElement={createCountryElement}
+        width={dimensions.width}
+        height={dimensions.height}
+      />
+    </div>
   );
 }
 

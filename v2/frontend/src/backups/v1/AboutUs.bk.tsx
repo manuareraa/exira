@@ -1,5 +1,5 @@
 import React from "react";
-import Footer from "../components/custom/Footer";
+import Footer from "../../components/custom/Footer";
 
 function AboutUs(props) {
   return (
