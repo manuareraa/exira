@@ -1,7 +1,10 @@
 import React from "react";
-import Footer from "../components/custom/Footer";
+import Footer from "../../components/custom/Footer";
 
-// Image imports
+// import nimesh from "../assets/img/nimesh-no-bg.png";
+// import sudhir from "../assets/img/sudhir-no-bg.png";
+// import manu from "../assets/img/manu-no-bg.png";
+
 import nimesh from "../assets/img/nimesh-c.png";
 import sudhir from "../assets/img/sudhir-c.png";
 import manu from "../assets/img/manu-c.png";
@@ -14,14 +17,14 @@ function AboutUs(props) {
         <div className="flex flex-col mt-8 gap-y-4 md:mt-12">
           <h2 className="text-2xl md:text-3xl">Our Vision</h2>
           <div className="flex flex-col gap-y-2">
-            <p className="text-4xl font-black md:text-7xl lg:text-9xl">
+            <p className="text-5xl font-black md:text-7xl lg:text-9xl">
               Real Estate
             </p>
-            <p className="text-4xl font-black md:text-7xl lg:text-9xl">
+            <p className="text-5xl font-black md:text-7xl lg:text-9xl">
               For Everyone
             </p>
           </div>
-          <p className="max-w-xl mt-2 text-lg text-center md:text-xl lg:text-2xl lg:max-w-5xl">
+          <p className="max-w-4xl mt-2 text-lg text-center md:text-xl lg:text-2xl lg:max-w-5xl">
             We envision a world where real estate investment isn’t limited to a
             select few, but a powerful tool for everyone to build wealth. Our
             platform allows people from all walks of life to invest in premium
@@ -30,23 +33,23 @@ function AboutUs(props) {
         </div>
 
         {/* Our Values Section */}
-        <div className="flex flex-col mt-16 md:mt-16">
+        <div className="flex flex-col mt-16 md:mt-24">
           <h2 className="text-2xl md:text-3xl">Our Values</h2>
           <div className="flex flex-col items-center justify-around mt-5 md:flex-row gap-y-4 md:gap-y-0 md:gap-x-8">
-            <p className="w-full text-3xl font-black text-center md:text-5xl md:w-auto">
+            <p className="w-full text-4xl font-black text-center md:text-5xl md:w-auto">
               Transparency
             </p>
-            <p className="w-full text-3xl font-black text-center md:text-5xl md:w-auto">
+            <p className="w-full text-4xl font-black text-center md:text-5xl md:w-auto">
               Accessibility
             </p>
-            <p className="w-full text-3xl font-black text-center md:text-5xl md:w-auto">
+            <p className="w-full text-4xl font-black text-center md:text-5xl md:w-auto">
               Security
             </p>
           </div>
         </div>
 
         {/* Who We Are Section */}
-        <div className="flex flex-col items-start justify-center mt-16 md:mt-24 gap-y-12 lg:flex-row lg:gap-y-0 lg:gap-x-16">
+        <div className="flex flex-col items-start justify-center mt-16 lg:flex-row md:mt-24 gap-y-12 lg:gap-y-0 lg:gap-x-16">
           {/* Left container */}
           <div className="flex flex-col items-start gap-y-4 lg:w-1/2">
             <h2 className="text-3xl font-bold md:text-4xl">Who We Are</h2>
@@ -57,20 +60,20 @@ function AboutUs(props) {
               access to properties that were once out of reach.
             </p>
             <div className="mt-8">
-              <div className="-space-x-4 avatar-group">
+              <div className="-space-x-3 avatar-group rtl:space-x-reverse">
                 <div className="avatar">
-                  <div className="w-20 md:w-32 lg:w-40">
-                    <img src={nimesh} className="grayscale" alt="Nimesh" />
+                  <div className="w-60">
+                    <img src={nimesh} className="grayscale" />
                   </div>
                 </div>
                 <div className="avatar">
-                  <div className="w-20 md:w-32 lg:w-40">
-                    <img src={sudhir} className="grayscale" alt="Sudhir" />
+                  <div className="w-60">
+                    <img src={sudhir} className="grayscale" />
                   </div>
                 </div>
                 <div className="avatar">
-                  <div className="w-20 md:w-32 lg:w-40">
-                    <img src={manu} className="grayscale" alt="Manu" />
+                  <div className="w-60">
+                    <img src={manu} className="grayscale" />
                   </div>
                 </div>
               </div>
@@ -121,8 +124,8 @@ function AboutUs(props) {
         </div>
 
         {/* Why We Are Different Section */}
-        <div className="flex flex-col items-start max-w-full p-6 my-16 bg-black md:p-12 lg:p-20 md:my-24 lg:my-32 rounded-3xl md:max-w-4xl lg:max-w-5xl">
-          <h2 className="mb-4 text-3xl font-bold text-white md:text-5xl">
+        <div className="flex flex-col items-start max-w-full p-8 my-16 bg-black md:p-12 lg:p-20 md:my-24 lg:my-32 rounded-3xl md:max-w-4xl lg:max-w-5xl">
+          <h2 className="mb-4 text-4xl font-bold text-white md:text-5xl">
             Why We Are<span className="text-amber-600"> Different</span>?
           </h2>
           <p className="text-lg text-left text-white md:text-xl lg:text-2xl">
@@ -131,7 +134,7 @@ function AboutUs(props) {
           </p>
 
           {/* Body */}
-          <div className="grid items-start grid-cols-1 mt-8 md:grid-cols-2 gap-x-8 gap-y-8 md:gap-y-12">
+          <div className="grid items-start grid-cols-1 mt-12 md:grid-cols-2 gap-x-16 gap-y-8 md:gap-y-16">
             {[
               {
                 title: "Own a Share of Premium Real Estate",
@@ -163,16 +166,14 @@ function AboutUs(props) {
                 <p className="text-lg font-bold text-white md:text-2xl">
                   {item.title}
                 </p>
-                <p className="text-sm text-left text-white md:text-lg">
-                  {item.content}
-                </p>
+                <p className="text-sm text-left text-white md:text-lg">{item.content}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Our Roadmap Section */}
-        <div className="max-w-full px-4 my-20 md:px-8 lg:max-w-5xl">
+        <div className="max-w-full px-4 my-20 lg:max-w-5xl">
           <h2 className="mb-6 text-3xl font-bold text-center md:text-4xl lg:text-5xl">
             Our Roadmap
           </h2>
@@ -251,12 +252,13 @@ function AboutUs(props) {
         </div>
 
         {/* Contact Us Section */}
-        <div className="flex flex-col items-center justify-center px-4 mt-16 mb-24 text-center gap-y-3">
-          <p className="text-2xl font-bold md:text-4xl">
+        <div className="flex flex-col items-center justify-center px-4 mt-32 text-center mb-44 gap-y-3">
+          <p className="text-3xl font-bold md:text-4xl">
             Got questions or want to know more? We’d love to hear from you!
           </p>
           <p className="text-lg md:text-2xl">connect@exira.io</p>
         </div>
+        {/* Footer */}
       </div>
       <Footer />
     </>

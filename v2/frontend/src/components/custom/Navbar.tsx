@@ -99,9 +99,13 @@ function Navbar() {
                   ? "underline font-bold"
                   : ""
               }`}
-              onClick={() =>
-                handleNavigate(`/${item.toLowerCase().replace(/\s+/g, "-")}`)
-              }
+              onClick={() => {
+                if (item === "Home") {
+                  handleNavigate("/");
+                } else {
+                  handleNavigate(`/${item.toLowerCase().replace(/\s+/g, "-")}`);
+                }
+              }}
             >
               {item}
             </p>

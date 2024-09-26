@@ -85,7 +85,6 @@ export const DiscoverWalletProviders = () => {
           )}
         </>
       </div>
-      <hr />
       {/* <h2>{userAccount ? "" : "No "}Wallet Selected</h2> */}
       {userAccount && (
         <button className="flex items-center justify-center w-full h-10 px-6 py-2 text-black border-2 rounded-lg bg-gamma border-gamma md:w-auto">

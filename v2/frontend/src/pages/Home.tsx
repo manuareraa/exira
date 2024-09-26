@@ -139,13 +139,14 @@ function Home() {
       <div className="container flex flex-col items-center justify-center mx-auto my-28">
         <div className="flex flex-col text-center gap-y-2">
           <p className="text-4xl font-bold">
-            Made with{" "}
-            <FontAwesomeIcon
+            {/* Made with{" "} */}
+            Powered by{" "}
+            {/* <FontAwesomeIcon
               icon={faHeart}
               style={{ color: "#cb2a2a" }}
               size="xs"
-            />{" "}
-            for Binance Chain
+            />{" "} */}
+            Binance Smart Chain
           </p>
           <p className="max-w-2xl text-lg leading-tight">
             Our platform is currently being developed on Binance Smart Chain.

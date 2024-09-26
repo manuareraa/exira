@@ -33,6 +33,7 @@ import History from "./components/custom/dashboard/pages/History";
 import PropertyView from "./pages/PropertyView";
 import Dummy from "./pages/admin-only/basic/Dummy";
 import CandyMachine from "./pages/admin-only/candy-machine/CandyMachine";
+import HowItWorks from "./pages/HowItWorks";
 
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -132,6 +133,7 @@ function App() {
               <Route path="/property/view/:id" element={<PropertyView />} />
               <Route path="/dummy" element={<Dummy />} />
               <Route path="/candy-machine" element={<CandyMachine />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
             </Routes>
           </div>
           {/* <WalletMultiButton /> */}
