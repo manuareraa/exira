@@ -28,6 +28,7 @@ import {
 import binanceLogo from "../assets/img/binance-t.png";
 import { CustomLamp } from "../components/custom/LampContainer";
 import { useNavigate } from "react-router-dom";
+import { TextGenerateEffect } from "../components/aceternity/text-generate-effect";
 
 function Home() {
   const [currency, setCurrency] = useState("USD");
@@ -44,16 +45,22 @@ function Home() {
             <div className="mb-3 text-3xl lg:text-3xl">
               The New Age De-Fi Protocol for Real-Estate Properties
             </div>
-            <BoxReveal boxColor={"#000000"} duration={1.0}>
+            {/* <BoxReveal boxColor={"#000000"} duration={1.0}>
               <div className="flex flex-col text-5xl gap-y-3 lg:text-[5rem]">
                 <div className="font-bold">Own Real Estate Tokens</div>
               </div>
-            </BoxReveal>
-            <BoxReveal boxColor={"#000000"} duration={1.0}>
+            </BoxReveal> */}
+            <div className="flex flex-col font-bold text-5xl gap-y-3 lg:text-[5rem]">
+              <TextGenerateEffect words="Own Real Estate Tokens" />
+            </div>
+            <div className="flex flex-col text-5xl font-bold gap-y-3 lg:text-[5rem]">
+              <TextGenerateEffect words="Own the Future" />
+            </div>
+            {/* <BoxReveal boxColor={"#000000"} duration={1.0}>
               <div className="flex flex-col text-5xl gap-y-3 lg:text-[5rem]">
                 <div className="font-bold">Own the Future</div>
               </div>
-            </BoxReveal>
+            </BoxReveal> */}
 
             <div className="mt-4 text-3xl lg:text-[3rem]">
               <p className="lg:leading-[3.5rem] justify-center flex flex-col items-center lg:items-start">
