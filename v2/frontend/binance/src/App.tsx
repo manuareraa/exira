@@ -20,6 +20,8 @@ import Portfolio from "./components/custom/dashboard/pages/Portfolio";
 import History from "./components/custom/dashboard/pages/History";
 import PropertyView from "./pages/PropertyView";
 import HowItWorks from "./pages/HowItWorks";
+import TopBanner from "./components/custom/TopBanner";
+import Waitlist from "./pages/Waitlist";
 
 import { useAccount } from "wagmi";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +42,7 @@ function App() {
 
   return (
     <>
+      {location.pathname.includes("/dashboard") ? null : <TopBanner />}
       <Toaster />
       {
         // Navbar component
@@ -107,6 +110,7 @@ function App() {
 
           <Route path="/property/view/:id" element={<PropertyView />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/waitlist" element={<Waitlist />} />
         </Routes>
       </div>
     </>

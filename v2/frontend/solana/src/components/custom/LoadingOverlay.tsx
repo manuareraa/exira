@@ -13,7 +13,7 @@ const LoadingOverlay: React.FC = () => {
           <p className="text-2xl font-bold text-black">Please wait...</p>
           {/* <p className="text-lg text-black">{loadingMessage}</p> */}
           <p className="text-lg text-black">
-            Demo string describing the loading purpose
+            {loadingMessage ? loadingMessage : ""}
           </p>
         </div>
       </div>

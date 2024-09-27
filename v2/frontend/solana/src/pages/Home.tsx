@@ -14,7 +14,7 @@ import {
 import PriceBar from "../components/animata/PriceBar";
 import Footer from "../components/custom/Footer";
 
-import { useRef, useEffect } from "react";
+import { useRef, useState } from "react";
 import CustomGlobe from "../components/custom/CustomGlobe";
 import BoxReveal from "../components/magic/TextBoxReveal";
 import WordRotate from "../components/magic/TextRotate";
@@ -27,8 +27,14 @@ import {
 
 import binanceLogo from "../assets/img/binance-t.png";
 import { CustomLamp } from "../components/custom/LampContainer";
+import { useNavigate } from "react-router-dom";
+import { TextGenerateEffect } from "../components/aceternity/text-generate-effect";
+import HomeChain from "../components/custom/HomeChain";
 
 function Home() {
+  const [currency, setCurrency] = useState("USD");
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col">
       {/* Top hero container */}
@@ -40,16 +46,22 @@ function Home() {
             <div className="mb-3 text-3xl lg:text-3xl">
               The New Age De-Fi Protocol for Real-Estate Properties
             </div>
-            <BoxReveal boxColor={"#000000"} duration={1.0}>
+            {/* <BoxReveal boxColor={"#000000"} duration={1.0}>
               <div className="flex flex-col text-5xl gap-y-3 lg:text-[5rem]">
                 <div className="font-bold">Own Real Estate Tokens</div>
               </div>
-            </BoxReveal>
-            <BoxReveal boxColor={"#000000"} duration={1.0}>
+            </BoxReveal> */}
+            <div className="flex flex-col font-bold text-5xl gap-y-3 lg:text-[5rem]">
+              <TextGenerateEffect words="Own Real Estate Tokens" />
+            </div>
+            <div className="flex flex-col text-5xl font-bold gap-y-3 lg:text-[5rem]">
+              <TextGenerateEffect words="Own the Future" />
+            </div>
+            {/* <BoxReveal boxColor={"#000000"} duration={1.0}>
               <div className="flex flex-col text-5xl gap-y-3 lg:text-[5rem]">
                 <div className="font-bold">Own the Future</div>
               </div>
-            </BoxReveal>
+            </BoxReveal> */}
 
             <div className="mt-4 text-3xl lg:text-[3rem]">
               <p className="lg:leading-[3.5rem] justify-center flex flex-col items-center lg:items-start">
@@ -136,30 +148,7 @@ function Home() {
       </div>
 
       {/* Blockchain container */}
-      <div className="container flex flex-col items-center justify-center mx-auto my-28">
-        <div className="flex flex-col text-center gap-y-2">
-          <p className="text-4xl font-bold">
-            Made with {/* Powered by{" "} */}
-            <FontAwesomeIcon
-              icon={faHeart}
-              style={{ color: "#cb2a2a" }}
-              size="xs"
-            />{" "}
-            on Solana
-          </p>
-          <p className="max-w-2xl text-lg leading-tight">
-            Our platform is currently being developed on Solana as part of the
-            ongoing hackathon. Solana's high speed and low fees make it the
-            perfect foundation for our vision. Stay tuned as we leverage the
-            power of Solana to deliver a seamless experience.
-          </p>
-        </div>
-
-        {/* Logo container */}
-        <div className="px-10 py-4 my-8 bg-black rounded-2xl">
-          <img src={solanaLogo} alt="Solana Logo" className="h-auto w-52" />
-        </div>
-      </div>
+      <HomeChain />
 
       {/* Crypto for everyone container */}
       <div className="container flex flex-col justify-center mx-auto lg:flex-row gap-x-10 mt-28">
@@ -244,28 +233,69 @@ function Home() {
           <div className="flex flex-col items-center justify-center my-4">
             <p className="text-md">Show prices in</p>
             <div className="mt-2">
-              <PriceBar tabs={["USD", "EUR", "INR"]} />
+              <PriceBar
+                tabs={["USD", "SOL", "ETH"]}
+                setCurrency={setCurrency}
+              />
             </div>
           </div>
         </div>
 
         {/* Cards container */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {[1, 2, 3].map((_, index) => (
+          {[
+            {
+              price: 28,
+              shares: 1566,
+              title: "As low as,",
+            },
+            {
+              price: 89,
+              shares: 9455,
+              title: "Average of,",
+            },
+            {
+              price: 163,
+              shares: 566,
+              title: "As high as,",
+            },
+          ].map((_, index) => (
             <div
               key={index}
               className="flex flex-col items-center p-6 px-12 gap-y-3 rounded-3xl bg-black/10"
             >
-              <p className="text-2xl">From as low as,</p>
+              <p className="text-2xl">{_.title}</p>
               <div className="leading-none">
-                <p className="text-6xl font-bold">$30</p>
+                <p className="text-6xl font-bold">
+                  {currency === "USD" ? (
+                    "$" + _.price
+                  ) : currency === "SOL" ? (
+                    <>
+                      {(_.price * 0.999).toFixed(2)}
+                      <span className="text-sm">&nbsp;SOL</span>
+                    </>
+                  ) : (
+                    <>
+                      {(_.price * 0.00037).toFixed(2)}
+                      <span className="text-sm">&nbsp;ETH</span>
+                    </>
+                  )}
+                </p>
                 <p className="text-lg">per share</p>
               </div>
               <div className="flex flex-col mt-2 gap-y-0">
-                <p className="text-3xl">4,566</p>
+                <p className="text-3xl">
+                  {_.shares.toLocaleString("en-US")}{" "}
+                  <span className="text-md">Shares</span>
+                </p>
                 <p className="text-md">Shares Available</p>
               </div>
-              <button className="p-2 px-8 py-3 mt-3 text-white bg-black border-2 rounded-full hover:bg-white hover:border-black hover:text-black">
+              <button
+                className="p-2 px-8 py-3 mt-3 text-white bg-black border-2 rounded-full hover:bg-white hover:border-black hover:text-black"
+                onClick={() => {
+                  navigate("/dashboard");
+                }}
+              >
                 Invest Now
               </button>
             </div>
@@ -290,7 +320,12 @@ function Home() {
               your journey with us now.
             </p>
           </div>
-          <button className="p-2 px-16 py-3 mt-3 text-black bg-white border-2 rounded-full hover:bg-black hover:border-white hover:text-white">
+          <button
+            className="p-2 px-16 py-3 mt-3 text-black bg-white border-2 rounded-full hover:bg-black hover:border-white hover:text-white"
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          >
             Get Started
           </button>
         </div>

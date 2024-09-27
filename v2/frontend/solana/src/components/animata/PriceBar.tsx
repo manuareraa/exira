@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 import { cn } from "../../utils/cn";
@@ -10,8 +10,13 @@ interface TabProps {
   setSelected: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function PriceBar({ tabs }: { tabs: string[] }) {
+export default function PriceBar({ tabs, ...props }) {
   const [selected, setSelected] = useState<string>(tabs[0]);
+
+  useEffect(() => {
+    props.setCurrency(selected);
+    console.log(selected);
+  }, [selected]);
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-0 p-0 rounded-full w-fit bg-black/10">
