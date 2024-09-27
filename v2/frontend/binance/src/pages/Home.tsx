@@ -14,7 +14,7 @@ import {
 import PriceBar from "../components/animata/PriceBar";
 import Footer from "../components/custom/Footer";
 
-import { useRef, useEffect } from "react";
+import { useRef, useState } from "react";
 import CustomGlobe from "../components/custom/CustomGlobe";
 import BoxReveal from "../components/magic/TextBoxReveal";
 import WordRotate from "../components/magic/TextRotate";
@@ -27,8 +27,12 @@ import {
 
 import binanceLogo from "../assets/img/binance-t.png";
 import { CustomLamp } from "../components/custom/LampContainer";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const [currency, setCurrency] = useState("USD");
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col">
       {/* Top hero container */}
@@ -246,28 +250,69 @@ function Home() {
           <div className="flex flex-col items-center justify-center my-4">
             <p className="text-md">Show prices in</p>
             <div className="mt-2">
-              <PriceBar tabs={["USD", "EUR", "INR"]} />
+              <PriceBar
+                tabs={["USD", "BNB", "ETH"]}
+                setCurrency={setCurrency}
+              />
             </div>
           </div>
         </div>
 
         {/* Cards container */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {[1, 2, 3].map((_, index) => (
+          {[
+            {
+              price: 28,
+              shares: 1566,
+              title: "As low as,",
+            },
+            {
+              price: 89,
+              shares: 9455,
+              title: "Average of,",
+            },
+            {
+              price: 163,
+              shares: 566,
+              title: "As high as,",
+            },
+          ].map((_, index) => (
             <div
               key={index}
               className="flex flex-col items-center p-6 px-12 gap-y-3 rounded-3xl bg-black/10"
             >
-              <p className="text-2xl">From as low as,</p>
+              <p className="text-2xl">{_.title}</p>
               <div className="leading-none">
-                <p className="text-6xl font-bold">$30</p>
+                <p className="text-6xl font-bold">
+                  {currency === "USD" ? (
+                    "$" + _.price
+                  ) : currency === "BNB" ? (
+                    <>
+                      {(_.price * 0.0016).toFixed(2)}
+                      <span className="text-sm">&nbsp;BNB</span>
+                    </>
+                  ) : (
+                    <>
+                      {(_.price * 0.00037).toFixed(2)}
+                      <span className="text-sm">&nbsp;ETH</span>
+                    </>
+                  )}
+                </p>
                 <p className="text-lg">per share</p>
               </div>
               <div className="flex flex-col mt-2 gap-y-0">
-                <p className="text-3xl">4,566</p>
+                <p className="text-3xl">
+                  {_.shares.toLocaleString("en-US")}{" "}
+                  <span className="text-md">Shares</span>
+                </p>
                 <p className="text-md">Shares Available</p>
               </div>
-              <button className="p-2 px-8 py-3 mt-3 text-white bg-black border-2 rounded-full hover:bg-white hover:border-black hover:text-black">
+              <button
+                className="p-2 px-8 py-3 mt-3 text-white bg-black border-2 rounded-full hover:bg-white hover:border-black hover:text-black"
+                onClick={() => {
+                  navigate("/dashboard");
+                }}
+              >
                 Invest Now
               </button>
             </div>
@@ -292,7 +337,12 @@ function Home() {
               your journey with us now.
             </p>
           </div>
-          <button className="p-2 px-16 py-3 mt-3 text-black bg-white border-2 rounded-full hover:bg-black hover:border-white hover:text-white">
+          <button
+            className="p-2 px-16 py-3 mt-3 text-black bg-white border-2 rounded-full hover:bg-black hover:border-white hover:text-white"
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          >
             Get Started
           </button>
         </div>
