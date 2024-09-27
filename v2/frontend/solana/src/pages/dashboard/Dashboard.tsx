@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +13,16 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { usePropertiesStore } from "../../state-management/store";
+
 const Dashboard: React.FC = ({ children }) => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<string>("All Properties");
+  const { fetchProperties, properties } = usePropertiesStore();
+
+  useEffect(() => {
+    console.log("Properties from state: ", properties);
+  }, []);
 
   const menuItems = [
     { name: "All Properties", icon: faHouse, path: "/dashboard" },

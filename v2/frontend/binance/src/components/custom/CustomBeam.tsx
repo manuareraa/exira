@@ -5,7 +5,7 @@ import React, { forwardRef, useRef } from "react";
 import { cn } from "../../utils/cn";
 import { AnimatedBeam } from "../magic/AnimatedBeam";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCheck } from "@fortawesome/free-solid-svg-icons";
+import { faUserCheck } from "@fortawesome/free-solid-svg-icons/faUserCheck";
 
 const Circle = forwardRef<
   HTMLDivElement,

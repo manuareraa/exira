@@ -14,6 +14,8 @@
     "strict": false, // Disable all strict type-checking options
     "forceConsistentCasingInFileNames": false,
     "allowUnreachableCode": true, // Allow unreachable code
-    "allowUnusedLabels": true // Allow unused labels
+    "allowUnusedLabels": true, // Allow unused labels
+    "noEmitOnError": true,
+    "incremental": true
   }
 }

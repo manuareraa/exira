@@ -5,18 +5,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useEffect, useMemo } from "react";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  PhantomWalletAdapter,
-  UnsafeBurnerWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { clusterApiUrl } from "@solana/web3.js";
-import "@solana/wallet-adapter-react-ui/styles.css";
 import { Toaster } from "react-hot-toast";
 
 import "./App.css";
@@ -31,40 +19,15 @@ import Trade from "./components/custom/dashboard/pages/Trade";
 import Portfolio from "./components/custom/dashboard/pages/Portfolio";
 import History from "./components/custom/dashboard/pages/History";
 import PropertyView from "./pages/PropertyView";
-import Dummy from "./pages/admin-only/basic/Dummy";
-import CandyMachine from "./pages/admin-only/candy-machine/CandyMachine";
 import HowItWorks from "./pages/HowItWorks";
 
 import { useAccount } from "wagmi";
 import { useNavigate } from "react-router-dom";
 
 function App() {
-  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  const network = WalletAdapterNetwork.Devnet;
   const location = useLocation();
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   const navigate = useNavigate();
-
-  // You can also provide a custom RPC endpoint.
-  // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  // const endpoint = useMemo(
-  //   () =>
-  //     "https://ultra-palpable-orb.solana-mainnet.quiknode.pro/cf7a9deeca1bfe468aacb99226beaa660f6355cb",
-  //   []
-  // );
-  const endpoint = useMemo(
-    () =>
-      "https://aged-soft-brook.solana-devnet.quiknode.pro/0c543ce79041ea51479a8e6722d56474da57db2a",
-    []
-  );
-
-  console.log("endpoint", endpoint);
-
-  const wallets = useMemo(
-    () => [],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [network]
-  );
 
   useEffect(() => {
     if (isConnected === true) {
@@ -76,85 +39,77 @@ function App() {
   }, [isConnected]);
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          <Toaster />
-          {
-            // Navbar component
-            location.pathname.includes("/dashboard") ? null : <Navbar />
-          }
-          <div className="">
-            {/* Main content area with padding-top to accommodate the Navbar height */}
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Home />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+    <>
+      <Toaster />
+      {
+        // Navbar component
+        location.pathname.includes("/dashboard") ? null : <Navbar />
+      }
+      <div className="">
+        {/* Main content area with padding-top to accommodate the Navbar height */}
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
-              {/* Private Route with Guard for Dashboard */}
-              <Route
-                path="/dashboard"
-                element={
-                  <AuthMiddleware>
-                    <Dashboard>
-                      <AllProperties />
-                    </Dashboard>
-                  </AuthMiddleware>
-                }
-              />
-              <Route
-                path="/dashboard/launchpad"
-                element={
-                  <AuthMiddleware>
-                    <Dashboard>
-                      <Launchpad />
-                    </Dashboard>
-                  </AuthMiddleware>
-                }
-              />
-              <Route
-                path="/dashboard/trade"
-                element={
-                  <AuthMiddleware>
-                    <Dashboard>
-                      <Trade />
-                    </Dashboard>
-                  </AuthMiddleware>
-                }
-              />
-              <Route
-                path="/dashboard/portfolio"
-                element={
-                  <AuthMiddleware>
-                    <Dashboard>
-                      <Portfolio />
-                    </Dashboard>
-                  </AuthMiddleware>
-                }
-              />
-              <Route
-                path="/dashboard/history"
-                element={
-                  <AuthMiddleware>
-                    <Dashboard>
-                      <History />
-                    </Dashboard>
-                  </AuthMiddleware>
-                }
-              />
+          {/* Private Route with Guard for Dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              <AuthMiddleware>
+                <Dashboard>
+                  <AllProperties />
+                </Dashboard>
+              </AuthMiddleware>
+            }
+          />
+          <Route
+            path="/dashboard/launchpad"
+            element={
+              <AuthMiddleware>
+                <Dashboard>
+                  <Launchpad />
+                </Dashboard>
+              </AuthMiddleware>
+            }
+          />
+          <Route
+            path="/dashboard/trade"
+            element={
+              <AuthMiddleware>
+                <Dashboard>
+                  <Trade />
+                </Dashboard>
+              </AuthMiddleware>
+            }
+          />
+          <Route
+            path="/dashboard/portfolio"
+            element={
+              <AuthMiddleware>
+                <Dashboard>
+                  <Portfolio />
+                </Dashboard>
+              </AuthMiddleware>
+            }
+          />
+          <Route
+            path="/dashboard/history"
+            element={
+              <AuthMiddleware>
+                <Dashboard>
+                  <History />
+                </Dashboard>
+              </AuthMiddleware>
+            }
+          />
 
-              <Route path="/property/view/:id" element={<PropertyView />} />
-              <Route path="/dummy" element={<Dummy />} />
-              <Route path="/candy-machine" element={<CandyMachine />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-            </Routes>
-          </div>
-          {/* <WalletMultiButton /> */}
-          {/* <WalletDisconnectButton /> */}
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
+          <Route path="/property/view/:id" element={<PropertyView />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+        </Routes>
+      </div>
+    </>
   );
 }
 

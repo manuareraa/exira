@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  WalletMultiButton,
-  WalletDisconnectButton,
-} from "@solana/wallet-adapter-react-ui";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import toast from "react-hot-toast";
 
 import { useAppKit, useAppKitState, useWalletInfo } from "@reown/appkit/react";
@@ -22,22 +17,9 @@ function Navbar() {
   // State for managing mobile menu visibility
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Access the connection and publicKey from the Solana wallet
-  const { connection } = useConnection();
-  const { publicKey } = useWallet();
-
   // Access location and navigate for routing
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Handle the navigation to the app
-  const handleGoToApp = () => {
-    if (connection && publicKey) {
-      navigate("/dashboard");
-    } else {
-      toast.error("Please connect your wallet");
-    }
-  };
 
   // Handle navigation and close menu for mobile
   const handleNavigate = (path) => {
@@ -163,7 +145,9 @@ function Navbar() {
           {!location.pathname.includes("/dashboard") && isConnected === true ? (
             <button
               className="flex items-center justify-center w-full h-10 px-6 py-2 border-2 rounded-lg text-beta bg-alpha border-alpha md:w-auto"
-              onClick={handleGoToApp}
+              onClick={() => {
+                handleNavigate("/dashboard");
+              }}
             >
               <div className="flex flex-row items-center justify-center gap-2">
                 <p>Exira App</p>

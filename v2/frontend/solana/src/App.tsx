@@ -46,6 +46,8 @@ import TopBanner from "./components/custom/TopBanner";
 import Waitlist from "./pages/Waitlist";
 import LoadingOverlay from "./components/custom/LoadingOverlay";
 
+import { usePropertiesStore } from "./state-management/store";
+
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
@@ -55,6 +57,12 @@ function App() {
   const { publicKey } = useWallet();
   const { showWalletOverlay, setShowWalletOverlay } = useWalletOverlayStore();
   const { isLoading } = useLoadingStore();
+
+  const { fetchProperties } = usePropertiesStore();
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
 
   // You can also provide a custom RPC endpoint.
   // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -97,6 +105,7 @@ function App() {
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {location.pathname.includes("/dashboard") ? null : <TopBanner />}
+
           {
             // Loading overlay
             isLoading ? <LoadingOverlay /> : null

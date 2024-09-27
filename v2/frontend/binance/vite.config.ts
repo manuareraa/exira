@@ -12,10 +12,18 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), nodePolyfills()],
+  plugins: [
+    react(),
+    nodePolyfills(),
+    visualizer({
+      filename: "./dist/stats.html",
+      open: true,
+    }),
+  ],
   server: {
     port: 3100,
     host: true,
@@ -28,6 +36,14 @@ export default defineConfig({
       util: "util",
       assert: "assert",
       events: "events",
+    },
+  },
+  build: {
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+      },
     },
   },
 });
