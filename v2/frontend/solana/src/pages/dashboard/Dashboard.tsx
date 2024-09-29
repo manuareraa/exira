@@ -22,6 +22,7 @@ const Dashboard: React.FC = ({ children }) => {
 
   useEffect(() => {
     console.log("Properties from state: ", properties);
+    fetchProperties();
   }, []);
 
   const menuItems = [

@@ -60,9 +60,9 @@ function App() {
 
   const { fetchProperties } = usePropertiesStore();
 
-  useEffect(() => {
-    fetchProperties();
-  }, []);
+  // useEffect(() => {
+  //   fetchProperties();
+  // }, []);
 
   // You can also provide a custom RPC endpoint.
   // const endpoint = useMemo(() => clusterApiUrl(network), [network]);

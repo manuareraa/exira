@@ -229,9 +229,7 @@ function Dummy(props) {
         sellerFeeBasisPoints: percentAmount(5), // 5.5%
         // isCollection: true,
         printSupply: printSupply("Limited", [5]),
-        token: {
-          
-        }
+        token: {},
       }).sendAndConfirm(umi);
       console.log("Create Collection Response: ", response);
       console.log(
@@ -322,16 +320,20 @@ function Dummy(props) {
     console.log("NFT Signer: ", nftSigner);
 
     const response = await createProgrammableNft(umi, {
+      tokenOwner: umi.identity.publicKey,
       mint: nftSigner,
       sellerFeeBasisPoints: percentAmount(5),
-      name: "EXtME13",
-      uri: "#",
+      name: "Swarna Kshetra Farm",
+      uri: "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmWXbUBycxxV5RAFsP9B64ShNW5ggTEAWiH6xzNnZLHURG/ipfs-swarna-kshetra-farm.json",
       ruleSet: "eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9",
       isMutable: true,
-      symbol: "EXtc13",
-      printSupply: printSupply("Limited", [5]),
+      symbol: "SWKFA",
+      printSupply: printSupply("Limited", [4700]),
+      authority: umi.identity,
+      updateAuthority: umi.identity,
+
       // isCollection: true,
-      collection: collDetails,
+      // collection: collDetails
     }).sendAndConfirm(umi);
     console.log("Create Asset Response: ", response);
     console.log(

@@ -130,16 +130,36 @@ export const usePropertiesStore = create(
           .from("properties_data")
           .select("*");
 
-        console.log("Properties data:", properties_data);
-
         if (error) {
           throw new Error("Error fetching properties data");
         }
 
-        // Update properties in the store
+        console.log("Properties data:", properties_data);
+
+        // Fetch JSON data for all properties in parallel
+        const propertiesWithJSONData = await Promise.all(
+          properties_data.map(async (property) => {
+            const JSONFile = property.JSONFile;
+            try {
+              const response = await axios.get(JSONFile);
+              property.JSONData = response.data;
+            } catch (jsonError) {
+              console.error(
+                `Error fetching JSON data for property ${property.UUID}:`,
+                jsonError
+              );
+              property.JSONData = null; // Handle missing or erroneous JSON data
+            }
+            return property;
+          })
+        );
+
+        // Update properties in the store, resetting any previous data
         set((state) => {
-          state.properties = properties_data;
+          state.properties = propertiesWithJSONData;
         });
+
+        console.log("Properties from API:", propertiesWithJSONData);
 
         setLoading(false, ""); // Stop loading after fetching
       } catch (error) {
