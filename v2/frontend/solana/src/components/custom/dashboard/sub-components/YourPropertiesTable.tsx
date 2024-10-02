@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -17,57 +17,50 @@ import {
 } from "@nextui-org/react";
 import { SearchIcon } from "../icons/SearchIcon";
 import { ChevronDownIcon } from "../icons/ChevronDownIcon";
+import { usePropertiesStore } from "../../../../state-management/store";
 
 const propertyTypes = [
   { uid: "residential", name: "Residential" },
   { uid: "commercial", name: "Commercial" },
   { uid: "industrial", name: "Industrial" },
-];
-
-const locations = [
-  { uid: "india", name: "India" },
-  { uid: "france", name: "France" },
-  { uid: "russia", name: "Russia" },
-  { uid: "usa", name: "USA" },
-];
-
-const priceRanges = [
-  { uid: "0-100", name: "$0 - $100" },
-  { uid: "101-500", name: "$101 - $500" },
-  { uid: "501-1000", name: "$501 - $1000" },
-  { uid: "1001+", name: "$1001+" },
+  { uid: "emptyPlot", name: "Empty Plot" },
 ];
 
 const columns = [
   { uid: "propertyName", name: "Property Name" },
   { uid: "location", name: "Location" },
   { uid: "propertyType", name: "Property Type" },
-  { uid: "ticketPrice", name: "Ticket Price" },
+  { uid: "initialSharePrice", name: "Initial Share Price" },
   { uid: "currentPrice", name: "Current Price" },
-  { uid: "yourShares", name: "Your Shares" },
+  { uid: "quantity", name: "Your Shares" },
   { uid: "actions", name: "Actions" },
 ];
 
 interface Property {
-  id: number;
-  propertyName: string;
-  location: string;
-  country: string;
-  propertyType: string;
-  ticketPrice: string;
-  currentPrice: string;
-  yourShares?: number;
+  parentAddress: string;
+  quantity: number;
+  UUID: string;
+  JSONData: {
+    name: string;
+    description: string;
+    attributes: {
+      initialSharePrice: number;
+      propertyType: string;
+      propertyLocation: string;
+    };
+  };
+  priceData: [
+    {
+      Price: number;
+    }
+  ];
 }
 
-export default function YourPropertiesTable(props: { dummyData: Property[] }) {
+export default function YourPropertiesTable() {
+  const { userInvestments } = usePropertiesStore();
+  const [portfolioProps, setPortfolioProps] = React.useState<Property[]>([]);
   const [filterValue, setFilterValue] = React.useState("");
   const [propertyTypeFilter, setPropertyTypeFilter] = React.useState<Selection>(
-    new Set(["all"])
-  );
-  const [locationFilter, setLocationFilter] = React.useState<Selection>(
-    new Set(["all"])
-  );
-  const [priceFilter, setPriceFilter] = React.useState<Selection>(
     new Set(["all"])
   );
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
@@ -75,43 +68,35 @@ export default function YourPropertiesTable(props: { dummyData: Property[] }) {
     direction: "ascending",
   });
 
+  // Load user investments into the state
+  useEffect(() => {
+    if (userInvestments.properties) {
+      setPortfolioProps(userInvestments.properties);
+    }
+  }, [userInvestments]);
+
+  // Filter and search logic
   const filteredItems = React.useMemo(() => {
-    // Filter items with "yourShares" field
-    let filtered = props.dummyData.filter(
-      (item) => item.yourShares !== undefined
-    );
+    let filtered = portfolioProps;
 
     if (filterValue) {
       filtered = filtered.filter((item) =>
-        item.propertyName.toLowerCase().includes(filterValue.toLowerCase())
+        item.JSONData.name.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
 
     if (!propertyTypeFilter.has("all")) {
       filtered = filtered.filter((item) =>
-        propertyTypeFilter.has(item.propertyType.toLowerCase())
+        propertyTypeFilter.has(
+          item.JSONData.attributes.propertyType.toLowerCase()
+        )
       );
-    }
-
-    if (!locationFilter.has("all")) {
-      filtered = filtered.filter((item) =>
-        locationFilter.has(item.country.toLowerCase())
-      );
-    }
-
-    if (!priceFilter.has("all")) {
-      filtered = filtered.filter((item) => {
-        const price = parseFloat(item.ticketPrice.replace("$", ""));
-        return Array.from(priceFilter).some((range) => {
-          const [min, max] = range.split("-").map(Number);
-          return price >= min && (max ? price <= max : true);
-        });
-      });
     }
 
     return filtered;
-  }, [filterValue, propertyTypeFilter, locationFilter, priceFilter]);
+  }, [filterValue, propertyTypeFilter, portfolioProps]);
 
+  // Sorting logic
   const sortedItems = React.useMemo(() => {
     return [...filteredItems].sort((a, b) => {
       const first = a[sortDescriptor.column as keyof Property];
@@ -120,30 +105,29 @@ export default function YourPropertiesTable(props: { dummyData: Property[] }) {
 
       switch (sortDescriptor.column) {
         case "propertyName":
+          cmp = a.JSONData.name.localeCompare(b.JSONData.name);
+          break;
         case "propertyType":
-          cmp = first.localeCompare(second);
+          cmp = a.JSONData.attributes.propertyType.localeCompare(
+            b.JSONData.attributes.propertyType
+          );
           break;
         case "location":
-          // Group by country first, then sort alphabetically by city
-          const [cityA, countryA] = (a.location as string).split(", ");
-          const [cityB, countryB] = (b.location as string).split(", ");
-          cmp = countryA.localeCompare(countryB) || cityA.localeCompare(cityB);
+          cmp = a.JSONData.attributes.propertyLocation.localeCompare(
+            b.JSONData.attributes.propertyLocation
+          );
           break;
-        case "ticketPrice":
+        case "initialSharePrice":
+          cmp =
+            a.JSONData.attributes.initialSharePrice -
+            b.JSONData.attributes.initialSharePrice;
+          break;
         case "currentPrice":
-          const priceA = parseFloat(
-            (first as string).replace(/[^0-9.-]+/g, "")
-          );
-          const priceB = parseFloat(
-            (second as string).replace(/[^0-9.-]+/g, "")
-          );
-          cmp = priceA - priceB;
+          cmp = a.priceData[0].Price - b.priceData[0].Price;
           break;
-
-        case "yourShares":
-          cmp = (first as number) - (second as number);
+        case "quantity":
+          cmp = a.quantity - b.quantity;
           break;
-
         default:
           cmp = 0;
       }
@@ -152,11 +136,34 @@ export default function YourPropertiesTable(props: { dummyData: Property[] }) {
     });
   }, [sortDescriptor, filteredItems]);
 
+  // Cell rendering logic
   const renderCell = React.useCallback(
     (item: Property, columnKey: React.Key) => {
       const cellValue = item[columnKey as keyof Property];
 
       switch (columnKey) {
+        case "propertyName":
+          return item.JSONData.name;
+        case "location":
+          return item.Location;
+        case "propertyType":
+          if (item.JSONData.attributes.propertyType === "residential") {
+            return "Residential";
+          } else if (item.JSONData.attributes.propertyType === "commercial") {
+            return "Commercial";
+          } else if (item.JSONData.attributes.propertyType === "industrial") {
+            return "Industrial";
+          } else if (item.JSONData.attributes.propertyType === "emptyPlot") {
+            return "Empty Plot";
+          } else {
+            return "Farming Land";
+          }
+        case "initialSharePrice":
+          return `$${item.JSONData.attributes.initialSharePrice.toLocaleString()}`;
+        case "currentPrice":
+          return `$${item.priceData[0].Price.toLocaleString()}`;
+        case "quantity":
+          return item.quantity;
         case "actions":
           return (
             <button className="px-4 py-2 font-bold text-white bg-black border-2 border-black rounded-full hover:bg-white hover:text-black">
@@ -198,60 +205,10 @@ export default function YourPropertiesTable(props: { dummyData: Property[] }) {
               ))}
             </DropdownMenu>
           </Dropdown>
-
-          {/* Location Filter */}
-          <Dropdown>
-            <DropdownTrigger>
-              <Button
-                endContent={<ChevronDownIcon />}
-                variant="flat"
-                className="h-12 text-md"
-              >
-                Location
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              disallowEmptySelection
-              selectedKeys={locationFilter}
-              selectionMode="multiple"
-              onSelectionChange={setLocationFilter}
-              closeOnSelect={false}
-            >
-              <DropdownItem key="all">All Locations</DropdownItem>
-              {locations.map((location) => (
-                <DropdownItem key={location.uid}>{location.name}</DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-
-          {/* Price Filter */}
-          <Dropdown>
-            <DropdownTrigger>
-              <Button
-                endContent={<ChevronDownIcon />}
-                variant="flat"
-                className="h-12 text-md"
-              >
-                Price
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              disallowEmptySelection
-              selectedKeys={priceFilter}
-              selectionMode="multiple"
-              onSelectionChange={setPriceFilter}
-              closeOnSelect={false}
-            >
-              <DropdownItem key="all">All Prices</DropdownItem>
-              {priceRanges.map((range) => (
-                <DropdownItem key={range.uid}>{range.name}</DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
         </div>
         <Input
           className="w-full max-w-lg text-xl"
-          placeholder="Search for a property by name, location, etc..."
+          placeholder="Search for a property by name..."
           startContent={<SearchIcon />}
           value={filterValue}
           onValueChange={setFilterValue}
@@ -278,7 +235,7 @@ export default function YourPropertiesTable(props: { dummyData: Property[] }) {
         </TableHeader>
         <TableBody items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} className="pb-2 my-6">
+            <TableRow key={item.UUID} className="pb-2 my-6">
               {(columnKey) => (
                 <TableCell className="text-md">
                   {renderCell(item, columnKey)}

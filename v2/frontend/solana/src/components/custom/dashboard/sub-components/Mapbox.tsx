@@ -1,12 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { usePropertiesStore } from "../../../../state-management/store";
 
 const Mapbox = (props) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [spinEnabled, setSpinEnabled] = useState(true);
+  const { userInvestments } = usePropertiesStore();
+  const [properties, setProperties] = useState([]);
   let userInteracting = false;
+
+  useEffect(() => {
+    if (userInvestments.properties) {
+      setProperties(userInvestments.properties);
+    }
+  }, [userInvestments]);
 
   useEffect(() => {
     mapboxgl.accessToken =
@@ -26,19 +35,19 @@ const Mapbox = (props) => {
     // });
 
     // Add custom markers for properties that have "yourShares"
-    const propertiesWithYourShares = props.dummyData.filter(
-      (item) => item.yourShares !== undefined
-    );
+    // const propertiesWithYourShares = props.dummyData.filter(
+    //   (item) => item.yourShares !== undefined
+    // );
 
-    propertiesWithYourShares.forEach((property) => {
+    properties.forEach((property) => {
       // Create a custom HTML element for the marker
       const el = document.createElement("div");
       el.className = "custom-marker";
       el.innerHTML = `
         <div class="marker-content bg-black text-white">
-          <strong>${property.propertyName}</strong>
+          <strong>${property.JSONData.name}</strong>
           <br />
-          <span>${property.yourShares} shares</span>
+          <span>${property.quantity} shares</span>
         </div>
       `;
 
@@ -50,9 +59,16 @@ const Mapbox = (props) => {
       el.style.textAlign = "center";
       el.style.color = "white";
 
+      // lat and lon are seperated by a comma as a string, extract it
+      const [longitude, latitude] =
+        property.JSONData.attributes.propertyLocation.split(",");
+
+      console.log("longitude", longitude);
+      console.log("latitude", latitude);
+
       // Add the custom marker to the map
       new mapboxgl.Marker(el)
-        .setLngLat([property.longitude, property.latitude])
+        .setLngLat([parseFloat(latitude), parseFloat(longitude)])
         .addTo(mapRef.current!);
     });
 
@@ -99,7 +115,7 @@ const Mapbox = (props) => {
     return () => {
       mapRef.current!.remove(); // Cleanup the map on component unmount
     };
-  }, [props.dummyData, spinEnabled]);
+  }, [properties, spinEnabled]);
 
   return (
     <div

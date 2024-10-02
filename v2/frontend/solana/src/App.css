@@ -56,3 +56,42 @@
   width: 100%;
   height: 100%;
 }
+
+/* For WebKit browsers (Chrome, Safari) */
+.custom-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #ff6347; /* Thumb color */
+  border: 2px solid #000; /* Thumb border */
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2); /* Thumb shadow */
+}
+
+.custom-range::-webkit-slider-runnable-track {
+  height: 8px;
+  background-color: #87ceeb; /* Track color */
+  border-radius: 4px;
+}
+
+/* For Firefox */
+.custom-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #ff6347; /* Thumb color */
+  border: 2px solid #000; /* Thumb border */
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2); /* Thumb shadow */
+}
+
+.custom-range::-moz-range-track {
+  height: 8px;
+  background-color: #87ceeb; /* Track color */
+  border-radius: 4px;
+}
+
+/* General styling for all browsers */
+.custom-range {
+  appearance: none;
+  width: 100%;
+}

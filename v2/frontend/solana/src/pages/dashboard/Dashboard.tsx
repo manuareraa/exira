@@ -12,18 +12,50 @@ import {
   faSeedling,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 
 import { usePropertiesStore } from "../../state-management/store";
 
 const Dashboard: React.FC = ({ children }) => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<string>("All Properties");
-  const { fetchProperties, properties } = usePropertiesStore();
+  const {
+    fetchProperties,
+    properties,
+    fetchPriceData,
+    fetchSellOrders,
+    fetchOnChainMasterEditionData,
+    fetchUserProperties,
+    fetchUserTxns,
+  } = usePropertiesStore();
+
+  const wallet = useWallet();
+  const { connection } = useConnection();
+  const umi = createUmi(connection)
+    .use(walletAdapterIdentity(wallet))
+    // this is for minting programmable NFTs
+    .use(mplTokenMetadata());
 
   useEffect(() => {
     console.log("Properties from state: ", properties);
     fetchProperties();
+    fetchPriceData();
+    fetchSellOrders();
+    fetchUserTxns(umi.identity?.publicKey);
+    fetchUserProperties(umi, umi.identity?.publicKey);
   }, []);
+
+  // useEffect(() => {
+  //   if (umi !== undefined || umi !== null) {
+  //     if (umi.identity?.publicKey) {
+  //       // fetchUserProperties(umi, umi.identity?.publicKey);
+  //       fetchUserTxns(umi.identity?.publicKey);
+  //     }
+  //   }
+  // }, [umi]);
 
   const menuItems = [
     { name: "All Properties", icon: faHouse, path: "/dashboard" },

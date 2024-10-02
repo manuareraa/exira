@@ -54,7 +54,7 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const { connection } = useConnection();
-  const { publicKey } = useWallet();
+  // const { publicKey } = useWallet();
   const { showWalletOverlay, setShowWalletOverlay } = useWalletOverlayStore();
   const { isLoading } = useLoadingStore();
 

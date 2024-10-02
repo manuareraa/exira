@@ -34,6 +34,8 @@ import {
   updateV1,
   fetchMetadataFromSeeds,
   collectionDetails,
+  fetchAllDigitalAssetWithTokenByOwner,
+  fetchDigitalAssetWithAssociatedToken,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { transferTokens } from "@metaplex-foundation/mpl-toolbox";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -323,12 +325,12 @@ function Dummy(props) {
       tokenOwner: umi.identity.publicKey,
       mint: nftSigner,
       sellerFeeBasisPoints: percentAmount(5),
-      name: "Swarna Kshetra Farm",
-      uri: "https://amber-blank-raven-319.mypinata.cloud/ipfs/QmWXbUBycxxV5RAFsP9B64ShNW5ggTEAWiH6xzNnZLHURG/ipfs-swarna-kshetra-farm.json",
+      name: "wwwre",
+      uri: "#",
       ruleSet: "eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9",
       isMutable: true,
-      symbol: "SWKFA",
-      printSupply: printSupply("Limited", [4700]),
+      symbol: "WRE",
+      printSupply: printSupply("Limited", [10]),
       authority: umi.identity,
       updateAuthority: umi.identity,
 
@@ -409,11 +411,22 @@ function Dummy(props) {
   const fetchPNFTAssets = async () => {
     console.log("Fetching assets...");
     console.log("Owner Address: ", fetchAssetsByOwnerAddr);
+    // const assetsByOwner = await fetchDigitalAssetWithAssociatedToken(
+    //   umi,
+    //   "371UVEERyWX8RnXuDFAPLrAvbz2t1yBuiUndYJetKJVj",
+    //   fetchAssetsByOwnerAddr
+    // );
     const assetsByOwner = await fetchAllDigitalAssetByOwner(
       umi,
       fetchAssetsByOwnerAddr
     );
-    console.log("Assets by Owner: ", assetsByOwner);
+    const allMasterEditions = await fetchAllMasterEdition(umi, [
+      "764HZXNsRV69fRmeigE6Q8ZkCerFoBNw7iqVp62MZvLF",
+    ]);
+    // const allEditions = await fetchAllEdition(umi, ["BZAHeAqtSs3JHR9vnT6VXyF347NkgbeuvVpz4g2sm9WR"]);
+    // console.log("Assets by Owner: ", assetsByOwner);
+    // console.log("All Editions: ", allEditions);
+    console.log("All Master Editions: ", allMasterEditions);
   };
 
   const showWalletObject = async () => {
@@ -440,10 +453,11 @@ function Dummy(props) {
     console.log("Edition Mint: ", editionMint);
 
     const response = await printV1(umi, {
-      masterTokenAccountOwner: umi.identity.publicKey,
+      // masterTokenAccountOwner: umi.identity.publicKey,
+      masterTokenAccountOwner: "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN",
       masterEditionMint: printEditionMint,
       editionMint,
-      editionTokenAccountOwner: umi.identity.publicKey,
+      editionTokenAccountOwner: "DiaUrAaTkuftHRkEJePworE2uT9ZhcFi1WqkAx53UxHv",
       editionNumber: masterEdition.supply + 1n,
       tokenStandard: TokenStandard.ProgrammableNonFungible,
     }).sendAndConfirm(umi);

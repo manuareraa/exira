@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -17,75 +17,114 @@ import {
 } from "@nextui-org/react";
 import { SearchIcon } from "../icons/SearchIcon";
 import { ChevronDownIcon } from "../icons/ChevronDownIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCaretUp,
+  faCaretDown,
+  faArrowTrendDown,
+  faArrowTrendUp,
+} from "@fortawesome/free-solid-svg-icons";
 
+import { useNavigate } from "react-router-dom";
 import { usePropertiesStore } from "../../../../state-management/store";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+
+import solCoin from "../../../../assets/svg/sol-coin.svg";
+import usdcCoin from "../../../../assets/svg/usd-coin.svg";
+import usdtCoin from "../../../../assets/svg/usdt-coin.svg";
 
 export default function PropertyTable() {
-  const { fetchProperties, properties } = usePropertiesStore();
+  const navigate = useNavigate();
+  const {
+    fetchProperties,
+    properties,
+    priceData,
+    setTotalAssetValue,
+    totalAssetValue,
+    onChainMasterEditionData,
+    fetchOnChainMasterEditionData,
+    sellOrderData,
+  } = usePropertiesStore();
 
-  function calculateTotalShares(sharePerNFT) {
-    return Math.round(1 / sharePerNFT);
-  }
+  const wallet = useWallet();
+  const { connection } = useConnection();
+  const umi = createUmi(connection)
+    .use(walletAdapterIdentity(wallet))
+    .use(mplTokenMetadata());
 
-  // // Process the properties data to flatten necessary fields
-  // const processedProperties = React.useMemo(() => {
-  //   return properties.map((item) => {
-  //     const propertyType = item.JSONData.attributes.propertyType;
-  //     const initialSharePrice = parseFloat(
-  //       item.JSONData.attributes.initialSharePrice
-  //     );
-  //     // For currentPrice, use initialSharePrice or "Not Trading" based on Status
-  //     const currentPrice =
-  //       item.Status === "trading" ? `$${initialSharePrice}` : "Not Trading";
-  //     // Assuming totalShares is available; otherwise, set as "N/A"
-  //     const totalShares = item.totalShares || "N/A";
+  // Fetching on-chain data when properties are updated
+  useEffect(() => {
+    if (properties.length > 0) {
+      fetchOnChainMasterEditionData(umi, properties);
+    }
+  }, [properties]);
 
-  //     return {
-  //       UUID: item.UUID,
-  //       Name: item.Name,
-  //       Location: item.Location,
-  //       propertyType,
-  //       initialSharePrice,
-  //       currentPrice,
-  //       totalShares,
-  //     };
-  //   });
-  // }, [properties]);
-  const processedProperties = React.useMemo(() => {
+  let tempAssetValue = 0;
+
+  // Process and flatten the property data
+  const processedProperties = useMemo(() => {
     return properties.map((item) => {
       const propertyType = item.JSONData.attributes.propertyType;
       const initialSharePrice = parseFloat(
         item.JSONData.attributes.initialSharePrice
       );
-      const sharePerNFT = parseFloat(item.JSONData.attributes.sharePerNFT);
       const totalShares =
         item.JSONData.attributes.initialPropertyValue /
         item.JSONData.attributes.initialSharePrice;
 
-      // Assuming you have a way to determine available shares
-      // For demonstration, let's assume all shares are available
-      const availableShares = totalShares; // Replace with actual available shares if different
+      // Calculate available shares based on trading status
+      let availableShares = 0;
+      if (item.Status === "trading" && sellOrderData[item.UUID]) {
+        availableShares = sellOrderData[item.UUID].orders.reduce(
+          (acc, order) => acc + order.quantity,
+          0
+        );
+        availableShares = totalShares - availableShares;
+      } else {
+        const edition = onChainMasterEditionData.find(
+          (edition) => edition.UUID === item.UUID
+        );
+        const maxSupply =
+          parseInt(edition?.collectionMetadata.edition.maxSupply.value) || 0;
+        const supply =
+          parseInt(edition?.collectionMetadata.edition.supply) || 0;
+        availableShares = maxSupply - supply;
+      }
 
-      // For currentPrice, use initialSharePrice or "Not Trading" based on Status
-      const currentPrice =
-        item.Status === "trading" ? `$${initialSharePrice}` : "Not Trading";
+      let currentPrice =
+        item.Status === "trading"
+          ? priceData.find((price) => price.UUID === item.UUID)?.Price || 0
+          : 100;
+
+      let assetValue =
+        (item.JSONData.attributes.initialPropertyValue /
+          item.JSONData.attributes.initialSharePrice) *
+        currentPrice;
+
+      tempAssetValue += assetValue;
+      setTotalAssetValue(tempAssetValue);
 
       return {
         UUID: item.UUID,
         Name: item.Name,
-        Location: item.Location,
         propertyType,
         initialSharePrice,
         currentPrice,
         totalShares,
         availableShares,
-        // Include other necessary fields
+        dividend: item.JSONData.attributes.dividendPerNFT,
+        status: item.Status,
+        Location: item.Location,
+        cover: item.NFTImage,
       };
     });
-  }, [properties]);
+  }, [properties, priceData, onChainMasterEditionData]);
 
   // Generate property types dynamically
-  const propertyTypes = React.useMemo(() => {
+  const propertyTypes = useMemo(() => {
     const uniqueTypes = Array.from(
       new Set(processedProperties.map((item) => item.propertyType))
     );
@@ -95,39 +134,14 @@ export default function PropertyTable() {
     }));
   }, [processedProperties]);
 
-  // Generate locations dynamically
-  const locations = React.useMemo(() => {
-    const uniqueCountries = Array.from(
-      new Set(
-        processedProperties.map((item) => {
-          const parts = item.Location.split(",").map((part) => part.trim());
-          const country = parts[parts.length - 1]; // Take the last entry as country
-          return country;
-        })
-      )
-    );
-    return uniqueCountries.map((country) => ({
-      uid: country.toLowerCase().replace(/\s+/g, "-"),
-      name: country,
-    }));
-  }, [processedProperties]);
-
-  // Generate price ranges dynamically
-  const priceRanges = React.useMemo(() => {
-    // Extract ticket prices and convert them to numbers
-    const prices = processedProperties.map((item) => item.initialSharePrice);
-
-    // Determine the minimum and maximum prices
+  // Generate price ranges based on current price
+  const priceRanges = useMemo(() => {
+    const prices = processedProperties.map((item) => item.currentPrice);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
-
-    // Define the number of ranges you want
     const rangeCount = 4;
-
-    // Calculate the size of each range
     const rangeSize = (maxPrice - minPrice) / rangeCount;
 
-    // Generate the ranges
     const ranges = [];
     for (let i = 0; i < rangeCount; i++) {
       const start = minPrice + i * rangeSize;
@@ -147,41 +161,40 @@ export default function PropertyTable() {
   }, [processedProperties]);
 
   const columns = [
+    { uid: "cover", name: "" },
     { uid: "Name", name: "Property Name" },
-    { uid: "Location", name: "Location" },
     { uid: "propertyType", name: "Property Type" },
-    { uid: "initialSharePrice", name: "Ticket Price" },
+    { uid: "status", name: "Status" },
     { uid: "currentPrice", name: "Current Price" },
-    { uid: "totalShares", name: "Total Shares" },
+    { uid: "growth", name: "Growth" },
+    { uid: "dividend", name: "Dividend" },
+    { uid: "availableShares", name: "Available Shares" },
     { uid: "actions", name: "Actions" },
   ];
 
   interface Property {
     UUID: string;
     Name: string;
-    Location: string;
     propertyType: string;
     initialSharePrice: number;
-    currentPrice: string | number;
-    totalShares: string;
+    currentPrice: number;
+    availableShares: number;
+    dividend: number;
+    status: string;
   }
 
-  const [filterValue, setFilterValue] = React.useState("");
-  const [propertyTypeFilter, setPropertyTypeFilter] = React.useState<Selection>(
+  const [filterValue, setFilterValue] = useState("");
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState<Selection>(
     new Set(["all"])
   );
-  const [locationFilter, setLocationFilter] = React.useState<Selection>(
-    new Set(["all"])
-  );
-  const [priceFilter, setPriceFilter] = React.useState<Selection>(
-    new Set(["all"])
-  );
-  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
+  const [priceFilter, setPriceFilter] = useState<Selection>(new Set(["all"]));
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "Name",
     direction: "ascending",
   });
 
-  const filteredItems = React.useMemo(() => {
+  // Filter and sort items
+  const filteredItems = useMemo(() => {
     let filtered = [...processedProperties];
 
     if (filterValue) {
@@ -198,21 +211,10 @@ export default function PropertyTable() {
       );
     }
 
-    if (!locationFilter.has("all")) {
-      filtered = filtered.filter((item) => {
-        const parts = item.Location.split(",").map((part) => part.trim());
-        const country = parts[parts.length - 1];
-        return Array.from(locationFilter).some(
-          (loc) => loc === country.toLowerCase().replace(/\s+/g, "-")
-        );
-      });
-    }
-
     if (!priceFilter.has("all")) {
       filtered = filtered.filter((item) => {
-        const price = item.initialSharePrice;
+        const price = item.currentPrice;
         return Array.from(priceFilter).some((range) => {
-          if (range === "all") return true;
           const [minStr, maxStr] = range.split("-");
           const min = parseFloat(minStr);
           const max = maxStr ? parseFloat(maxStr) : Infinity;
@@ -222,15 +224,9 @@ export default function PropertyTable() {
     }
 
     return filtered;
-  }, [
-    filterValue,
-    propertyTypeFilter,
-    locationFilter,
-    priceFilter,
-    processedProperties,
-  ]);
+  }, [filterValue, propertyTypeFilter, priceFilter, processedProperties]);
 
-  const sortedItems = React.useMemo(() => {
+  const sortedItems = useMemo(() => {
     return [...filteredItems].sort((a, b) => {
       const first = a[sortDescriptor.column as keyof Property];
       const second = b[sortDescriptor.column as keyof Property];
@@ -239,37 +235,23 @@ export default function PropertyTable() {
       switch (sortDescriptor.column) {
         case "Name":
         case "propertyType":
+        case "status":
           cmp = (first as string).localeCompare(second as string);
           break;
-        case "Location":
-          // Group by country first, then sort alphabetically by city
-          const [cityA, ...restA] = (a.Location as string)
-            .split(", ")
-            .map((part) => part.trim());
-          const countryA = restA[restA.length - 1];
-          const [cityB, ...restB] = (b.Location as string)
-            .split(", ")
-            .map((part) => part.trim());
-          const countryB = restB[restB.length - 1];
-          cmp = countryA.localeCompare(countryB) || cityA.localeCompare(cityB);
-          break;
-        case "initialSharePrice":
+        case "currentPrice":
+        case "dividend":
+        case "availableShares":
           cmp = (first as number) - (second as number);
           break;
-        case "currentPrice":
-          if (first === "Not Trading" && second === "Not Trading") {
-            cmp = 0;
-          } else if (first === "Not Trading") {
-            cmp = 1;
-          } else if (second === "Not Trading") {
-            cmp = -1;
-          } else {
-            const priceA = parseFloat(first as string);
-            const priceB = parseFloat(second as string);
-            cmp = priceA - priceB;
-          }
+        case "growth":
+          const growthA =
+            ((a.currentPrice - a.initialSharePrice) / a.initialSharePrice) *
+            100;
+          const growthB =
+            ((b.currentPrice - b.initialSharePrice) / b.initialSharePrice) *
+            100;
+          cmp = growthA - growthB;
           break;
-        // Add case for "totalShares" if necessary
         default:
           cmp = 0;
       }
@@ -278,38 +260,6 @@ export default function PropertyTable() {
     });
   }, [sortDescriptor, filteredItems]);
 
-  // const renderCell = React.useCallback(
-  //   (item: Property, columnKey: React.Key) => {
-  //     const cellValue = item[columnKey as keyof Property];
-
-  //     switch (columnKey) {
-  //       case "actions":
-  //         return (
-  //           <button className="px-4 py-2 font-bold text-white bg-black border-2 border-black rounded-full hover:bg-white hover:text-black">
-  //             View
-  //           </button>
-  //         );
-  //       case "initialSharePrice":
-  //         return `$${cellValue}`;
-  //       case "propertyType":
-  //         if (cellValue === "residential") {
-  //           return "Residential";
-  //         } else if (cellValue === "commercial") {
-  //           return "Commercial";
-  //         } else if (cellValue === "industrial") {
-  //           return "Industrial";
-  //         } else if (cellValue === "emptyPlot") {
-  //           return "Empty Plot";
-  //         } else if (cellValue === "farmingLand") {
-  //           return "Farming Land";
-  //         }
-  //       default:
-  //         return cellValue;
-  //     }
-  //   },
-  //   []
-  // );
-
   const renderCell = React.useCallback(
     (item: Property, columnKey: React.Key) => {
       const cellValue = item[columnKey as keyof Property];
@@ -317,12 +267,69 @@ export default function PropertyTable() {
       switch (columnKey) {
         case "actions":
           return (
-            <button className="px-4 py-2 font-bold text-white bg-black border-2 border-black rounded-full hover:bg-white hover:text-black">
-              View
-            </button>
+            <div className="flex flex-row items-center justify-center gap-x-4">
+              <button
+                className="px-4 py-2 font-bold text-white bg-black border-2 border-black rounded-full hover:bg-white hover:text-black"
+                onClick={() => {
+                  navigate("/property/view/" + item.UUID);
+                  // open in new tab
+                  // window.open(`/property/${item.UUID}`, "_blank");
+                }}
+              >
+                View & Buy
+              </button>
+            </div>
           );
-        case "initialSharePrice":
-          return `$${cellValue}`;
+        case "currentPrice":
+          let priceInSOL = cellValue * 0.0063732831968389;
+          // return `$${cellValue} / ${priceInSOL.toFixed(3)} SOL`;
+          return (
+            <div className="flex flex-row items-center w-full gap-2">
+              {/* sol  */}
+              <div className="flex flex-row items-center gap-x-4">
+                <img src={solCoin} alt="SOL" className="w-6 h-6" />
+                <p className="w-24 font-bold">
+                  {priceInSOL.toFixed(3)}{" "}
+                  <span className="font-normal">SOL</span>
+                </p>
+              </div>
+              {/* stable coins */}
+              <div className="flex flex-row items-center gap-x-">
+                <div className="flex flex-row items-center gap-x-2">
+                  <img src={usdcCoin} alt="SOL" className="w-6 h-6" />
+                  <img src={usdtCoin} alt="SOL" className="w-6 h-6" />
+                </div>
+                <p className="ml-3 font-bold ">
+                  <span className="font-normal">$</span> {cellValue}
+                </p>
+              </div>
+            </div>
+          );
+        case "growth":
+          const initialPrice = item.initialSharePrice;
+          const currentPrice = item.currentPrice;
+          const growth = ((currentPrice - initialPrice) / initialPrice) * 100;
+          return (
+            <p className="flex flex-row items-center gap-2">
+              <FontAwesomeIcon
+                icon={growth > 0 ? faArrowTrendUp : faArrowTrendDown}
+                color={growth > 0 ? "green" : "red"}
+              />
+              &nbsp;{growth.toFixed(1)}%
+            </p>
+          );
+        case "availableShares":
+          return `${item.availableShares}`;
+        case "dividend":
+          return `${cellValue}%`;
+        case "Name":
+          return (
+            <div className="flex flex-col gap-y-0">
+              <p>{cellValue}</p>
+              <p className="text-xs text-gray-500">{item.Location}</p>
+            </div>
+          );
+          break;
         case "propertyType":
           switch (cellValue) {
             case "residential":
@@ -338,9 +345,18 @@ export default function PropertyTable() {
             default:
               return cellValue;
           }
-        case "totalShares":
-          // Display available shares and total shares
-          return `${item.availableShares} / ${item.totalShares}`;
+        case "status":
+          return cellValue.charAt(0).toUpperCase() + cellValue.slice(1);
+        case "cover":
+          return (
+            <div className="flex flex-row items-center justify-center w-12 h-12 bg-gray-200 rounded-lg">
+              <img
+                src={item.cover}
+                alt="Property"
+                className="w-12 h-12 rounded-lg"
+              />
+            </div>
+          );
         default:
           return cellValue;
       }
@@ -357,7 +373,9 @@ export default function PropertyTable() {
         </div>
         <div className="text-right">
           <p className="text-2xl">Total Asset Value</p>
-          <p className="text-5xl font-bold">₹ 8,56,52,600</p>
+          <p className="text-5xl font-bold">
+            ${Math.round(totalAssetValue).toLocaleString()}
+          </p>
         </div>
       </div>
 
@@ -384,31 +402,6 @@ export default function PropertyTable() {
               <DropdownItem key="all">All Types</DropdownItem>
               {propertyTypes.map((type) => (
                 <DropdownItem key={type.uid}>{type.name}</DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
-
-          {/* Location Filter */}
-          <Dropdown>
-            <DropdownTrigger>
-              <Button
-                endContent={<ChevronDownIcon />}
-                variant="flat"
-                className="h-12 text-md"
-              >
-                Location
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              disallowEmptySelection
-              selectedKeys={locationFilter}
-              selectionMode="multiple"
-              onSelectionChange={setLocationFilter}
-              closeOnSelect={false}
-            >
-              <DropdownItem key="all">All Locations</DropdownItem>
-              {locations.map((location) => (
-                <DropdownItem key={location.uid}>{location.name}</DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>
@@ -442,18 +435,18 @@ export default function PropertyTable() {
         {/* Search Input */}
         <Input
           className="w-full max-w-lg text-xl"
-          placeholder="Search for a property by name, location, etc..."
+          placeholder="Search for a property by name"
           startContent={<SearchIcon />}
           value={filterValue}
           onValueChange={setFilterValue}
           size="lg"
         />
       </div>
-
       <Table
         aria-label="Property investment table"
         sortDescriptor={sortDescriptor}
         onSortChange={setSortDescriptor}
+        isStriped
       >
         <TableHeader columns={columns}>
           {(column) => (
@@ -467,9 +460,9 @@ export default function PropertyTable() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={sortedItems}>
+        <TableBody items={sortedItems} className="">
           {(item) => (
-            <TableRow key={item.UUID}>
+            <TableRow key={`${item.UUID}-${item.currentPrice}`} className="">
               {(columnKey) => (
                 <TableCell className="text-md">
                   {renderCell(item, columnKey)}
