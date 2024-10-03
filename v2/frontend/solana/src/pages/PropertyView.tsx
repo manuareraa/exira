@@ -309,7 +309,7 @@ const PropertyView = () => {
 
       setLoading(true, "NFT transfer in progress...");
       const response = await axios.post(
-        "http://localhost:3000/print-pnft-edition",
+        import.meta.env.VITE_BACKEND_URL + "/print-pnft-edition",
         {
           masterEditionMint: currentProperty.TokenAddress,
           editionOwnerPublicKey: umi.identity.publicKey,

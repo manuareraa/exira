@@ -85,6 +85,10 @@ function App() {
     [network]
   );
 
+  useEffect(() => {
+    console.log("Backend URL: ", import.meta.env.VITE_BACKEND_URL);
+  }, []);
+
   // useEffect(() => {
   //   console.log("Update in Public Key and Connection: ", publicKey, connection);
   //   if (

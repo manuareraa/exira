@@ -11,6 +11,8 @@ import {
   faRightLeft,
   faSeedling,
   faUser,
+  faArrowRightArrowLeft,
+  faHandHoldingDollar,
 } from "@fortawesome/free-solid-svg-icons";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
@@ -65,6 +67,12 @@ const Dashboard: React.FC = ({ children }) => {
       path: "/dashboard/launchpad",
     },
     { name: "Buy / Trade", icon: faCoins, path: "/dashboard/trade" },
+    { name: "Sell", icon: faHandHoldingDollar, path: "/dashboard/sell" },
+    {
+      name: "Transfer",
+      icon: faArrowRightArrowLeft,
+      path: "/dashboard/transfer",
+    },
   ];
 
   const accountItems = [
@@ -154,6 +162,10 @@ const Dashboard: React.FC = ({ children }) => {
               ? "Your Portfolio"
               : location.pathname.includes("/history")
               ? "Transaction History"
+              : location.pathname.includes("/sell")
+              ? "Sell"
+              : location.pathname.includes("/transfer")
+              ? "Transfer"
               : "All Properties"}
           </h2>
           <div className="flex items-center space-x-4">

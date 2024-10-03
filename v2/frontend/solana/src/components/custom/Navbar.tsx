@@ -6,7 +6,10 @@ import {
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronRight,
+  faUpRightFromSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 
 function Navbar() {
@@ -115,6 +118,15 @@ function Navbar() {
 
         {/* Wallet and App buttons */}
         <div className="flex flex-col items-center gap-4 mt-4 md:flex-row md:mt-0">
+          <button
+            className="flex flex-row items-center gap-x-3 h-full px-4 rounded-lg bg-alpha text-beta h-[40px] font-semibold"
+            onClick={() => {
+              window.open("https://faucet.solana.com/", "_blank");
+            }}
+          >
+            <p>Go To Faucet</p>
+            <FontAwesomeIcon icon={faUpRightFromSquare} size="2xs" />
+          </button>
           <WalletMultiButton
             // className="flex justify-center w-full px-4 py-2 text-sm text-white bg-black rounded-lg md:w-40"
             style={{

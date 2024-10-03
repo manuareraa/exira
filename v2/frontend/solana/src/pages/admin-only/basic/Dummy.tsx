@@ -37,7 +37,7 @@ import {
   fetchAllDigitalAssetWithTokenByOwner,
   fetchDigitalAssetWithAssociatedToken,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { transferTokens } from "@metaplex-foundation/mpl-toolbox";
+import { findAssociatedTokenPda, transferTokens } from "@metaplex-foundation/mpl-toolbox";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import {
@@ -512,12 +512,51 @@ function Dummy(props) {
     // console.log("Digital AssetC: ", assetC);
   };
 
+  const transferUSDC = async () => {
+    const SPL_TOKEN_2022_PROGRAM_ID: PublicKey = publicKey(
+      "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+    );
+
+    const token = findAssociatedTokenPda(umi, {
+      mint: "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN",
+      owner: umi.identity.publicKey,
+      tokenProgramId: SPL_TOKEN_2022_PROGRAM_ID,
+    });
+
+    console.log("Token: ", token);
+
+    // await mintV1(umi, {
+    //   mint: mint.publicKey,
+    //   token,
+    //   authority,
+    //   amount: 1,
+    //   tokenOwner,
+    //   splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+    //   tokenStandard: TokenStandard.NonFungible,
+    // }).sendAndConfirm(umi);
+    const tResponse = await transferV1(umi, {
+      asset: token,
+      newOwner: "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN",
+      amount: 10,
+    }).sendAndConfirm(umi);
+    
+    transfer
+
+    console.log("Transfer Response: ", tResponse);
+  };
+
   return (
     <div className="flex flex-col items-start justify-start my-20 text-2xl px-28 gap-y-4">
       This is dummy page
       <button className="btn" onClick={showWalletObject}>
         Show Wallet Object
       </button>
+      {/* transfer USDC */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={transferUSDC}>
+          Transfer USDC
+        </button>
+      </div>
       {/* create collection */}
       <div className="flex flex-row items-center gap-x-4">
         <button className="btn btn-primary" onClick={createCoreCollection}>

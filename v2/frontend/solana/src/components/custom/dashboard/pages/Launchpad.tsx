@@ -23,7 +23,8 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowTrendUp, faArrowTrendDown } from "@fortawesome/free-solid-svg-icons";
 import solCoin from "../../../../assets/svg/sol-coin.svg";
 import usdcCoin from "../../../../assets/svg/usd-coin.svg";
 import usdtCoin from "../../../../assets/svg/usdt-coin.svg";
