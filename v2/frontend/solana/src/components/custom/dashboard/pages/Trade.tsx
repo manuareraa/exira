@@ -24,7 +24,10 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowTrendUp, faArrowTrendDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowTrendUp,
+  faArrowTrendDown,
+} from "@fortawesome/free-solid-svg-icons";
 import solCoin from "../../../../assets/svg/sol-coin.svg";
 import usdcCoin from "../../../../assets/svg/usd-coin.svg";
 import usdtCoin from "../../../../assets/svg/usdt-coin.svg";
@@ -229,17 +232,17 @@ export default function Launchpad() {
           let priceInSOL = cellValue * 0.0063732831968389;
           return (
             <div className="flex flex-row items-center w-full gap-2">
-              <div className="flex flex-row items-center gap-x-4">
+              {/* <div className="flex flex-row items-center gap-x-4">
                 <img src={solCoin} alt="SOL" className="w-6 h-6" />
                 <p className="w-24 font-bold">
                   {priceInSOL.toFixed(3)}{" "}
                   <span className="font-normal">SOL</span>
                 </p>
-              </div>
+              </div> */}
               <div className="flex flex-row items-center gap-x-">
                 <div className="flex flex-row items-center gap-x-2">
                   <img src={usdcCoin} alt="SOL" className="w-6 h-6" />
-                  <img src={usdtCoin} alt="SOL" className="w-6 h-6" />
+                  {/* <img src={usdtCoin} alt="SOL" className="w-6 h-6" /> */}
                 </div>
                 <p className="ml-3 font-bold ">
                   <span className="font-normal">$</span> {cellValue}

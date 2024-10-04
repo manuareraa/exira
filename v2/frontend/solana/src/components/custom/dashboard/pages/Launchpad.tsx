@@ -229,17 +229,17 @@ export default function Launchpad() {
           let priceInSOL = cellValue * 0.0063732831968389;
           return (
             <div className="flex flex-row items-center w-full gap-2">
-              <div className="flex flex-row items-center gap-x-4">
+              {/* <div className="flex flex-row items-center gap-x-4">
                 <img src={solCoin} alt="SOL" className="w-6 h-6" />
                 <p className="w-24 font-bold">
                   {priceInSOL.toFixed(3)}{" "}
                   <span className="font-normal">SOL</span>
                 </p>
-              </div>
+              </div> */}
               <div className="flex flex-row items-center gap-x-">
                 <div className="flex flex-row items-center gap-x-2">
                   <img src={usdcCoin} alt="SOL" className="w-6 h-6" />
-                  <img src={usdtCoin} alt="SOL" className="w-6 h-6" />
+                  {/* <img src={usdtCoin} alt="SOL" className="w-6 h-6" /> */}
                 </div>
                 <p className="ml-3 font-bold ">
                   <span className="font-normal">$</span> {cellValue}

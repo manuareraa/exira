@@ -27,6 +27,7 @@ import {
   faCalendarDay,
   faChevronDown,
   faChevronLeft,
+  faChevronRight,
   faCircleInfo,
   faCopy,
   faDollarSign,
@@ -36,18 +37,15 @@ import PriceChart from "../components/custom/charts/PriceChart";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import axios from "axios";
 import { transferSol } from "@metaplex-foundation/mpl-toolbox";
-import { sol } from "@metaplex-foundation/umi";
+import { sol, transactionBuilder } from "@metaplex-foundation/umi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-const data = [
-  { name: "Jan", value: 2000 },
-  { name: "Feb", value: 2200 },
-  { name: "Mar", value: 2100 },
-  { name: "Apr", value: 2800 },
-  { name: "May", value: 2600 },
-  { name: "Jun", value: 2700 },
-];
+import {
+  findAssociatedTokenPda,
+  fetchToken,
+  createTokenIfMissing,
+  transferTokens,
+} from "@metaplex-foundation/mpl-toolbox";
 
 const PropertyView = () => {
   const navigate = useNavigate();
@@ -94,6 +92,26 @@ const PropertyView = () => {
     const balance = await connection.getBalance(publicKey);
     console.log("Balance: ", balance);
     setSolBalance(balance / LAMPORTS_PER_SOL);
+
+    // fetch USDC balance
+    const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    const account = "5cCcrvi3Qx8XQeQE8wkDmjCE9ZTaL3KN4vX3yF5DCCG4";
+    const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+
+    // this code basically predicts the PDA for the sender and receiver
+    const fromPDA = findAssociatedTokenPda(umi, {
+      owner: umi.identity.publicKey,
+      mint: mint,
+    });
+
+    const tokenAccountResponse = await fetchToken(umi, fromPDA);
+
+    console.log(
+      "To Token Account: ",
+      parseInt(tokenAccountResponse.amount) / 1000000
+    );
+
+    setSolBalance(parseInt(tokenAccountResponse.amount) / 1000000);
   };
 
   useEffect(() => {
@@ -277,6 +295,11 @@ const PropertyView = () => {
 
   const handleBuy = async () => {
     console.log("Invest Object: ", investObject);
+    // check balance
+    if (solBalance < investObject.amount * currentProperty.priceData[0].Price) {
+      toast.error("Insufficient balance");
+      return;
+    }
     if (investObject.amount <= 0) {
       toast.error("Please enter a valid amount");
       return;
@@ -288,19 +311,60 @@ const PropertyView = () => {
 
     try {
       try {
-        setLoading(true, "Transferring SOL...");
-        // first transfer SOL
-        const solTransferResponse = await transferSol(umi, {
-          source: umi.identity,
-          destination: "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN",
-          amount: sol(
-            investObject.amount *
-              currentProperty.priceData[0].Price *
-              0.0065112644875634845
-          ),
-        }).sendAndConfirm(umi);
-        toast.success("SOL transferred successfully");
-        console.log("Sol transfer response:", solTransferResponse);
+        setLoading(true, "Transferring USDC...");
+
+        const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+        const account = "5cCcrvi3Qx8XQeQE8wkDmjCE9ZTaL3KN4vX3yF5DCCG4";
+        const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+        const toAddress = "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN";
+
+        // this code basically predicts the PDA for the sender and receiver
+        const fromPDA = findAssociatedTokenPda(umi, {
+          owner: umi.identity.publicKey,
+          mint: mint,
+        });
+
+        console.log("From Token Account: ", fromPDA);
+
+        const toPDA = findAssociatedTokenPda(umi, {
+          owner: toAddress,
+          mint: mint,
+        });
+
+        console.log("To Token Account: ", toPDA);
+
+        const tokenAccountResponse = await transactionBuilder()
+          // this is creating PDA for the sender, which is someone else. usually this will be someone who is holder of the USDC in mainnet, so we can say they already have the PDA. But this is for testing, so we are creating it
+          .add(
+            createTokenIfMissing(umi, {
+              mint,
+              owner: umi.identity.publicKey,
+              tokenProgram: tokenProgram,
+            })
+          )
+          // this is creating PDA for the receiver, which is we. So, we don't need to create it becuase we already have it
+          // but this is for testing, so we are creating it
+          .add(
+            createTokenIfMissing(umi, {
+              mint,
+              owner: toAddress,
+              tokenProgram: tokenProgram,
+            })
+          )
+          .add(
+            transferTokens(umi, {
+              source: fromPDA,
+              destination: toPDA,
+              // authority: ownerOrDelegate,
+              amount:
+                investObject.amount *
+                currentProperty.priceData[0].Price *
+                1000000,
+            })
+          )
+          .sendAndConfirm(umi);
+
+        console.log("To Token Account: ", tokenAccountResponse);
       } catch (error) {
         setLoading(false, "");
         console.error("Error in Sol transfer:", error);
@@ -347,6 +411,8 @@ const PropertyView = () => {
 
         console.log("Update Launchpad Response:", updateLaunchpadResponse);
 
+        fetchBalance();
+
         // reset the invest object
         setInvestObject({
           amount: 0,
@@ -386,17 +452,31 @@ const PropertyView = () => {
         ) : (
           <>
             <div className="w-full p-6 overflow-y-auto md:w-[60rem] text-left mb-16">
-              <div
-                className="flex flex-row items-center px-6 py-2 mb-2 border-2 rounded-full border-alpha bg-alpha w-fit gap-x-3 hover:cursor-pointer "
-                onClick={() => navigate("/dashboard")}
-              >
-                <FontAwesomeIcon
-                  icon={faChevronLeft}
-                  color="#000000"
-                  className="text-beta"
-                  size="sm"
-                />
-                <p className="text-sm text-beta">Back to Dashboard</p>
+              <div className="flex flex-row items-center justify-between w-full">
+                <div
+                  className="flex flex-row items-center px-6 py-2 mb-2 border-2 rounded-full border-alpha bg-alpha w-fit gap-x-3 hover:cursor-pointer "
+                  onClick={() => navigate("/dashboard")}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    color="#000000"
+                    className="text-beta"
+                    size="sm"
+                  />
+                  <p className="text-sm text-beta">Back to Dashboard</p>
+                </div>
+                <div
+                  className="flex flex-row items-center px-6 py-2 mb-2 border-2 rounded-full border-alpha bg-alpha w-fit gap-x-3 hover:cursor-pointer "
+                  onClick={() => navigate("/dashboard/portfolio")}
+                >
+                  <p className="text-sm text-beta">To Portfolio</p>
+                  <FontAwesomeIcon
+                    icon={faChevronRight}
+                    color="#000000"
+                    className="text-beta"
+                    size="sm"
+                  />
+                </div>
               </div>
               {/* name */}
               <h1 className="mb-1 text-6xl font-bold">
@@ -844,7 +924,7 @@ const PropertyView = () => {
                   </div>
                   <div className="flex flex-row items-end justify-center col-span-2 gap-x-3">
                     <div className="flex flex-col items-end justify-end">
-                      <p className="text-black text-md">ROI per NFT</p>
+                      <p className="text-black text-md">Dividend / NFT</p>
                       <span className="text-xs font-light">(/yr)</span>
                     </div>
                     <p className="text-5xl font-bold">
@@ -896,7 +976,7 @@ const PropertyView = () => {
                           "en-US"
                         )) ||
                         0} */}
-                      <span>&nbsp;USD</span>
+                      <span>&nbsp;USDC</span>
                     </p>
                   </div>
                   <div className="h-2 mt-2 mb-2 bg-gray-200 rounded-full">
@@ -907,7 +987,12 @@ const PropertyView = () => {
 
                     <Progress
                       aria-label="Loading..."
-                      value={currentProperty.launchpadData[0].Raised / 100}
+                      value={
+                        (currentProperty.launchpadData[0].Raised /
+                          currentProperty.JSONData.attributes
+                            .initialPropertyValue) *
+                        100
+                      }
                       className="max-w-md"
                       classNames={{
                         base: "",
@@ -927,24 +1012,24 @@ const PropertyView = () => {
                         ? currentProperty.priceData[0].Price.toFixed(1)
                         : "0.00"}{" "}
                       <span className="text-sm font-normal text-black">
-                        USD
+                        USDC
                       </span>
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-lg text-black">Available Shares</p>
                     <p className="text-3xl font-semibold">
-                      {availableShares}{" "}
-                      <span className="text-sm font-normal text-black">
-                        USD
-                      </span>
+                      {availableShares}
+                      {/* <span className="text-sm font-normal text-black">
+                        USDC
+                      </span> */}
                     </p>
                   </div>
                 </div>
 
                 <div className="mb-4">
                   <p className="mb-1 text-lg text-black">
-                    Your Balance: {solBalance.toFixed(4)} SOL
+                    Your Balance: {solBalance.toLocaleString()} USDC
                   </p>
                   <input
                     type="text"
@@ -973,15 +1058,15 @@ const PropertyView = () => {
                       investObject.amount * currentProperty.priceData[0].Price
                     ).toFixed(1)}{" "}
                   </span>
-                  USD &nbsp;/ {/* in SOL */}
-                  <span className="font-bold">
+                  USDC{/* in SOL */}
+                  {/* <span className="font-bold">
                     {(
                       investObject.amount *
                       currentProperty.priceData[0].Price *
                       0.0065112644875634845
                     ).toFixed(3)}{" "}
                   </span>
-                  SOL
+                  SOL */}
                 </button>
               </div>
             </div>
@@ -1042,7 +1127,7 @@ const PropertyView = () => {
                   <p className=" text-md">Profit</p>
                 </div>
                 <div className="flex flex-row items-center justify-end gap-x-4">
-                  {/* in USD */}
+                  {/* in USDC */}
                   <p className="text-lg font-bold ">
                     <span className="text-lg font-light ">$&nbsp;</span>
                     {profitDisplay === "monthly"

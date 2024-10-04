@@ -37,7 +37,13 @@ import {
   fetchAllDigitalAssetWithTokenByOwner,
   fetchDigitalAssetWithAssociatedToken,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { findAssociatedTokenPda, transferTokens } from "@metaplex-foundation/mpl-toolbox";
+import {
+  findAssociatedTokenPda,
+  transferTokens,
+  createTokenIfMissing,
+  createMint,
+  fetchToken,
+} from "@metaplex-foundation/mpl-toolbox";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import {
@@ -50,6 +56,16 @@ import {
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import toast from "react-hot-toast";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
+import {
+  getOrCreateAssociatedTokenAccount,
+  createTransferInstruction,
+} from "@solana/spl-token";
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  sendAndConfirmTransaction,
+  Transaction,
+} from "@solana/web3.js";
 
 function Dummy(props) {
   const [collectionName, setCollectionName] = useState("");
@@ -512,37 +528,124 @@ function Dummy(props) {
     // console.log("Digital AssetC: ", assetC);
   };
 
-  const transferUSDC = async () => {
-    const SPL_TOKEN_2022_PROGRAM_ID: PublicKey = publicKey(
-      "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
-    );
+  // const transferUSDC = async () => {
+  //   const SPL_TOKEN_2022_PROGRAM_ID: PublicKey = publicKey(
+  //     "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+  //   );
 
-    const token = findAssociatedTokenPda(umi, {
-      mint: "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN",
+  //   const token = findAssociatedTokenPda(umi, {
+  //     mint: "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN",
+  //     owner: umi.identity.publicKey,
+  //     tokenProgramId: SPL_TOKEN_2022_PROGRAM_ID,
+  //   });
+
+  //   console.log("Token: ", token);
+
+  //   // await mintV1(umi, {
+  //   //   mint: mint.publicKey,
+  //   //   token,
+  //   //   authority,
+  //   //   amount: 1,
+  //   //   tokenOwner,
+  //   //   splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
+  //   //   tokenStandard: TokenStandard.NonFungible,
+  //   // }).sendAndConfirm(umi);
+  //   const tResponse = await transferV1(umi, {
+  //     asset: token,
+  //     newOwner: "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN",
+  //     amount: 10,
+  //   }).sendAndConfirm(umi);
+
+  //   transfer
+
+  //   console.log("Transfer Response: ", tResponse);
+  // };
+
+  const receiveUSDC = async () => {
+    // const account = "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN";
+    // const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const mintAuthority = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    // const toAddress = "Ez1Y8ygX8TRwCbDEnu3r24hrjuDvxxy6qc15EKQgPvD5";
+
+    // https://explorer.solana.com/tx/4R5uH55YBHdb5H9t7mUMDmBFye9fMEeNBG1HSk8SwMyxwmuL72xbk4hE94XKen2TemYRr2N8t1ckXstJgNXJLRrC?cluster=devnet
+    // const account = "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN";
+    // const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const mintAuthority = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
+    // https://explorer.solana.com/tx/aZMqzbnDJTtSWXrZNuj35xdD7gkoYSQNMyJvMoW4XkjmHQFgakv1HymJBa2vPhup4dhgdt5qvArQFqturD2DcBh?cluster=devnet
+    const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    const account = "5cCcrvi3Qx8XQeQE8wkDmjCE9ZTaL3KN4vX3yF5DCCG4";
+    const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+
+    // this code basically predicts the PDA for the sender and receiver
+    const fromPDA = findAssociatedTokenPda(umi, {
       owner: umi.identity.publicKey,
-      tokenProgramId: SPL_TOKEN_2022_PROGRAM_ID,
+      mint: mint,
     });
 
-    console.log("Token: ", token);
+    console.log("From Token Account: ", fromPDA);
 
-    // await mintV1(umi, {
-    //   mint: mint.publicKey,
-    //   token,
-    //   authority,
-    //   amount: 1,
-    //   tokenOwner,
-    //   splTokenProgram: SPL_TOKEN_2022_PROGRAM_ID,
-    //   tokenStandard: TokenStandard.NonFungible,
-    // }).sendAndConfirm(umi);
-    const tResponse = await transferV1(umi, {
-      asset: token,
-      newOwner: "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN",
-      amount: 10,
-    }).sendAndConfirm(umi);
-    
-    transfer
+    const toPDA = findAssociatedTokenPda(umi, {
+      owner: toAddress,
+      mint: mint,
+    });
 
-    console.log("Transfer Response: ", tResponse);
+    console.log("To Token Account: ", toPDA);
+
+    const tokenAccountResponse = await transactionBuilder()
+      // this is creating PDA for the sender, which is someone else. usually this will be someone who is holder of the USDC in mainnet, so we can say they already have the PDA. But this is for testing, so we are creating it
+      .add(
+        createTokenIfMissing(umi, {
+          mint,
+          owner: umi.identity.publicKey,
+          tokenProgram: tokenProgram,
+        })
+      )
+      // this is creating PDA for the receiver, which is we. So, we don't need to create it becuase we already have it
+      // but this is for testing, so we are creating it
+      .add(
+        createTokenIfMissing(umi, {
+          mint,
+          owner: toAddress,
+          tokenProgram: tokenProgram,
+        })
+      )
+      .add(
+        transferTokens(umi, {
+          source: fromPDA,
+          destination: toPDA,
+          // authority: ownerOrDelegate,
+          amount: 30000000,
+        })
+      )
+      .sendAndConfirm(umi);
+
+    console.log("To Token Account: ", tokenAccountResponse);
+  };
+
+  const checkUSDCBalance = async () => {
+    // https://explorer.solana.com/tx/4R5uH55YBHdb5H9t7mUMDmBFye9fMEeNBG1HSk8SwMyxwmuL72xbk4hE94XKen2TemYRr2N8t1ckXstJgNXJLRrC?cluster=devnet
+    // const account = "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN";
+    // const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const mintAuthority = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
+    // https://explorer.solana.com/tx/aZMqzbnDJTtSWXrZNuj35xdD7gkoYSQNMyJvMoW4XkjmHQFgakv1HymJBa2vPhup4dhgdt5qvArQFqturD2DcBh?cluster=devnet
+    const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    const account = "5cCcrvi3Qx8XQeQE8wkDmjCE9ZTaL3KN4vX3yF5DCCG4";
+    const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+
+    // this code basically predicts the PDA for the sender and receiver
+    const fromPDA = findAssociatedTokenPda(umi, {
+      owner: umi.identity.publicKey,
+      mint: mint,
+    });
+
+    const tokenAccountResponse = await fetchToken(umi, fromPDA);
+
+    console.log("To Token Account: ", parseInt(tokenAccountResponse.amount) / 1000000);
   };
 
   return (
@@ -551,12 +654,6 @@ function Dummy(props) {
       <button className="btn" onClick={showWalletObject}>
         Show Wallet Object
       </button>
-      {/* transfer USDC */}
-      <div className="flex flex-row items-center gap-x-4">
-        <button className="btn btn-primary" onClick={transferUSDC}>
-          Transfer USDC
-        </button>
-      </div>
       {/* create collection */}
       <div className="flex flex-row items-center gap-x-4">
         <button className="btn btn-primary" onClick={createCoreCollection}>
@@ -804,6 +901,18 @@ function Dummy(props) {
       <div className="flex flex-row items-center gap-x-4">
         <button className="btn btn-primary" onClick={performUpdateMetadata}>
           Update Metadata
+        </button>
+      </div>
+      {/* receive USDC */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={receiveUSDC}>
+          Receive USDC
+        </button>
+      </div>
+      {/* check USDC balance */}
+      <div className="flex flex-row items-center gap-x-4">
+        <button className="btn btn-primary" onClick={checkUSDCBalance}>
+          Check USDC Balance
         </button>
       </div>
     </div>

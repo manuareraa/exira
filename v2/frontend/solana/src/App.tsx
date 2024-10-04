@@ -13,6 +13,7 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
   PhantomWalletAdapter,
   UnsafeBurnerWalletAdapter,
+  SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
@@ -47,6 +48,8 @@ import Waitlist from "./pages/Waitlist";
 import LoadingOverlay from "./components/custom/LoadingOverlay";
 
 import { usePropertiesStore } from "./state-management/store";
+import Sell from "./components/custom/dashboard/pages/Sell";
+import Transfer from "./components/custom/dashboard/pages/Transfer";
 
 function App() {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -178,6 +181,26 @@ function App() {
                   <AuthMiddleware>
                     <Dashboard>
                       <History />
+                    </Dashboard>
+                  </AuthMiddleware>
+                }
+              />
+              <Route
+                path="/dashboard/sell"
+                element={
+                  <AuthMiddleware>
+                    <Dashboard>
+                      <Sell />
+                    </Dashboard>
+                  </AuthMiddleware>
+                }
+              />
+              <Route
+                path="/dashboard/transfer"
+                element={
+                  <AuthMiddleware>
+                    <Dashboard>
+                      <Transfer />
                     </Dashboard>
                   </AuthMiddleware>
                 }

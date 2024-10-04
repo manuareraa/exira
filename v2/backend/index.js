@@ -9,6 +9,7 @@ const {
   generateSigner,
   keypairIdentity,
   transactionBuilder,
+  sol,
 } = require("@metaplex-foundation/umi");
 const { base58 } = require("@metaplex-foundation/umi/serializers");
 const {
@@ -18,6 +19,12 @@ const { Connection, PublicKey, Keypair } = require("@solana/web3.js");
 const { mplTokenMetadata } = require("@metaplex-foundation/mpl-token-metadata");
 const bs58 = require("bs58");
 const cors = require("cors");
+const {
+  transferSol,
+  findAssociatedTokenPda,
+  transferTokens,
+  createTokenIfMissing,
+} = require("@metaplex-foundation/mpl-toolbox");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -31,6 +38,9 @@ const connection = new Connection(
   "https://aged-soft-brook.solana-devnet.quiknode.pro/0c543ce79041ea51479a8e6722d56474da57db2a"
 ); // Replace with mainnet URL if necessary
 const umi = createUmi(connection).use(mplTokenMetadata());
+
+// address used here
+const address = "J6GT31oStsR1pns4t6P7fs3ARFNo9DCoYjANuNJVDyvN";
 
 const a2PKey =
   "67ntqFiD44RjsKbFGUwh3gQwgsP3y9ANS4dAegyYC4WUQGcbbWwfKMsXvLoSpXxR43qoh8SHutRvKkNXC3p2JiSc";
@@ -103,8 +113,176 @@ app.post("/print-pnft-edition", async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(port, '::', () => {
-  console.log(`Server running on port ${port}, listening on both IPv4 and IPv6`);
+// endpoint for SOL transfer to provided address - endpoint  /sol-drop
+app.post("/sol-drop", async (req, res) => {
+  try {
+    const amount = sol(0.001);
+    const { destination } = req.body;
+
+    console.log(`Destination: ${destination}`);
+    console.log(`Amount: ${amount}`);
+    console.log(`UMI: ${umi.identity.publicKey}`);
+
+    // Transfer SOL to the destination address
+    const response = await transferSol(umi, {
+      source: umi.identity,
+      destination,
+      amount,
+    }).sendAndConfirm(umi);
+
+    console.log("SOL Transfer Response: ", response);
+
+    // Return success response
+    res.status(200).json({
+      success: true,
+      message: "SOL transferred successfully",
+      response,
+    });
+  } catch (error) {
+    console.error("Error in transferring SOL: ", error);
+
+    // Return error response
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
 });
 
+// endpoint for USDC transfer to provided address - endpoint  /usdc-drop
+// const receiveUSDC = async () => {
+//   const account = "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN";
+//   const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+//   const mintAuthority = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+//   const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+//   const toAddress = "Ez1Y8ygX8TRwCbDEnu3r24hrjuDvxxy6qc15EKQgPvD5";
+
+//   // this code basically predicts the PDA for the sender and receiver
+//   const fromPDA = findAssociatedTokenPda(umi, {
+//     owner: umi.identity.publicKey,
+//     mint: mint,
+//   });
+
+//   console.log("From Token Account: ", fromPDA);
+
+//   const toPDA = findAssociatedTokenPda(umi, {
+//     owner: toAddress,
+//     mint: mint,
+//   });
+
+//   console.log("To Token Account: ", toPDA);
+
+//   const tokenAccountResponse = await transactionBuilder()
+//     // this is creating PDA for the sender, which is someone else. usually this will be someone who is holder of the USDC in mainnet, so we can say they already have the PDA. But this is for testing, so we are creating it
+//     .add(
+//       createTokenIfMissing(umi, {
+//         mint,
+//         owner: umi.identity.publicKey,
+//         tokenProgram: tokenProgram,
+//       })
+//     )
+//     // this is creating PDA for the receiver, which is we. So, we don't need to create it becuase we already have it
+//     // but this is for testing, so we are creating it
+//     .add(
+//       createTokenIfMissing(umi, {
+//         mint,
+//         owner: toAddress,
+//         tokenProgram: tokenProgram,
+//       })
+//     )
+//     .add(
+//       transferTokens(umi, {
+//         source: fromPDA,
+//         destination: toPDA,
+//         // authority: ownerOrDelegate,
+//         amount: 30000000,
+//       })
+//     )
+//     .sendAndConfirm(umi);
+
+//   console.log("To Token Account: ", tokenAccountResponse);
+// };
+
+// Start the server
+app.post("/usdc-drop", async (req, res) => {
+  try {
+    // https://explorer.solana.com/tx/4R5uH55YBHdb5H9t7mUMDmBFye9fMEeNBG1HSk8SwMyxwmuL72xbk4hE94XKen2TemYRr2N8t1ckXstJgNXJLRrC?cluster=devnet
+    // const account = "ATDdKNMSCeyiv1oooyPMq6GfMkvAwn5HwhFFsKgASCzN";
+    // const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const mintAuthority = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+    // const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
+    // https://explorer.solana.com/tx/aZMqzbnDJTtSWXrZNuj35xdD7gkoYSQNMyJvMoW4XkjmHQFgakv1HymJBa2vPhup4dhgdt5qvArQFqturD2DcBh?cluster=devnet
+    const tokenProgram = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    const account = "5cCcrvi3Qx8XQeQE8wkDmjCE9ZTaL3KN4vX3yF5DCCG4";
+    const mint = "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr";
+
+    const { toAddress } = req.body;
+
+    // this code basically predicts the PDA for the sender and receiver
+    const fromPDA = findAssociatedTokenPda(umi, {
+      owner: umi.identity.publicKey,
+      mint: mint,
+    });
+
+    console.log("From Token Account PDA: ", fromPDA);
+
+    const toPDA = findAssociatedTokenPda(umi, {
+      owner: toAddress,
+      mint: mint,
+    });
+
+    console.log("To Token Account PDA: ", toPDA);
+
+    const tokenAccountResponse = await transactionBuilder()
+      // this is creating PDA for the sender, which is someone else. usually this will be someone who is holder of the USDC in mainnet, so we can say they already have the PDA. But this is for testing, so we are creating it
+      // .add(
+      //   createTokenIfMissing(umi, {
+      //     mint,
+      //     owner: umi.identity.publicKey,
+      //     tokenProgram: tokenProgram,
+      //   })
+      // )
+      // this is creating PDA for the receiver, which is we. So, we don't need to create it becuase we already have it
+      // but this is for testing, so we are creating it
+      .add(
+        createTokenIfMissing(umi, {
+          mint,
+          owner: toAddress,
+          tokenProgram: tokenProgram,
+        })
+      )
+      .add(
+        transferTokens(umi, {
+          source: fromPDA,
+          destination: toPDA,
+          // authority: ownerOrDelegate,
+          amount: 1000000000, // 1000 USDC
+        })
+      )
+      .sendAndConfirm(umi);
+
+    console.log("To Token Account: ", tokenAccountResponse);
+
+    // Return success response
+    res.status(200).json({
+      success: true,
+      message: "USDC transferred successfully",
+      tokenAccountResponse,
+    });
+  } catch (error) {
+    console.error("Error in transferring USDC: ", error);
+
+    // Return error response
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.listen(port, "::", () => {
+  console.log(
+    `Server running on port ${port}, listening on both IPv4 and IPv6`
+  );
+});

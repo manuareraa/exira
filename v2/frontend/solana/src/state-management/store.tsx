@@ -138,6 +138,8 @@ export const usePropertiesStore = create(
     launchpadData: null,
     userInvestments: null,
     userTransactions: [],
+    sellOrdersForUser: [],
+    sellOrdersForProperty: [],
     setTotalAssetValue: (newValue: number) =>
       set((state) => {
         state.totalAssetValue = newValue;
@@ -847,6 +849,122 @@ export const usePropertiesStore = create(
         return { success: false, error: err };
       }
     },
-    mintLaunchPadTokens: async (umi, uuid, quantity, userAddress) => {},
+    fetchSellOrdersForAUser: async (userAddress) => {
+      try {
+        const { data, error } = await supabase
+          .from("SellOrders")
+          .select("*")
+          .eq("SellerAddress", userAddress);
+
+        if (error) {
+          throw error;
+        }
+
+        // get the property data for each sell order
+        const sellOrdersWithPropertyData = await Promise.all(
+          data.map(async (order) => {
+            const { UUID } = order;
+
+            const { data: propertyData, error: propError } = await supabase
+              .from("properties_data")
+              .select("Name, Location")
+              .eq("UUID", UUID);
+
+            if (propError) {
+              console.error("Error fetching property data:", propError);
+              return order;
+            }
+
+            // Add the property data to the transaction object
+            order.propertyData = propertyData[0];
+
+            return order;
+          })
+        );
+
+        console.log("Sell orders for user:", sellOrdersWithPropertyData);
+
+        set((state) => {
+          state.sellOrdersForUser = sellOrdersWithPropertyData;
+        });
+
+        return data;
+      } catch (error) {
+        console.error("Error fetching sell orders:", error);
+        return [];
+      }
+    },
+    fetchSellOrdersForAProperty: async (UUID) => {
+      try {
+        const { data, error } = await supabase
+          .from("SellOrders")
+          .select("*")
+          .eq("UUID", UUID);
+
+        if (error) {
+          throw error;
+        }
+
+        set((state) => {
+          state.sellOrdersForProperty = data;
+        });
+
+        return data;
+      } catch (error) {
+        console.error("Error fetching sell orders:", error);
+        return [];
+      }
+    },
+    addSellOrder: async ({
+      UUID,
+      TokenAddress,
+      SellerAddress,
+      Quantity,
+      PricePerShare,
+    }) => {
+      const { setLoading } = useLoadingStore.getState(); // Access setLoading from the loading store
+      try {
+        setLoading(true, "Creating sell order...");
+        const { data, error } = await supabase.from("SellOrders").insert([
+          {
+            UUID,
+            TokenAddress,
+            SellerAddress,
+            Quantity,
+            PricePerShare,
+          },
+        ]);
+
+        if (error) {
+          console.error("Error inserting sell order:", error);
+          return { success: false, error };
+        }
+
+        return { success: true, data };
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        return { success: false, error: err };
+      } finally {
+        setLoading(false, "");
+      }
+    },
+    removeSellOrder: async (sellOrderId) => {
+      try {
+        const { data, error } = await supabase
+          .from("SellOrders")
+          .delete()
+          .eq("id", sellOrderId);
+
+        if (error) {
+          console.error("Error deleting sell order:", error);
+          return { success: false, error };
+        }
+
+        return { success: true, data };
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        return { success: false, error: err };
+      }
+    },
   }))
 );

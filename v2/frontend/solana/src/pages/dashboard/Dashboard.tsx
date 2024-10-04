@@ -32,6 +32,7 @@ const Dashboard: React.FC = ({ children }) => {
     fetchOnChainMasterEditionData,
     fetchUserProperties,
     fetchUserTxns,
+    fetchSellOrdersForAUser,
   } = usePropertiesStore();
 
   const wallet = useWallet();
@@ -48,6 +49,7 @@ const Dashboard: React.FC = ({ children }) => {
     fetchSellOrders();
     fetchUserTxns(umi.identity?.publicKey);
     fetchUserProperties(umi, umi.identity?.publicKey);
+    fetchSellOrdersForAUser(umi.identity?.publicKey);
   }, []);
 
   // useEffect(() => {
