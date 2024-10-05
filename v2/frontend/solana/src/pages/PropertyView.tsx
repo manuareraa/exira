@@ -64,10 +64,6 @@ const PropertyView = () => {
   const [investObject, setInvestObject] = useState({
     amount: 0,
   });
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "propertyName",
-    direction: "ascending",
-  });
   const {
     fetchEverythingByUUID,
     currentProperty,
@@ -310,8 +306,8 @@ const PropertyView = () => {
       toast.error("Please enter a valid amount");
       return;
     }
-    if (investObject.amount > 10) {
-      toast.error("You can only buy a maximum of 10 shares at a time");
+    if (investObject.amount > 1) {
+      toast.error("For demo purposes, you can only buy a maximum of 1 share at a time");
       return;
     }
 
@@ -374,6 +370,7 @@ const PropertyView = () => {
       } catch (error) {
         setLoading(false, "");
         console.error("Error in Sol transfer:", error);
+        toast.error("Error transferring USDC. Please try again/later.");
         return;
       }
 
@@ -430,50 +427,11 @@ const PropertyView = () => {
     } catch (error) {
       setLoading(false, "");
       console.error("Error in axios request:", error);
+      toast.error("Error transferring NFT. Please try again/later.");
     } finally {
       setLoading(false, "");
     }
   };
-
-  // Sorting for sell orders
-  const sortedSellOrders = useMemo(() => {
-    if (
-      sellOrdersForProperty.length !== 0 &&
-      currentProperty?.Status !== "launchpad"
-    ) {
-      // return [...sellOrdersForProperty].sort((a, b) => {
-      //   let cmp = 0;
-
-      //   switch (sortDescriptor.column) {
-      //     case "propertyName":
-      //       // Sort by property name
-      //       cmp = a.propertyData.Name.localeCompare(b.propertyData.Name);
-      //       break;
-      //     case "sellPrice":
-      //       // Sort by selling price per share
-      //       cmp = a.PricePerShare - b.PricePerShare;
-      //       break;
-      //     case "sharesListed":
-      //       // Sort by shares listed
-      //       cmp = a.Quantity - b.Quantity;
-      //       break;
-      //     case "totalPrice":
-      //       // Sort by total price (PricePerShare * Quantity)
-      //       const totalPriceA = a.PricePerShare * a.Quantity;
-      //       const totalPriceB = b.PricePerShare * b.Quantity;
-      //       cmp = totalPriceA - totalPriceB;
-      //       break;
-      //     default:
-      //       cmp = 0;
-      //   }
-
-      //   return sortDescriptor.direction === "descending" ? -cmp : cmp;
-      // });
-      return [];
-    } else {
-      return [];
-    }
-  }, [sortDescriptor, sellOrdersForProperty]);
 
   return (
     <>
@@ -1133,83 +1091,84 @@ const PropertyView = () => {
                     <p className="text-2xl font-bold">Share Listings</p>
                   </div>
                   {/* table */}
-                  {sellOrdersForProperty.length === 0 ? (
-                    <p className="text-lg">No Listings available</p>
-                  ) : (
-                    <div>
-                      <Table
-                        aria-label="Sell orders table"
-                        sortDescriptor={sortDescriptor}
-                        onSortChange={setSortDescriptor}
-                      >
-                        <TableHeader
-                          columns={[
-                            { uid: "propertyName", name: "Property Name" },
-                            { uid: "location", name: "Location" },
-                            { uid: "sellPrice", name: "Selling Price" },
-                            { uid: "sharesListed", name: "Shares Listed" },
-                            { uid: "totalPrice", name: "Total Price" },
-                            { uid: "actions", name: "Actions" },
-                          ]}
-                          className="text-lg"
+                  {
+                    sellOrdersForProperty.length >= 0 ? (
+                      <div>
+                        <p className="my-4 text-lg text-black/50">
+                          No Listings available. Please check launchpad projects
+                          for investment opportunities.
+                        </p>
+                        <button
+                          className="w-full py-2 text-lg font-normal text-white bg-black border-2 border-black rounded-xl hover:bg-white hover:text-black"
+                          onClick={() => {
+                            navigate("/dashboard");
+                          }}
                         >
-                          {(column) => (
-                            <TableColumn
-                              key={column.uid}
-                              allowsSorting
-                              align="start"
-                              className="text-md text-alpha"
-                            >
-                              {column.name}
-                            </TableColumn>
-                          )}
-                        </TableHeader>
-                        <TableBody items={sortedSellOrders}>
-                          {(item) => (
-                            <TableRow key={item.id}>
-                              <TableCell>{item.propertyData.Name}</TableCell>
-                              <TableCell>
-                                {item.propertyData.Location}
-                              </TableCell>
-                              <TableCell>
-                                ${item.PricePerShare.toFixed(2)}
-                              </TableCell>
-                              <TableCell>{item.Quantity}</TableCell>
-                              <TableCell>
-                                $
-                                {(item.PricePerShare * item.Quantity).toFixed(
-                                  2
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex gap-x-2">
-                                  <Button
-                                    onClick={() =>
-                                      window.open(
-                                        `https://exira.io/property/view/${item.UUID}`,
-                                        "_blank"
-                                      )
-                                    }
-                                    className="border-2 rounded-full bg-alpha text-beta border-alpha hover:bg-beta hover:text-alpha hover:cursor-pointer"
-                                  >
-                                    View Project
-                                  </Button>
-                                  <Button
-                                    onClick={() =>
-                                      handleWithdrawListing(item.id)
-                                    }
-                                    className="bg-red-500 border-2 border-red-500 rounded-full text-beta hover:bg-beta hover:text-red-500 hover:cursor-pointer"
-                                  >
-                                    Withdraw
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
+                          Go to Launchpad
+                        </button>
+                      </div>
+                    ) : null
+                    // <div>
+                    //   <Table
+                    //     aria-label="Sell orders table"
+                    //     sortDescriptor={sortDescriptor}
+                    //     onSortChange={setSortDescriptor}
+                    //   >
+                    //     <TableHeader
+                    //       columns={[
+                    //         { uid: "sellPrice", name: "Selling Price" },
+                    //         { uid: "sharesListed", name: "Shares Listed" },
+                    //         { uid: "totalPrice", name: "Total Price" },
+                    //         { uid: "actions", name: "Actions" },
+                    //       ]}
+                    //       className="text-lg"
+                    //     >
+                    //       {(column) => (
+                    //         <TableColumn
+                    //           key={column.uid}
+                    //           allowsSorting
+                    //           align="start"
+                    //           className="text-md text-alpha"
+                    //         >
+                    //           {column.name}
+                    //         </TableColumn>
+                    //       )}
+                    //     </TableHeader>
+                    //     <TableBody items={sortedSellOrders}>
+                    //       {(item) => (
+                    //         <TableRow key={item.id}>
+                    //           <TableCell>
+                    //             ${item.PricePerShare.toFixed(2)}
+                    //           </TableCell>
+                    //           <TableCell>{item.Quantity}</TableCell>
+                    //           <TableCell>
+                    //             $
+                    //             {(item.PricePerShare * item.Quantity).toFixed(
+                    //               2
+                    //             )}
+                    //           </TableCell>
+                    //           <TableCell>
+                    //             <div className="flex gap-x-2">
+                    //               <Button
+                    //                 onClick={() =>
+                    //                   handleTradeBuy(
+                    //                     item.PricePerShare,
+                    //                     item.Quantity,
+                    //                     item.SellerAddress
+                    //                   )
+                    //                 }
+                    //                 className="border-2 rounded-full bg-alpha text-beta border-alpha hover:bg-beta hover:text-alpha hover:cursor-pointer"
+                    //               >
+                    //                 Buy
+                    //               </Button>
+                    //             </div>
+                    //           </TableCell>
+                    //         </TableRow>
+                    //       )}
+                    //     </TableBody>
+                    //   </Table>
+                    // </div>
+                  }
                 </div>
               </div>
             )}

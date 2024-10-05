@@ -55,6 +55,7 @@ function Navbar() {
       );
 
       console.log("USDC transferred successfully:", response.data);
+      toast.success("1000 Test USDC transferred successfully");
     } catch (error) {
       console.error(
         "Error transferring USDC:",
@@ -73,6 +74,7 @@ function Navbar() {
       );
 
       console.log("SOL transferred successfully:", response.data);
+      toast.success("0.01 SOL transferred successfully");
     } catch (error) {
       console.error(
         "Error transferring SOL:",

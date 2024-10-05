@@ -69,12 +69,12 @@ const Dashboard: React.FC = ({ children }) => {
       path: "/dashboard/launchpad",
     },
     { name: "Buy / Trade", icon: faCoins, path: "/dashboard/trade" },
-    { name: "Sell", icon: faHandHoldingDollar, path: "/dashboard/sell" },
-    {
-      name: "Transfer",
-      icon: faArrowRightArrowLeft,
-      path: "/dashboard/transfer",
-    },
+    // { name: "Sell", icon: faHandHoldingDollar, path: "/dashboard/sell" },
+    // {
+    //   name: "Transfer",
+    //   icon: faArrowRightArrowLeft,
+    //   path: "/dashboard/transfer",
+    // },
   ];
 
   const accountItems = [

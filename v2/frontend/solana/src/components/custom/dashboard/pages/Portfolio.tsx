@@ -122,15 +122,18 @@ function Portfolio(props) {
   });
 
   useEffect(() => {
-    if (userInvestments.length !== 0) {
-      setMetadata({
-        totalProfit: userInvestments.totalProfit,
-        totalCurrentPortfolioValue: userInvestments.totalCurrentPortfolioValue,
-        totalPropertiesHeld: userInvestments.totalPropertiesHeld,
-        totalSharesHeld: userInvestments.totalSharesHeld,
-        properties: userInvestments.properties,
-      });
-      setDataLoaded(true);
+    if (userInvestments) {
+      if (userInvestments.length !== 0) {
+        setMetadata({
+          totalProfit: userInvestments.totalProfit,
+          totalCurrentPortfolioValue:
+            userInvestments.totalCurrentPortfolioValue,
+          totalPropertiesHeld: userInvestments.totalPropertiesHeld,
+          totalSharesHeld: userInvestments.totalSharesHeld,
+          properties: userInvestments.properties,
+        });
+        setDataLoaded(true);
+      }
     }
   }, [userInvestments]);
   // Calculate stats

@@ -83,7 +83,11 @@ function App() {
   console.log("endpoint", endpoint);
 
   const wallets = useMemo(
-    () => [],
+    () => [
+      new PhantomWalletAdapter(),
+      // new SolflareWalletAdapter(),
+      // new UnsafeBurnerWalletAdapter(),
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [network]
   );
