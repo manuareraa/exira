@@ -909,6 +909,8 @@ export const usePropertiesStore = create(
           state.sellOrdersForProperty = data;
         });
 
+        console.log("Sell orders for property:", data, UUID);
+
         return data;
       } catch (error) {
         console.error("Error fetching sell orders:", error);
@@ -949,7 +951,9 @@ export const usePropertiesStore = create(
       }
     },
     removeSellOrder: async (sellOrderId) => {
+      const { setLoading } = useLoadingStore.getState();
       try {
+        setLoading(true, "Withdrawing sell order...");
         const { data, error } = await supabase
           .from("SellOrders")
           .delete()
@@ -964,6 +968,8 @@ export const usePropertiesStore = create(
       } catch (err) {
         console.error("Unexpected error:", err);
         return { success: false, error: err };
+      } finally {
+        setLoading(false, "");
       }
     },
   }))

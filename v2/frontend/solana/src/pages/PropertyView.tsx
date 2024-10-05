@@ -1,15 +1,4 @@
 import React, { memo, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Line,
-} from "recharts";
 import { Progress, Slider } from "@nextui-org/react";
 import Carousel from "../components/animata/Carousel";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -46,6 +35,16 @@ import {
   createTokenIfMissing,
   transferTokens,
 } from "@metaplex-foundation/mpl-toolbox";
+import {
+  TableHeader,
+  Table,
+  TableColumn,
+  TableBody,
+  TableCell,
+  TableRow,
+  Button,
+} from "@nextui-org/react";
+import { useMemo } from "react";
 
 const PropertyView = () => {
   const navigate = useNavigate();
@@ -65,6 +64,10 @@ const PropertyView = () => {
   const [investObject, setInvestObject] = useState({
     amount: 0,
   });
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "propertyName",
+    direction: "ascending",
+  });
   const {
     fetchEverythingByUUID,
     currentProperty,
@@ -72,6 +75,8 @@ const PropertyView = () => {
     fetchLaunchpadDataForProperty,
     addTransaction,
     updateLaunchpadStatus,
+    fetchSellOrdersForAProperty,
+    sellOrdersForProperty,
   } = usePropertiesStore();
   const [displayRefresher, setDisplayRefresher] = useState(false);
   const wallet = useWallet();
@@ -116,6 +121,7 @@ const PropertyView = () => {
 
   useEffect(() => {
     fetchEverythingByUUID(umi, id);
+    fetchSellOrdersForAProperty(id);
     console.log("UUID: ", id);
     toggleRefresher();
   }, []);
@@ -428,6 +434,42 @@ const PropertyView = () => {
       setLoading(false, "");
     }
   };
+
+  // Sorting for sell orders
+  const sortedSellOrders = useMemo(() => {
+    if (sellOrdersForProperty.length === 0 || currentProperty?.Status === "launchpad") {
+      return [];
+    } else {
+      return [...sellOrdersForProperty].sort((a, b) => {
+        let cmp = 0;
+
+        switch (sortDescriptor.column) {
+          case "propertyName":
+            // Sort by property name
+            cmp = a.propertyData.Name.localeCompare(b.propertyData.Name);
+            break;
+          case "sellPrice":
+            // Sort by selling price per share
+            cmp = a.PricePerShare - b.PricePerShare;
+            break;
+          case "sharesListed":
+            // Sort by shares listed
+            cmp = a.Quantity - b.Quantity;
+            break;
+          case "totalPrice":
+            // Sort by total price (PricePerShare * Quantity)
+            const totalPriceA = a.PricePerShare * a.Quantity;
+            const totalPriceB = b.PricePerShare * b.Quantity;
+            cmp = totalPriceA - totalPriceB;
+            break;
+          default:
+            cmp = 0;
+        }
+
+        return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      });
+    }
+  }, [sortDescriptor, sellOrdersForProperty]);
 
   return (
     <>
@@ -753,313 +795,321 @@ const PropertyView = () => {
             </div>
 
             {/* right scrolling container */}
-            <div className="w-full p-6 md:w-[40rem] md:sticky md:top-0 md:h-screen flex flex-col gap-y-4">
-              {/* token metadata container */}
-              <div className="flex flex-col items-start p-8 bg-white rounded-3xl invest-shadow">
-                {/* header */}
-                <div className="">
-                  <p className="text-2xl font-bold">Token Metadata</p>
-                </div>
-                {/* data container */}
-                <div className="flex flex-col w-full mt-2 gap-y-0">
-                  {/* token address container */}
-                  <div className="flex flex-row items-center justify-between w-full">
-                    <p className="text-black text-md">Token Address</p>
-                    <div className="flex flex-row items-center text-sm gap-x-3">
-                      <div className="flex flex-row items-center gap-x-1">
-                        <FontAwesomeIcon
-                          icon={faCopy}
+            {currentProperty.Status === "launchpad" ? (
+              <div className="w-full p-6 md:w-[40rem] md:sticky md:top-0 md:h-screen flex flex-col gap-y-4">
+                {/* token metadata container */}
+                <div className="flex flex-col items-start p-8 bg-white rounded-3xl invest-shadow">
+                  {/* header */}
+                  <div className="">
+                    <p className="text-2xl font-bold">Token Metadata</p>
+                  </div>
+                  {/* data container */}
+                  <div className="flex flex-col w-full mt-2 gap-y-0">
+                    {/* token address container */}
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <p className="text-black text-md">Token Address</p>
+                      <div className="flex flex-row items-center text-sm gap-x-3">
+                        <div className="flex flex-row items-center gap-x-1">
+                          <FontAwesomeIcon
+                            icon={faCopy}
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                currentProperty.TokenAddress
+                              );
+                            }}
+                          />
+                          {/* trim and display */}
+                          <p className="text-black ">
+                            {currentProperty.TokenAddress.slice(0, 8)}
+                            ...
+                            {currentProperty.TokenAddress.slice(
+                              currentProperty.TokenAddress.length - 8
+                            )}
+                          </p>
+                        </div>
+
+                        <div
+                          className="flex flex-row items-center gap-x-1 hover:cursor-pointer"
                           onClick={() => {
-                            navigator.clipboard.writeText(
-                              currentProperty.TokenAddress
+                            // open in new tab
+                            window.open(
+                              `https://explorer.solana.com/token/${currentProperty.TokenAddress}?cluster=devnet`,
+                              "_blank"
                             );
                           }}
-                        />
-                        {/* trim and display */}
-                        <p className="text-black ">
-                          {currentProperty.TokenAddress.slice(0, 8)}
-                          ...
-                          {currentProperty.TokenAddress.slice(
-                            currentProperty.TokenAddress.length - 8
-                          )}
-                        </p>
-                      </div>
-
-                      <div
-                        className="flex flex-row items-center gap-x-1 hover:cursor-pointer"
-                        onClick={() => {
-                          // open in new tab
-                          window.open(
-                            `https://explorer.solana.com/token/${currentProperty.TokenAddress}?cluster=devnet`,
-                            "_blank"
-                          );
-                        }}
-                      >
-                        <p className="text-blue-500 underline ">View</p>
-                        <FontAwesomeIcon
-                          icon={faArrowUpRightFromSquare}
-                          className="text-blue-500"
-                        />
+                        >
+                          <p className="text-blue-500 underline ">View</p>
+                          <FontAwesomeIcon
+                            icon={faArrowUpRightFromSquare}
+                            className="text-blue-500"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* owner address container */}
-                  <div className="flex flex-row items-center justify-between w-full">
-                    <p className="text-black text-md">Owner Address</p>
-                    <div className="flex flex-row items-center text-sm gap-x-3">
-                      <div className="flex flex-row items-center gap-x-1">
-                        <FontAwesomeIcon
-                          icon={faCopy}
-                          onClick={() => {
-                            navigator.clipboard.writeText(
+                    {/* owner address container */}
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <p className="text-black text-md">Owner Address</p>
+                      <div className="flex flex-row items-center text-sm gap-x-3">
+                        <div className="flex flex-row items-center gap-x-1">
+                          <FontAwesomeIcon
+                            icon={faCopy}
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                currentProperty.collectionMetadata.metadata
+                                  .updateAuthority
+                              );
+                            }}
+                          />
+                          {/* trim and display */}
+                          <p className="text-black ">
+                            {currentProperty.collectionMetadata.metadata.updateAuthority.slice(
+                              0,
+                              8
+                            )}
+                            ...
+                            {currentProperty.collectionMetadata.metadata.updateAuthority.slice(
                               currentProperty.collectionMetadata.metadata
-                                .updateAuthority
+                                .updateAuthority.length - 8
+                            )}
+                          </p>
+                        </div>
+
+                        <div
+                          className="flex flex-row items-center gap-x-1 hover:cursor-pointer"
+                          onClick={() => {
+                            // open in new tab
+                            window.open(
+                              `https://explorer.solana.com/address/${currentProperty.collectionMetadata.metadata.updateAuthority}?cluster=devnet`,
+                              "_blank"
                             );
                           }}
-                        />
-                        {/* trim and display */}
-                        <p className="text-black ">
-                          {currentProperty.collectionMetadata.metadata.updateAuthority.slice(
-                            0,
-                            8
-                          )}
-                          ...
-                          {currentProperty.collectionMetadata.metadata.updateAuthority.slice(
-                            currentProperty.collectionMetadata.metadata
-                              .updateAuthority.length - 8
-                          )}
-                        </p>
+                        >
+                          <p className="text-blue-500 underline ">View</p>
+                          <FontAwesomeIcon
+                            icon={faArrowUpRightFromSquare}
+                            className="text-blue-500"
+                          />
+                        </div>
                       </div>
+                    </div>
 
-                      <div
-                        className="flex flex-row items-center gap-x-1 hover:cursor-pointer"
-                        onClick={() => {
-                          // open in new tab
-                          window.open(
-                            `https://explorer.solana.com/address/${currentProperty.collectionMetadata.metadata.updateAuthority}?cluster=devnet`,
-                            "_blank"
-                          );
-                        }}
-                      >
-                        <p className="text-blue-500 underline ">View</p>
-                        <FontAwesomeIcon
-                          icon={faArrowUpRightFromSquare}
-                          className="text-blue-500"
-                        />
+                    {/* current status */}
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <p className="text-black text-md">Current Status</p>
+                      <div className="flex flex-row items-center text-md gap-x-3">
+                        <div className="flex flex-row items-center gap-x-1">
+                          <p className="text-black ">
+                            {currentProperty.Status.charAt(0).toUpperCase() +
+                              currentProperty.Status.slice(1)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* symbol */}
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <p className="text-black text-md">NFT Symbol</p>
+                      <div className="flex flex-row items-center text-md gap-x-3">
+                        <div className="flex flex-row items-center gap-x-1">
+                          <p className="text-black ">
+                            {currentProperty.collectionMetadata.metadata.symbol}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* current status */}
-                  <div className="flex flex-row items-center justify-between w-full">
-                    <p className="text-black text-md">Current Status</p>
-                    <div className="flex flex-row items-center text-md gap-x-3">
-                      <div className="flex flex-row items-center gap-x-1">
-                        <p className="text-black ">
-                          {currentProperty.Status.charAt(0).toUpperCase() +
-                            currentProperty.Status.slice(1)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  {/* divider */}
+                  <div className="py-3 my-0 divider before:bg-black/5 after:bg-black/5"></div>
 
-                  {/* symbol */}
-                  <div className="flex flex-row items-center justify-between w-full">
-                    <p className="text-black text-md">NFT Symbol</p>
-                    <div className="flex flex-row items-center text-md gap-x-3">
-                      <div className="flex flex-row items-center gap-x-1">
-                        <p className="text-black ">
-                          {currentProperty.collectionMetadata.metadata.symbol}
-                        </p>
+                  {/* number stats container */}
+                  <div className="grid w-full grid-cols-4 mt-0 gap-y-4">
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="text-black text-md">Owners</p>
+                      <p className="text-2xl font-bold">
+                        {
+                          extractUniqueAddresses(currentProperty.transactions)
+                            .length
+                        }
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="text-black text-md">IRR</p>
+                      <p className="text-2xl font-bold">
+                        {currentProperty.IRR}%
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="text-black text-md">ARR</p>
+                      <p className="text-2xl font-bold">
+                        {currentProperty.ARR}%
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="text-black text-md">Share Per NFT</p>
+                      <p className="text-2xl font-bold">
+                        {currentProperty.JSONData.attributes.sharePerNFT.toFixed(
+                          4
+                        )}
+                        %
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="text-black text-md">Total Shares</p>
+                      <p className="text-2xl font-bold">
+                        {currentProperty.JSONData.attributes
+                          .initialPropertyValue /
+                          currentProperty.JSONData.attributes.initialSharePrice}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="text-black text-md">Initial Price</p>
+                      <p className="text-2xl font-bold">
+                        ${currentProperty.JSONData.attributes.initialSharePrice}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-end justify-center col-span-2 gap-x-3">
+                      <div className="flex flex-col items-end justify-end">
+                        <p className="text-black text-md">Dividend / NFT</p>
+                        <span className="text-xs font-light">(/yr)</span>
                       </div>
+                      <p className="text-5xl font-bold">
+                        {currentProperty.JSONData.attributes.dividendPerNFT}%
+                      </p>
                     </div>
                   </div>
                 </div>
-
-                {/* divider */}
-                <div className="py-3 my-0 divider before:bg-black/5 after:bg-black/5"></div>
-
-                {/* number stats container */}
-                <div className="grid w-full grid-cols-4 mt-0 gap-y-4">
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-black text-md">Owners</p>
-                    <p className="text-2xl font-bold">
-                      {
-                        extractUniqueAddresses(currentProperty.transactions)
-                          .length
-                      }
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-black text-md">IRR</p>
-                    <p className="text-2xl font-bold">{currentProperty.IRR}%</p>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-black text-md">ARR</p>
-                    <p className="text-2xl font-bold">{currentProperty.ARR}%</p>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-black text-md">Share Per NFT</p>
-                    <p className="text-2xl font-bold">
-                      {currentProperty.JSONData.attributes.sharePerNFT.toFixed(
-                        4
-                      )}
-                      %
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-black text-md">Total Shares</p>
-                    <p className="text-2xl font-bold">
-                      {currentProperty.JSONData.attributes
-                        .initialPropertyValue /
-                        currentProperty.JSONData.attributes.initialSharePrice}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-black text-md">Initial Price</p>
-                    <p className="text-2xl font-bold">
-                      ${currentProperty.JSONData.attributes.initialSharePrice}
-                    </p>
-                  </div>
-                  <div className="flex flex-row items-end justify-center col-span-2 gap-x-3">
-                    <div className="flex flex-col items-end justify-end">
-                      <p className="text-black text-md">Dividend / NFT</p>
-                      <span className="text-xs font-light">(/yr)</span>
+                <div className="p-8 bg-white rounded-3xl invest-shadow">
+                  <div className="flex justify-between mb-4">
+                    <div>
+                      <p className="text-lg text-left text-black">
+                        Current Value
+                      </p>
+                      <p className="text-4xl font-bold">
+                        $
+                        {currentProperty.priceData[0].Price
+                          ? Math.round(
+                              currentProperty.priceData[0].Price * totalShares
+                            ).toLocaleString("en-US")
+                          : "$0"}{" "}
+                        <span className="text-sm font-normal text-black">
+                          USD
+                        </span>
+                      </p>
                     </div>
-                    <p className="text-5xl font-bold">
-                      {currentProperty.JSONData.attributes.dividendPerNFT}%
-                    </p>
+                    <div className="text-right">
+                      <p className="text-lg text-black">Original Value</p>
+                      <p className="text-4xl font-bold">
+                        $
+                        {Math.round(
+                          currentProperty.JSONData.attributes
+                            .initialPropertyValue
+                        ).toLocaleString("en-US")}{" "}
+                        <span className="text-sm font-normal text-black">
+                          USD
+                        </span>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="p-8 bg-white rounded-3xl invest-shadow">
-                <div className="flex justify-between mb-4">
-                  <div>
-                    <p className="text-lg text-left text-black">
-                      Current Value
-                    </p>
-                    <p className="text-4xl font-bold">
-                      $
-                      {currentProperty.priceData[0].Price
-                        ? Math.round(
-                            currentProperty.priceData[0].Price * totalShares
-                          ).toLocaleString("en-US")
-                        : "$0"}{" "}
-                      <span className="text-sm font-normal text-black">
-                        USD
-                      </span>
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg text-black">Original Value</p>
-                    <p className="text-4xl font-bold">
-                      $
-                      {Math.round(
-                        currentProperty.JSONData.attributes.initialPropertyValue
-                      ).toLocaleString("en-US")}{" "}
-                      <span className="text-sm font-normal text-black">
-                        USD
-                      </span>
-                    </p>
-                  </div>
-                </div>
 
-                <div className="items-center justify-center px-6 py-4 pb-6 my-5 mb-4 gap-y-4 rounded-2xl bg-black/10">
-                  <div className="flex flex-row items-center justify-between text-lg">
-                    <p className="">Invested</p>
-                    <p className="">
-                      $&nbsp;
-                      {currentProperty.launchpadData[0].Raised}
-                      {/* {(currentProperty.launchpadData.Raised &&
+                  <div className="items-center justify-center px-6 py-4 pb-6 my-5 mb-4 gap-y-4 rounded-2xl bg-black/10">
+                    <div className="flex flex-row items-center justify-between text-lg">
+                      <p className="">Invested</p>
+                      <p className="">
+                        $&nbsp;
+                        {currentProperty.launchpadData[0].Raised}
+                        {/* {(currentProperty.launchpadData.Raised &&
                         currentProperty.launchpadData.Raised.toLocaleString(
                           "en-US"
                         )) ||
                         0} */}
-                      <span>&nbsp;USDC</span>
-                    </p>
-                  </div>
-                  <div className="h-2 mt-2 mb-2 bg-gray-200 rounded-full">
-                    {/* <div
+                        <span>&nbsp;USDC</span>
+                      </p>
+                    </div>
+                    <div className="h-2 mt-2 mb-2 bg-gray-200 rounded-full">
+                      {/* <div
                 className="h-2 bg-black rounded-full"
                 style={{ width: "75%" }}
               ></div> */}
 
-                    <Progress
-                      aria-label="Loading..."
-                      value={
-                        (currentProperty.launchpadData[0].Raised /
-                          currentProperty.JSONData.attributes
-                            .initialPropertyValue) *
-                        100
-                      }
-                      className="max-w-md"
-                      classNames={{
-                        base: "",
-                        track: "h-[10px] bg-white",
-                        indicator: "bg-black",
+                      <Progress
+                        aria-label="Loading..."
+                        value={
+                          (currentProperty.launchpadData[0].Raised /
+                            currentProperty.JSONData.attributes
+                              .initialPropertyValue) *
+                          100
+                        }
+                        className="max-w-md"
+                        classNames={{
+                          base: "",
+                          track: "h-[10px] bg-white",
+                          indicator: "bg-black",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between mb-4">
+                    <div>
+                      <p className="text-lg text-left text-black">
+                        Share Price
+                      </p>
+                      <p className="text-3xl font-semibold text-left">
+                        $
+                        {currentProperty.priceData[0].Price
+                          ? currentProperty.priceData[0].Price.toFixed(1)
+                          : "0.00"}{" "}
+                        <span className="text-sm font-normal text-black">
+                          USDC
+                        </span>
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg text-black">Available Shares</p>
+                      <p className="text-3xl font-semibold">
+                        {availableShares}
+                        {/* <span className="text-sm font-normal text-black">
+                        USDC
+                      </span> */}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="mb-1 text-lg text-black">
+                      Your Balance: {solBalance.toLocaleString()} USDC
+                    </p>
+                    <input
+                      type="text"
+                      placeholder="Enter amount of shares to buy"
+                      className="w-full px-4 py-2 my-1 text-lg border rounded-lg outline-none bg-black/10"
+                      value={investObject.amount}
+                      onChange={(e) => {
+                        setInvestObject({
+                          ...investObject,
+                          amount: e.target.value,
+                        });
                       }}
                     />
                   </div>
-                </div>
 
-                <div className="flex justify-between mb-4">
-                  <div>
-                    <p className="text-lg text-left text-black">Share Price</p>
-                    <p className="text-3xl font-semibold text-left">
-                      $
-                      {currentProperty.priceData[0].Price
-                        ? currentProperty.priceData[0].Price.toFixed(1)
-                        : "0.00"}{" "}
-                      <span className="text-sm font-normal text-black">
-                        USDC
-                      </span>
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg text-black">Available Shares</p>
-                    <p className="text-3xl font-semibold">
-                      {availableShares}
-                      {/* <span className="text-sm font-normal text-black">
-                        USDC
-                      </span> */}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <p className="mb-1 text-lg text-black">
-                    Your Balance: {solBalance.toLocaleString()} USDC
-                  </p>
-                  <input
-                    type="text"
-                    placeholder="Enter amount of shares to buy"
-                    className="w-full px-4 py-2 my-1 text-lg border rounded-lg outline-none bg-black/10"
-                    value={investObject.amount}
-                    onChange={(e) => {
-                      setInvestObject({
-                        ...investObject,
-                        amount: e.target.value,
-                      });
+                  <button
+                    className="w-full py-2 mb-4 text-lg font-normal text-white bg-black border-2 border-black rounded-xl hover:bg-white hover:text-black"
+                    onClick={() => {
+                      handleBuy();
                     }}
-                  />
-                </div>
-
-                <button
-                  className="w-full py-2 mb-4 text-lg font-normal text-white bg-black border-2 border-black rounded-xl hover:bg-white hover:text-black"
-                  onClick={() => {
-                    handleBuy();
-                  }}
-                >
-                  Invest Now with
-                  <span className="font-bold">
-                    {" "}
-                    {(
-                      investObject.amount * currentProperty.priceData[0].Price
-                    ).toFixed(1)}{" "}
-                  </span>
-                  USDC{/* in SOL */}
-                  {/* <span className="font-bold">
+                  >
+                    Invest Now with
+                    <span className="font-bold">
+                      {" "}
+                      {(
+                        investObject.amount * currentProperty.priceData[0].Price
+                      ).toFixed(1)}{" "}
+                    </span>
+                    USDC{/* in SOL */}
+                    {/* <span className="font-bold">
                     {(
                       investObject.amount *
                       currentProperty.priceData[0].Price *
@@ -1067,9 +1117,98 @@ const PropertyView = () => {
                     ).toFixed(3)}{" "}
                   </span>
                   SOL */}
-                </button>
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="w-full p-6 md:w-[40rem] md:sticky md:top-0 md:h-screen flex flex-col gap-y-4">
+                {/* token metadata container */}
+                <div className="flex flex-col items-start p-8 bg-white rounded-3xl invest-shadow">
+                  {/* header */}
+                  <div className="">
+                    <p className="text-2xl font-bold">Share Listings</p>
+                  </div>
+                  {/* table */}
+                  {sellOrdersForProperty.length === 0 ? (
+                    <p className="text-lg">No Listings available</p>
+                  ) : (
+                    <div>
+                      <Table
+                        aria-label="Sell orders table"
+                        sortDescriptor={sortDescriptor}
+                        onSortChange={setSortDescriptor}
+                      >
+                        <TableHeader
+                          columns={[
+                            { uid: "propertyName", name: "Property Name" },
+                            { uid: "location", name: "Location" },
+                            { uid: "sellPrice", name: "Selling Price" },
+                            { uid: "sharesListed", name: "Shares Listed" },
+                            { uid: "totalPrice", name: "Total Price" },
+                            { uid: "actions", name: "Actions" },
+                          ]}
+                          className="text-lg"
+                        >
+                          {(column) => (
+                            <TableColumn
+                              key={column.uid}
+                              allowsSorting
+                              align="start"
+                              className="text-md text-alpha"
+                            >
+                              {column.name}
+                            </TableColumn>
+                          )}
+                        </TableHeader>
+                        <TableBody items={sortedSellOrders}>
+                          {(item) => (
+                            <TableRow key={item.id}>
+                              <TableCell>{item.propertyData.Name}</TableCell>
+                              <TableCell>
+                                {item.propertyData.Location}
+                              </TableCell>
+                              <TableCell>
+                                ${item.PricePerShare.toFixed(2)}
+                              </TableCell>
+                              <TableCell>{item.Quantity}</TableCell>
+                              <TableCell>
+                                $
+                                {(item.PricePerShare * item.Quantity).toFixed(
+                                  2
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex gap-x-2">
+                                  <Button
+                                    onClick={() =>
+                                      window.open(
+                                        `https://exira.io/property/view/${item.UUID}`,
+                                        "_blank"
+                                      )
+                                    }
+                                    className="border-2 rounded-full bg-alpha text-beta border-alpha hover:bg-beta hover:text-alpha hover:cursor-pointer"
+                                  >
+                                    View Project
+                                  </Button>
+                                  <Button
+                                    onClick={() =>
+                                      handleWithdrawListing(item.id)
+                                    }
+                                    className="bg-red-500 border-2 border-red-500 rounded-full text-beta hover:bg-beta hover:text-red-500 hover:cursor-pointer"
+                                  >
+                                    Withdraw
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

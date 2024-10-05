@@ -24,6 +24,7 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import toast from "react-hot-toast";
+import { set } from "@metaplex-foundation/umi/serializers";
 
 export default function Sell() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function Sell() {
     .use(walletAdapterIdentity(wallet))
     // this is for minting programmable NFTs
     .use(mplTokenMetadata());
-
+  const [currentUserShare, setCurrentUserShare] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
   const [shareCount, setShareCount] = useState<number>(0);
   const [sellPrice, setSellPrice] = useState<number>(0);
@@ -60,7 +61,7 @@ export default function Sell() {
   }, [userInvestments]);
 
   // Handle form submission for listing shares
-  const handleListShares = () => {
+  const handleListShares = async () => {
     if (!selectedProperty || shareCount <= 0 || sellPrice <= 0) {
       toast.error("Please fill out all fields with valid values.");
       return;
@@ -75,13 +76,20 @@ export default function Sell() {
       return;
     }
 
-    if (shareCount > selectedInvestment.quantity) {
+    if (
+      shareCount >
+      // get the shares from the currentUserShare array
+      currentUserShare.find(
+        (prop: { UUID: string; sharesOwned: number }) =>
+          prop.UUID === selectedProperty
+      )?.sharesOwned
+    ) {
       toast.error("You can't list more shares than you own.");
       return;
     }
 
     // Call addSellOrder function
-    addSellOrder({
+    await addSellOrder({
       UUID: selectedProperty,
       TokenAddress: selectedInvestment.TokenAddress,
       SellerAddress: umi.identity.publicKey, // Use actual userAddress from auth
@@ -89,38 +97,41 @@ export default function Sell() {
       PricePerShare: sellPrice,
     });
 
-    fetchSellOrdersForAUser(umi.identity?.publicPublicKey);
+    await fetchSellOrdersForAUser(umi.identity?.publicKey);
     setSelectedProperty(null);
     setShareCount(0);
     setSellPrice(0);
   };
 
   // Handle removing a sell order
-  const handleWithdrawListing = (orderId) => {
-    removeSellOrder(orderId);
+  const handleWithdrawListing = async (orderId) => {
+    await removeSellOrder(orderId);
+    fetchSellOrdersForAUser(umi.identity?.publicKey);
   };
 
   // Sorting for sell orders
   const sortedSellOrders = useMemo(() => {
     return [...sellOrdersForUser].sort((a, b) => {
-      const first =
-        a[sortDescriptor.column as keyof (typeof sellOrdersForUser)[0]];
-      const second =
-        b[sortDescriptor.column as keyof (typeof sellOrdersForUser)[0]];
       let cmp = 0;
 
       switch (sortDescriptor.column) {
         case "propertyName":
+          // Sort by property name
           cmp = a.propertyData.Name.localeCompare(b.propertyData.Name);
           break;
-        case "location":
-          cmp = a.propertyData.Location.localeCompare(b.propertyData.Location);
-          break;
         case "sellPrice":
-          cmp = a.Price - b.Price;
+          // Sort by selling price per share
+          cmp = a.PricePerShare - b.PricePerShare;
           break;
         case "sharesListed":
+          // Sort by shares listed
           cmp = a.Quantity - b.Quantity;
+          break;
+        case "totalPrice":
+          // Sort by total price (PricePerShare * Quantity)
+          const totalPriceA = a.PricePerShare * a.Quantity;
+          const totalPriceB = b.PricePerShare * b.Quantity;
+          cmp = totalPriceA - totalPriceB;
           break;
         default:
           cmp = 0;
@@ -129,6 +140,26 @@ export default function Sell() {
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, sellOrdersForUser]);
+
+  // a function to calculate the actual shares they hold right now in the property by taking the shares they own and subtracting the shares they have listed for each project
+  const calculateShares = () => {
+    // calculate the shares they own for each property by subtracting the shares they have listed and append it to the currentUserShare array as objects
+    let shares = [];
+    userInvestments.properties.forEach((property) => {
+      let sharesOwned = property.quantity;
+      sellOrdersForUser.forEach((order) => {
+        if (order.UUID === property.UUID) {
+          sharesOwned -= order.Quantity;
+        }
+      });
+      shares.push({ UUID: property.UUID, sharesOwned });
+    });
+    setCurrentUserShare(shares);
+  };
+
+  useEffect(() => {
+    calculateShares();
+  }, [sellOrdersForUser]);
 
   return (
     <div className="w-full max-w-full px-4 mx-auto">
@@ -148,71 +179,92 @@ export default function Sell() {
         <div className="my-3 mb-4">
           <p className="text-xl font-semibold">Sell your shares</p>
         </div>
-        <div className="flex flex-row items-center space-x-4">
-          <Dropdown className="">
-            <DropdownTrigger className="">
-              <Button
-                endContent={<ChevronDownIcon />}
-                variant="flat"
-                className="px-16 py-4 text-md"
+        <div className="flex flex-row items-end space-x-4">
+          <div className="flex flex-col items-start gap-y-1">
+            <p className="text-md text-alpha">Select Property</p>
+            <Dropdown className="">
+              <DropdownTrigger className="">
+                <Button
+                  endContent={<ChevronDownIcon />}
+                  variant="flat"
+                  className="px-16 py-4 text-md"
+                >
+                  {selectedProperty
+                    ? propertyOptions.find(
+                        (prop: {
+                          uid: string;
+                          name: string;
+                          sharesOwned: number;
+                        }) => prop.uid === selectedProperty
+                      )?.name +
+                      " (" +
+                      // display the shares from the currentUserShare array
+                      currentUserShare.find(
+                        (prop: { UUID: string; sharesOwned: number }) =>
+                          prop.UUID === selectedProperty
+                      )?.sharesOwned +
+                      ")"
+                    : "Select Property"}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                selectionMode="single"
+                selectedKeys={new Set([selectedProperty])}
+                onSelectionChange={(keys) =>
+                  setSelectedProperty(keys.anchorKey)
+                }
               >
-                {selectedProperty
-                  ? propertyOptions.find(
-                      (prop: {
-                        uid: string;
-                        name: string;
-                        sharesOwned: number;
-                      }) => prop.uid === selectedProperty
-                    )?.name +
-                    " (" +
-                    propertyOptions.find(
-                      (prop: {
-                        uid: string;
-                        name: string;
-                        sharesOwned: number;
-                      }) => prop.uid === selectedProperty
-                    )?.sharesOwned +
-                    ")"
-                  : "Select Property"}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              selectionMode="single"
-              selectedKeys={new Set([selectedProperty])}
-              onSelectionChange={(keys) => setSelectedProperty(keys.anchorKey)}
-            >
-              {propertyOptions.map((property) => (
-                <DropdownItem key={property.uid}>
-                  {property.name + " (" + property.sharesOwned + ")"}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
+                {propertyOptions.map((property) => (
+                  <DropdownItem key={property.uid}>
+                    {property.name +
+                      " (" +
+                      // display the shares from the currentUserShare array
+                      currentUserShare.find(
+                        (prop: { UUID: string; sharesOwned: number }) =>
+                          prop.UUID === property.uid
+                      )?.sharesOwned +
+                      ")"}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
 
-          <Input
-            placeholder="Enter number of shares"
-            type="number"
-            value={shareCount}
-            onValueChange={(value) => setShareCount(parseInt(value))}
-            className="w-[15rem]"
-          />
+          <div className="flex flex-col items-start gap-y-1">
+            <p className="text-md text-alpha">Number of shares</p>
+            <Input
+              placeholder="Enter number of shares"
+              type="number"
+              value={shareCount}
+              onValueChange={(value) => setShareCount(parseInt(value))}
+              className="w-[15rem]"
+            />
+          </div>
 
-          <Input
-            placeholder="Enter selling price per share"
-            type="number"
-            value={sellPrice}
-            onValueChange={(value) => setSellPrice(parseFloat(value))}
-            className="w-[15rem]"
-          />
+          <div className="flex flex-col items-start gap-y-1">
+            <p className="text-md text-alpha">
+              Selling price per share (in USD)
+            </p>
+            <Input
+              placeholder="Enter selling price per share"
+              type="number"
+              value={sellPrice}
+              onValueChange={(value) => setSellPrice(parseFloat(value))}
+              className="w-[15rem]"
+            />
+          </div>
 
           {/*  a disabled input that multiplies and shows the final total amount */}
-          <Input
-            placeholder="Total Amount"
-            type="number"
-            value={(sellPrice * shareCount).toFixed(2)}
-            disabled
-            className="w-[15rem]"
-          />
+          <div className="flex flex-col items-start gap-y-1">
+            <p className="text-md text-alpha">Number of shares</p>
+            <Input
+              placeholder="Total Amount"
+              type="number"
+              value={(sellPrice * shareCount).toFixed(2)}
+              disabled
+              className="w-[15rem]"
+            />
+          </div>
 
           <Button onClick={handleListShares} className="bg-alpha text-beta">
             List Shares
@@ -236,6 +288,7 @@ export default function Sell() {
               { uid: "location", name: "Location" },
               { uid: "sellPrice", name: "Selling Price" },
               { uid: "sharesListed", name: "Shares Listed" },
+              { uid: "totalPrice", name: "Total Price" },
               { uid: "actions", name: "Actions" },
             ]}
             className="text-lg"
@@ -256,23 +309,27 @@ export default function Sell() {
               <TableRow key={item.id}>
                 <TableCell>{item.propertyData.Name}</TableCell>
                 <TableCell>{item.propertyData.Location}</TableCell>
-                <TableCell>${item.Price.toFixed(2)}</TableCell>
+                <TableCell>${item.PricePerShare.toFixed(2)}</TableCell>
                 <TableCell>{item.Quantity}</TableCell>
+                <TableCell>
+                  ${(item.PricePerShare * item.Quantity).toFixed(2)}
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-x-2">
                     <Button
                       onClick={() =>
                         window.open(
-                          `https://property-platform.com/view/${item.UUID}`,
+                          `https://exira.io/property/view/${item.UUID}`,
                           "_blank"
                         )
                       }
+                      className="border-2 rounded-full bg-alpha text-beta border-alpha hover:bg-beta hover:text-alpha hover:cursor-pointer"
                     >
-                      View
+                      View Project
                     </Button>
                     <Button
                       onClick={() => handleWithdrawListing(item.id)}
-                      variant="danger"
+                      className="bg-red-500 border-2 border-red-500 rounded-full text-beta hover:bg-beta hover:text-red-500 hover:cursor-pointer"
                     >
                       Withdraw
                     </Button>
