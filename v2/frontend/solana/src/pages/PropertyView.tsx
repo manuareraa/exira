@@ -437,37 +437,41 @@ const PropertyView = () => {
 
   // Sorting for sell orders
   const sortedSellOrders = useMemo(() => {
-    if (sellOrdersForProperty.length === 0 || currentProperty?.Status === "launchpad") {
+    if (
+      sellOrdersForProperty.length !== 0 &&
+      currentProperty?.Status !== "launchpad"
+    ) {
+      // return [...sellOrdersForProperty].sort((a, b) => {
+      //   let cmp = 0;
+
+      //   switch (sortDescriptor.column) {
+      //     case "propertyName":
+      //       // Sort by property name
+      //       cmp = a.propertyData.Name.localeCompare(b.propertyData.Name);
+      //       break;
+      //     case "sellPrice":
+      //       // Sort by selling price per share
+      //       cmp = a.PricePerShare - b.PricePerShare;
+      //       break;
+      //     case "sharesListed":
+      //       // Sort by shares listed
+      //       cmp = a.Quantity - b.Quantity;
+      //       break;
+      //     case "totalPrice":
+      //       // Sort by total price (PricePerShare * Quantity)
+      //       const totalPriceA = a.PricePerShare * a.Quantity;
+      //       const totalPriceB = b.PricePerShare * b.Quantity;
+      //       cmp = totalPriceA - totalPriceB;
+      //       break;
+      //     default:
+      //       cmp = 0;
+      //   }
+
+      //   return sortDescriptor.direction === "descending" ? -cmp : cmp;
+      // });
       return [];
     } else {
-      return [...sellOrdersForProperty].sort((a, b) => {
-        let cmp = 0;
-
-        switch (sortDescriptor.column) {
-          case "propertyName":
-            // Sort by property name
-            cmp = a.propertyData.Name.localeCompare(b.propertyData.Name);
-            break;
-          case "sellPrice":
-            // Sort by selling price per share
-            cmp = a.PricePerShare - b.PricePerShare;
-            break;
-          case "sharesListed":
-            // Sort by shares listed
-            cmp = a.Quantity - b.Quantity;
-            break;
-          case "totalPrice":
-            // Sort by total price (PricePerShare * Quantity)
-            const totalPriceA = a.PricePerShare * a.Quantity;
-            const totalPriceB = b.PricePerShare * b.Quantity;
-            cmp = totalPriceA - totalPriceB;
-            break;
-          default:
-            cmp = 0;
-        }
-
-        return sortDescriptor.direction === "descending" ? -cmp : cmp;
-      });
+      return [];
     }
   }, [sortDescriptor, sellOrdersForProperty]);
 
