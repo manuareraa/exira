@@ -158,8 +158,8 @@ function Navbar() {
             className="flex flex-row items-center gap-x-3 h-full px-4 py-2 rounded-lg bg-alpha text-beta h-[40px] font-semibold"
             onClick={() => {
               // window.open("https://faucet.solana.com/", "_blank");
-              toast.error("This feature is not available yet");
-              // handleSOLdrop();
+              // toast.error("This feature is not available yet");
+              handleSOLdrop();
             }}
           >
             <p>Get 0.01 SOL</p>
@@ -169,8 +169,8 @@ function Navbar() {
             className="flex flex-row items-center gap-x-3 h-full px-4 py-2 rounded-lg bg-alpha text-beta h-[40px] font-semibold"
             onClick={() => {
               // window.open("https://faucet.solana.com/", "_blank");
-              toast.error("This feature is not available yet");
-              // handleUSDCdrop();
+              // toast.error("This feature is not available yet");
+              handleUSDCdrop();
             }}
           >
             <p>Get 1000 Test USDC</p>
