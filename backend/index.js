@@ -25,6 +25,8 @@ const {
   transferTokens,
   createTokenIfMissing,
 } = require("@metaplex-foundation/mpl-toolbox");
+const https = require("https");
+const fs = require("fs");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -32,6 +34,15 @@ const port = process.env.PORT || 3000;
 // Middleware to parse JSON
 app.use(express.json());
 app.use(cors()); // Enable CORS for all routes
+
+// Load the self-signed certificate and private key
+const privateKey = fs.readFileSync("./selfsigned.key", "utf8");
+const certificate = fs.readFileSync("./selfsigned.crt", "utf8");
+
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+};
 
 // Setup connection and UMI with identity
 const connection = new Connection(
@@ -281,8 +292,15 @@ app.post("/usdc-drop", async (req, res) => {
   }
 });
 
-app.listen(port, "::", () => {
-  console.log(
-    `Server running on port ${port}, listening on both IPv4 and IPv6`
-  );
+// app.listen(port, "::", () => {
+//   console.log(
+//     `Server running on port ${port}, listening on both IPv4 and IPv6`
+//   );
+// });
+
+// Create an HTTPS server
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(3000, () => {
+  console.log("HTTPS Server running on port 3000");
 });
