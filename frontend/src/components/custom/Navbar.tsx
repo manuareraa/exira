@@ -47,9 +47,14 @@ function Navbar() {
 
   const handleUSDCdrop = async () => {
     toast.success(
-      "Request successful. Please wait for the transaction to complete."
+      "Request successful. Please wait for the transaction to complete.",
+      {
+        duration: 7000,
+      }
     );
-    toast.error("Please wait for 10-15 secs.");
+    toast.success("Please wait for 10-15 secs.", {
+      duration: 7000,
+    });
     console.log("calling USDC drop", publicKey, publicKey?.toBase58());
     try {
       const response = await axios.post(
@@ -71,9 +76,14 @@ function Navbar() {
 
   const handleSOLdrop = async () => {
     toast.success(
-      "Request successful. Please wait for the transaction to complete."
+      "Request successful. Please wait for the transaction to complete.",
+      {
+        duration: 7000,
+      }
     );
-    toast.error("Please wait for 10-15 secs.");
+    toast.error("Please wait for 10-15 secs.", {
+      duration: 7000,
+    });
     try {
       const response = await axios.post(
         import.meta.env.VITE_BACKEND_URL + "/sol-drop",
