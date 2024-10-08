@@ -46,14 +46,18 @@ function Navbar() {
   }, [publicKey]);
 
   const handleUSDCdrop = async () => {
+    if (!publicKey) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     toast.success(
       "Request successful. Please wait for the transaction to complete.",
       {
-        duration: 7000,
+        duration: 5000,
       }
     );
     toast.success("Please wait for 10-15 secs.", {
-      duration: 7000,
+      duration: 5000,
     });
     console.log("calling USDC drop", publicKey, publicKey?.toBase58());
     try {
@@ -75,14 +79,18 @@ function Navbar() {
   };
 
   const handleSOLdrop = async () => {
+    if (!publicKey) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     toast.success(
       "Request successful. Please wait for the transaction to complete.",
       {
-        duration: 7000,
+        duration: 5000,
       }
     );
     toast.error("Please wait for 10-15 secs.", {
-      duration: 7000,
+      duration: 5000,
     });
     try {
       const response = await axios.post(
