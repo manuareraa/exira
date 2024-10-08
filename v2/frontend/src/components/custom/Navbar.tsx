@@ -46,6 +46,8 @@ function Navbar() {
   }, [publicKey]);
 
   const handleUSDCdrop = async () => {
+    toast.success("Request successful. Please wait for the transaction to complete.");
+    console.log("calling USDC drop", publicKey, publicKey?.toBase58());
     try {
       const response = await axios.post(
         import.meta.env.VITE_BACKEND_URL + "/usdc-drop",
@@ -65,6 +67,7 @@ function Navbar() {
   };
 
   const handleSOLdrop = async () => {
+    toast.success("Request successful. Please wait for the transaction to complete.");
     try {
       const response = await axios.post(
         import.meta.env.VITE_BACKEND_URL + "/sol-drop",
@@ -164,7 +167,7 @@ function Navbar() {
               handleSOLdrop();
             }}
           >
-            <p>Get 0.01 SOL</p>
+            <p>Get 0.001 SOL</p>
             {/* <FontAwesomeIcon icon={faUpRightFromSquare} size="2xs" /> */}
           </button>
           <button
