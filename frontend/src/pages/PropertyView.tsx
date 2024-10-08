@@ -390,6 +390,7 @@ const PropertyView = () => {
       );
 
       toast.success("NFT transferred successfully");
+      toast.success("Please go to portfolio to check your shares.");
       console.log("Response data:", response.data);
 
       if (response.data.success === true) {

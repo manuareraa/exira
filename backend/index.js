@@ -36,8 +36,14 @@ app.use(express.json());
 app.use(cors()); // Enable CORS for all routes
 
 // Load the self-signed certificate and private key
-const privateKey = fs.readFileSync("./selfsigned.key", "utf8");
-const certificate = fs.readFileSync("./selfsigned.crt", "utf8");
+const privateKey = fs.readFileSync(
+  "/etc/letsencrypt/live/api.exira.io/fullchain.pem",
+  "utf8"
+);
+const certificate = fs.readFileSync(
+  "/etc/letsencrypt/live/api.exira.io/privkey.pem",
+  "utf8"
+);
 
 const credentials = {
   key: privateKey,
